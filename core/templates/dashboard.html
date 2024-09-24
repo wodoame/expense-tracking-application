@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static  %}
+{% block content %}
+
+{% include 'components/navbar.html' %}
+{% include  'components/sidebar.html' %}
+
+ <!-- begin main details -->
+ <div class="p-4 sm:ml-64">
+    
+<h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white mt-14">Welcome, Bernard</h5>
+
+<!-- begin summary -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
+         <!-- begin card -->
+         <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Total spent this week</p>
+            <p class="text-2xl font-bold">GHS {{spentThisWeek | floatformat:2}}</p>
+         </a>
+         <!-- end card  -->
+         <!-- begin card -->
+         <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Total spent last week</p>
+            <p class="text-2xl font-bold">GHS {{spentLastWeek | floatformat:2}}</p>
+         </a>
+         <!-- end card  -->
+         <!-- begin card -->
+         <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Highest weekly spending</p>
+            <p class="text-2xl font-bold">GHS 500.40</p>
+         </a>
+         <!-- end card  -->
+  </div>
+<!-- end summary  -->
+
+<!-- begin activity -->
+<div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start">
+   <!-- today -->
+     {% include 'components/records.html' with items=today heading='Today' date=dateToday total=todayTotal only %}
+   <!-- end today-->
+
+
+   <!-- yesterday -->
+   {% include 'components/records.html' with items=yesterday heading='Yesterday' date=dateYesterday total=yesterdayTotal only %}
+   <!-- end yesterday -->
+ 
+ </div>
+
+<!-- end activity -->
+
+</div>
+<!-- end main details -->
+{% if successful %}
+  {% include 'components/toast.html' %}
+{% endif %}
+
+{% include 'components/addProductModal.html' %}
+ 
+
+{% endblock %}
