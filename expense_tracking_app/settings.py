@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = False 
 
 ALLOWED_HOSTS = ['*']
 
@@ -92,7 +92,7 @@ DATABASES = {
         'USER': os.getenv('USER'),
         'PASSWORD': os.getenv('SUPERBASE_PASSWORD'),
         'HOST': os.getenv('HOST'),  # Change if your database is hosted elsewhere
-        'PORT': os.getenv('POST'),       # Default PostgreSQL port
+        'PORT': os.getenv('PORT'),       # Default PostgreSQL port
     }
 }
 
