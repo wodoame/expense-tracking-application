@@ -92,7 +92,7 @@ DATABASES = {
         'USER': os.getenv('USER'),
         'PASSWORD': os.getenv('SUPERBASE_PASSWORD'),
         'HOST': os.getenv('HOST'),  # Change if your database is hosted elsewhere
-        'PORT': os.getenv('PORT'),       # Default PostgreSQL port
+        'PORT': os.getenv('DBPORT'),       # Default PostgreSQL port
     }
 }
 
