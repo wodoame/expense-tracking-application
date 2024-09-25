@@ -20,4 +20,5 @@ import core.views as core_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', core_views.Dashboard.as_view(), name='dashboard'),
+    path('all-expenditures/', core_views.AllExpenditures.as_view(), name='all-expenditures'),
 ]

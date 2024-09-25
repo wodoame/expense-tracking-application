@@ -1,0 +1,8 @@
+{% extends 'components/layout.html' %}
+{% block main %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+    {% for record in records %}
+        {% include 'components/records.html' with items=record.products date=record.date total=record.total only %}
+    {% endfor %}
+</div>
+{% endblock %}

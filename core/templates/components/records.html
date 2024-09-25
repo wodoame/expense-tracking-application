@@ -1,6 +1,7 @@
+{% load custom_timesince %}
 <div class="p-4 bg-gray-50 rounded-md border">
     <h3 class="p-2 text-xl font-bold tracking-tight border-b text-gray-900 dark:text-white">
-      {{heading}}
+          {{date|timesince}}
       <div class="text-sm text-gray-500 font-medium my-2">
          {{date|date:"l, N d, Y"}}
       </div>

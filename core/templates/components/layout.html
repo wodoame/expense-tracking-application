@@ -1,0 +1,20 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+  {% include 'components/navbar.html' %}
+  {% include  'components/sidebar.html' %}
+
+  <div class="p-4 sm:ml-64 mt-16">
+      {% block main %}
+          <!-- main content goes here -->
+      {% endblock %}
+  </div>
+
+  {% if successful %}
+    {% include 'components/toast.html' %}
+  {% endif %}
+
+  {% include 'components/addProductModal.html' %}
+
+{% endblock %}

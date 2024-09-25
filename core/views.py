@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from django.views import View
 from .forms import AddProductForm
 from datetime import datetime, timedelta 
 from .models import Product
 from .datechecker import DateChecker as dc
+from django.db.models import Count, Sum
 
 class Dashboard(View): 
     def get(self, request, **kwargs):
@@ -31,7 +31,7 @@ class Dashboard(View):
             'spentLastWeek': spentLastWeek,
             }     
         
-        return render(request, 'dashboard.html', context)
+        return render(request, 'pages/dashboard.html', context)
     
     def post(self, request):
         print(request.POST)
@@ -49,9 +49,33 @@ class Dashboard(View):
             print(form.errors.get_json_data())
         return self.get(request, successful=True)
     
+    # I could use aggregation instead (But this works already so no problem)
     def get_total_cost(self, items):
         totalCost = 0
         for item in items:
             totalCost += item.price
         return totalCost 
-            
+    
+class AllExpenditures(View): 
+    def get(self, request):
+        # PERSONAL NOTE: It's okay if you don't remember why the code below works. I don't even fully understand it at the time of writing the code
+        results = Product.objects.values('date__date').annotate(Count('date__date')) # dates and number of items bought on that day
+        dates = [result['date__date'] for result in results] # getting only the dates
+        records = []
+        for date in dates:
+            products = Product.objects.filter(date__date=date)
+            records.append({
+                'date': date, 
+                'products': products, 
+                'total':products.aggregate(total=Sum('price')).get('total')
+            })
+        
+        context = {'records':records }
+        return render(request, 'pages/all-expenditures.html', context)
+    
+# TODO: make another page to show all spendings (use the records component. also utilize the datesince filters  )
+# TODO: find a better place to put the add product button
+# TODO: the delete and edit button functionality
+
+
+# .aggregate() is used to perform some calculations across the whole queryset

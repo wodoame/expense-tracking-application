@@ -18,6 +18,14 @@ class DateChecker:
                 totalCost += item.price 
         return totalCost 
     
+    @staticmethod
+    def get_date_today():
+        return datetime.today().date() 
+    
+    @staticmethod
+    def get_date_yesterday():
+        return DateChecker.get_date_today() - timedelta(days=1)
+    
     
             
         

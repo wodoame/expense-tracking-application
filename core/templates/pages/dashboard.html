@@ -1,14 +1,7 @@
-{% extends 'base.html' %}
-{% load static  %}
-{% block content %}
+{% extends 'components/layout.html' %}
 
-{% include 'components/navbar.html' %}
-{% include  'components/sidebar.html' %}
-
- <!-- begin main details -->
- <div class="p-4 sm:ml-64">
-    
-<h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white mt-14">Welcome, Bernard</h5>
+{% block main %}
+<h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Welcome, Bernard</h5>
 
 <!-- begin summary -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
@@ -34,27 +27,17 @@
 <!-- end summary  -->
 
 <!-- begin activity -->
-<div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start">
+ <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start">
    <!-- today -->
-     {% include 'components/records.html' with items=today heading='Today' date=dateToday total=todayTotal only %}
+     {% include 'components/records.html' with items=today date=dateToday total=todayTotal only %}
    <!-- end today-->
 
 
    <!-- yesterday -->
-   {% include 'components/records.html' with items=yesterday heading='Yesterday' date=dateYesterday total=yesterdayTotal only %}
+   {% include 'components/records.html' with items=yesterday date=dateYesterday total=yesterdayTotal only %}
    <!-- end yesterday -->
- 
  </div>
+ <!-- end activity -->
 
-<!-- end activity -->
+ {% endblock %}
 
-</div>
-<!-- end main details -->
-{% if successful %}
-  {% include 'components/toast.html' %}
-{% endif %}
-
-{% include 'components/addProductModal.html' %}
- 
-
-{% endblock %}
