@@ -41,13 +41,17 @@ body{
 
     .input{
         /* @apply border border-gray-300 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white; */
-        @apply bg-gray-100 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full font-medium p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white;
+        @apply bg-gray-100 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full font-medium p-4 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white;
     }
 }
 
 [x-cloak] { display: none !important; }
 [data-placement="bottom"]{
     @apply !items-end md:!items-center;
+}
+
+.move{
+    @apply transform-none;
 }
 
 #navbar{

@@ -15,6 +15,26 @@
     {% include 'components/toast.html' %}
   {% endif %}
 
-  {% include 'components/addProductModal.html' %}
+  {% include 'components/animatedModal.html' %}
+  <script>
+      const animatedBackdrop = document.getElementById('animated-backdrop');
+      const animatedModal = document.getElementById('animated-modal');
+      const body = document.body;
+      const toggle = (e)=>{
+        e.stopPropagation(); // stop other elements from retoggling the modal
+        // console.log('toggling ...');
+        animatedModal.classList.toggle('move'); 
+        animatedBackdrop.classList.toggle('hidden')
+        body.classList.toggle('overflow-hidden')
+      }
 
+      const handleClickOutside = (e)=>{
+          //  console.log('closing ...'); on
+          if(e.target == animatedModal){
+             animatedModal.classList.remove('move')
+             animatedBackdrop.classList.add('hidden');
+             body.classList.remove('overflow-hidden');
+          }
+      };
+  </script>
 {% endblock %}

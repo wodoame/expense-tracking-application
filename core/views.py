@@ -76,6 +76,11 @@ class AllExpenditures(View):
 # TODO: make another page to show all spendings (use the records component. also utilize the datesince filters  )
 # TODO: find a better place to put the add product button
 # TODO: the delete and edit button functionality
+# TODO: try to write a bash script to start the server and the tailwind build process
+
+class Test(View): 
+    def get(self, request): 
+        return render(request, 'pages/test.html')
 
 
 # .aggregate() is used to perform some calculations across the whole queryset

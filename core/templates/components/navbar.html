@@ -1,6 +1,6 @@
 {% load static %}
 <!-- navbar -->
-<nav id="navbar" class="fixed top-0 z-30 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+<nav id="navbar" class="fixed top-0 z-20 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center justify-start rtl:justify-end">
@@ -11,7 +11,7 @@
               </svg>
            </button>
 
-           <button data-modal-target="add-product" data-modal-toggle="add-product">
+           <button x-data @click="toggle">
                 <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 w-6 h-6 fill-gray-500 transition duration-75 dark:text-gray-400 group-hover:fill-gray-900 dark:group-hover:text-white"  viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>
            </button>
           <!-- <a href="https://flowbite.com" class="flex ms-2 md:me-24">
