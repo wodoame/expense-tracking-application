@@ -13,5 +13,23 @@ def spentThisWeek():
     weekStart = dateToday - timedelta(days=deltaToStart)
     weekEnd = dateToday + timedelta(days=deltaToEnd)
     print(currentWeekDay, weekStart, weekEnd)
+    
 
-spentThisWeek()
+today = datetime.today()
+date = datetime(today.year, today.month, 1) # first day of current month
+print(date.weekday())
+lastDateOfMonth = date - timedelta(days=1) # last date of previous month
+print(lastDateOfMonth)
+dayOfWeek = lastDateOfMonth.weekday() # monday starts at 0
+print('day of the week of last day', dayOfWeek)
+if dayOfWeek == 6: 
+    dayOfWeek = -1
+
+dateOfSunday = lastDateOfMonth - timedelta(days=dayOfWeek + 1)
+print(dateOfSunday)
+print(range(dateOfSunday.day, lastDateOfMonth.day + 1))
+# print(today.month)
+# print(today.day)
+
+for i in range(0): 
+    print('hey')

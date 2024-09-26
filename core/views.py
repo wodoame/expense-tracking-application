@@ -73,14 +73,33 @@ class AllExpenditures(View):
         context = {'records':records }
         return render(request, 'pages/all-expenditures.html', context)
     
-# TODO: make another page to show all spendings (use the records component. also utilize the datesince filters  )
-# TODO: find a better place to put the add product button
 # TODO: the delete and edit button functionality
 # TODO: try to write a bash script to start the server and the tailwind build process
+
+class AcitivityCalendar(View): 
+    def get(self, request): 
+        months = (9, 8, 7, 6, 5, 4, 3, 2, 1)
+        monthsData = []
+        for month in months: 
+            data = dc.get_calendar_data(month)
+            ratios = dc.get_color_ratios(month, Product.objects.filter(date__month=month))
+            lastDays, otherDays, date = data
+            monthsData.append(
+                {
+                    'lastDays':lastDays, 
+                    'ratios': ratios, 
+                    'date': date
+                }
+            )
+        
+        context = {
+            'monthsData': monthsData
+        }
+        return render(request, 'components/activityCalendar.html', context)
+
+
+# .aggregate() is used to perform some calculations across the whole queryset
 
 class Test(View): 
     def get(self, request): 
         return render(request, 'pages/test.html')
-
-
-# .aggregate() is used to perform some calculations across the whole queryset

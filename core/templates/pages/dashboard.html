@@ -1,7 +1,7 @@
 {% extends 'components/layout.html' %}
 
 {% block main %}
-<h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Welcome, Bernard</h5>
+<h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Dashboard</h5>
 
 <!-- begin summary -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
@@ -36,8 +36,11 @@
    <!-- yesterday -->
    {% include 'components/records.html' with items=yesterday date=dateYesterday total=yesterdayTotal only %}
    <!-- end yesterday -->
- </div>
+ </div> 
  <!-- end activity -->
+<div class="my-12" hx-get="/components/activityCalendar/" hx-trigger="revealed">
+  {% include 'components/loader.html' %}
+</div>
 
  {% endblock %}
 

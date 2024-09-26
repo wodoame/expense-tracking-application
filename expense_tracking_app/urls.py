@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', core_views.Dashboard.as_view(), name='dashboard'),
     path('all-expenditures/', core_views.AllExpenditures.as_view(), name='all-expenditures'),
-    path('test/', core_views.Test.as_view(), name='test'),
+    path('components/activityCalendar/', core_views.AcitivityCalendar.as_view()),
 ]
