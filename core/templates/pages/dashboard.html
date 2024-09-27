@@ -4,12 +4,12 @@
 <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Dashboard</h5>
 
 <!-- begin summary -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
-         <!-- begin card -->
-         <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-            <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Total spent this week</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
+  <!-- begin card -->
+  <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Total spent this week</p>
             <p class="text-2xl font-bold">GHS {{spentThisWeek | floatformat:2}}</p>
-         </a>
+          </a>
          <!-- end card  -->
          <!-- begin card -->
          <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
@@ -21,26 +21,78 @@
          <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Highest weekly spending</p>
             <p class="text-2xl font-bold">GHS 500.40</p>
-         </a>
-         <!-- end card  -->
-  </div>
-<!-- end summary  -->
+          </a>
+          <!-- end card  -->
+        </div>
+        <!-- end summary  -->
+        
+        <!-- begin activity -->
+        <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
+          <!-- today -->
+          {% include 'components/records.html' with items=today date=dateToday total=todayTotal only %}
+          <!-- end today-->
+          
+          
+          <!-- yesterday -->
+          {% include 'components/records.html' with items=yesterday date=dateYesterday total=yesterdayTotal only %}
+          <!-- end yesterday -->
+        </div> 
+        <!-- end activity -->
+        <div class="my-12" hx-get="/components/activityCalendar/" hx-trigger="load">
+          {% include 'components/loader.html' %}
+        </div>
 
-<!-- begin activity -->
- <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start">
-   <!-- today -->
-     {% include 'components/records.html' with items=today date=dateToday total=todayTotal only %}
-   <!-- end today-->
+        {% include 'components/showDetailsModal.html' with id='show-details-modal' only %}
+        {% include 'components/deleteProductModal.html' with id='delete-product-modal' %}
+        
+        {{serializedData | json_script:'products'}}
+        <script>
+           
+         const products = JSON.parse(document.getElementById('products').textContent); 
 
+         const getProduct = (id)=>{
+           for(const product of products){
+              if(product.id == id){
+                 console.log(product);
+                 return product;
+              }
+           }
+         };
+         
+         // instead of the function below if it becomes necessay (eg. if the UI needs to be dynamic ) I will use string literals to generate html and insert them 
+         // into the DOM using .insertAdjacentHTML() 
+         const setDetail = (id, value)=>{
+            document.getElementById(id).textContent = value;
+         };
 
-   <!-- yesterday -->
-   {% include 'components/records.html' with items=yesterday date=dateYesterday total=yesterdayTotal only %}
-   <!-- end yesterday -->
- </div> 
- <!-- end activity -->
-<div class="my-12" hx-get="/components/activityCalendar/" hx-trigger="revealed">
-  {% include 'components/loader.html' %}
-</div>
+         const showDetails = (e)=>{
+            e.stopPropagation();
+            const productId = e.currentTarget.id;
+            const product = getProduct(productId);
+            setDetail('product-name', product.name); 
+            setDetail('product-price', `GHS ${product.price.toFixed(2)}`); 
+            setDetail('product-description', product.description || 'No description');
+            // document.getElementById('product-name')
+            toggle(e, 'show-details-modal');
+         }
 
+         const editProduct = (e)=>{
+          toggle(e)
+          // e.stopPropagation();
+         }; 
+
+         const deleteProduct = (e)=>{
+          e.stopPropagation();
+          const productId = e.currentTarget.parentNode.parentNode.parentNode.id;
+          console.log(productId);
+          const product = getProduct(productId);
+          setDetail('delete-product-name', product.name);
+          setDetail('delete-product-price', `GHS ${product.price.toFixed(2)}`); 
+          setDetail('delete-product-description', product.description || 'No description');
+          document.getElementById('delete-product-id').value = productId;
+          toggle(e, 'delete-product-modal') 
+         }; 
+
+        </script>
  {% endblock %}
 

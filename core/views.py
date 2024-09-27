@@ -6,6 +6,11 @@ from datetime import datetime, timedelta
 from .models import Product
 from .datechecker import DateChecker as dc
 from django.db.models import Count, Sum
+from .serializers import ProductSerializer
+
+class RedirectView(View):
+    def get(self, request): 
+        return redirect('dashboard')
 
 class Dashboard(View): 
     def get(self, request, **kwargs):
@@ -19,6 +24,8 @@ class Dashboard(View):
         spentThisWeek = dc.spent_in_week(thisWeek, products)
         spentLastWeek = dc.spent_in_week(lastWeek, products)
 
+        serializer = ProductSerializer(today + yesterday, many=True)
+        serializedData = serializer.data
         context = {
             'today': today,
             'yesterday': yesterday,
@@ -29,7 +36,9 @@ class Dashboard(View):
             'successful': kwargs.get('successful'),
             'spentThisWeek': spentThisWeek,
             'spentLastWeek': spentLastWeek,
+            'serializedData':serializedData
             }     
+        
         
         return render(request, 'pages/dashboard.html', context)
     
@@ -62,6 +71,7 @@ class AllExpenditures(View):
         results = Product.objects.values('date__date').annotate(Count('date__date')) # dates and number of items bought on that day
         dates = [result['date__date'] for result in results] # getting only the dates
         records = []
+        dates.sort() 
         for date in dates:
             products = Product.objects.filter(date__date=date)
             records.append({
@@ -75,6 +85,7 @@ class AllExpenditures(View):
     
 # TODO: the delete and edit button functionality
 # TODO: try to write a bash script to start the server and the tailwind build process
+# .aggregate() is used to perform some calculations across the whole queryset
 
 class AcitivityCalendar(View): 
     def get(self, request): 
@@ -98,7 +109,12 @@ class AcitivityCalendar(View):
         return render(request, 'components/activityCalendar.html', context)
 
 
-# .aggregate() is used to perform some calculations across the whole queryset
+class DeleteProduct(View): 
+    def post(self, request): 
+        print(request.POST)
+        id = request.POST.get('id')
+        Product.objects.get(id=id).delete()
+        return redirect('dashboard')
 
 class Test(View): 
     def get(self, request): 
