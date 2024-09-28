@@ -85,16 +85,16 @@ WSGI_APPLICATION = 'expense_tracking_app.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv('DBNAME'),
-#         'USER': os.getenv('USER'),
-#         'PASSWORD': os.getenv('SUPERBASE_PASSWORD'),
-#         'HOST': os.getenv('HOST'),  # Change if your database is hosted elsewhere
-#         'PORT': os.getenv('DBPORT'),       # Default PostgreSQL port
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DBNAME'),
+        'USER': os.getenv('USER'),
+        'PASSWORD': os.getenv('SUPERBASE_PASSWORD'),
+        'HOST': os.getenv('HOST'),  # Change if your database is hosted elsewhere
+        'PORT': os.getenv('DBPORT'),       # Default PostgreSQL port
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
