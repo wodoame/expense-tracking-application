@@ -118,4 +118,6 @@ class DeleteProduct(View):
 
 class Test(View): 
     def get(self, request): 
+        # data in the last year
+        
         return render(request, 'pages/test.html')

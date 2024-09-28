@@ -33,9 +33,9 @@ class DateChecker:
     def get_calendar_data(month):
         today = datetime.today()
         date = datetime(today.year, month, 1) # first day of current month
-        if date.weekday() == 6:
-            return (range(0), range(1, 32), date)
         lastDateOfCurrentMonth = datetime(today.year, month + 1, 1) - timedelta(days=1)
+        if date.weekday() == 6:
+            return (range(0), range(1, lastDateOfCurrentMonth.day + 1), date)
         lastDateOfPrevMonth = date - timedelta(days=1)
         dayOfWeek = lastDateOfPrevMonth.weekday() # day of the week of the last day
         if dayOfWeek == 6: 
@@ -67,8 +67,11 @@ class DateChecker:
                 ratio = 100
             ratios[day] = ratio # denominator could be the highest daily spending for the month
         return ratios 
-            
     
+    @staticmethod
+    def activity():
+        pass 
+        
     
             
         
