@@ -29,30 +29,42 @@ class DateChecker:
     def get_date_yesterday():
         return DateChecker.get_date_today() - timedelta(days=1)
     
+    # helps create the calendar structure
     @staticmethod
-    def get_calendar_data(month):
-        today = datetime.today()
-        date = datetime(today.year, month, 1) # first day of current month
-        lastDateOfCurrentMonth = datetime(today.year, month + 1, 1) - timedelta(days=1)
-        if date.weekday() == 6:
-            return (range(0), range(1, lastDateOfCurrentMonth.day + 1), date)
-        lastDateOfPrevMonth = date - timedelta(days=1)
+    def get_calendar_data(year, month):
+        firstDateOfMonth = datetime(year, month, 1) # first day of current month
+        firstDateOfNextMonth = None
+        if month == 12: 
+            firstDateOfNextMonth = datetime(year + 1, 1, 1)
+            print(firstDateOfNextMonth)
+        else: 
+            firstDateOfNextMonth = datetime(year, month + 1, 1)
+        lastDateOfCurrentMonth = firstDateOfNextMonth - timedelta(days=1)
+        # if the first day is a Sunday then the calendar starts from the beginning 
+        if firstDateOfMonth.weekday() == 6:
+            return (range(0), range(1, lastDateOfCurrentMonth.day + 1), firstDateOfMonth)
+        lastDateOfPrevMonth = firstDateOfMonth - timedelta(days=1)
         dayOfWeek = lastDateOfPrevMonth.weekday() # day of the week of the last day
         if dayOfWeek == 6: 
-            dayOfWeek = -1 
+            dayOfWeek = -1 # for the calculations Sunday is considered as -1, Monday=0, Tuesday=1, ... and so on
         distanceFromSunday = dayOfWeek + 1
         dayOfSunday = lastDateOfPrevMonth.day - distanceFromSunday
-        return (range(dayOfSunday, lastDateOfPrevMonth.day + 1), range(date.day, lastDateOfCurrentMonth.day + 1), date)
+        return (range(dayOfSunday, lastDateOfPrevMonth.day + 1), range(1, lastDateOfCurrentMonth.day + 1), firstDateOfMonth)
     
     @staticmethod
-    def get_color_ratios(month, products):
-        today = datetime.today()
-        lastDateOfMonth = datetime(today.year, month + 1, 1) - timedelta(days=1)
+    def get_color_ratios(year, month, products):
+        firstDateOfNextMonth = None
+        # if we are in December than we set the first day of next month to January of the next year
+        if month == 12:
+            firstDateOfNextMonth = datetime(year + 1, 1, 1)
+        else: 
+            firstDateOfNextMonth = datetime(year, month + 1, 1)
+        lastDateOfMonth = firstDateOfNextMonth - timedelta(days=1)
         lastDayOfMonth = lastDateOfMonth.day
         ratios = {}
         for day in range(1, lastDayOfMonth + 1): 
-            total = products.filter(date__day=day).aggregate(total=Sum('price', default=0)).get('total')
-            ratio = 0
+            total = products.filter(date__day=day, date__month=month,  date__year=year).aggregate(total=Sum('price', default=0)).get('total')
+            ratio = None
             if total == 0: 
                 ratio = 0
             elif 0 < total < 25:
@@ -69,8 +81,27 @@ class DateChecker:
         return ratios 
     
     @staticmethod
-    def activity():
-        pass 
+    def get_activity_in_last_year(products):
+        activity = []
+        today = datetime.today()
+        month = today.month 
+        year = today.year
+        for i in range(12):
+            # check if we've gone to the previous year
+            if month == 0:
+                month = 12 
+                year -= 1
+            data = DateChecker.get_calendar_data(year, month)
+            ratios = DateChecker.get_color_ratios(year, month, products)
+            activity.append(
+                {
+                    'lastDays': data[0],
+                    'ratios': ratios, 
+                    'date': data[2] 
+                }
+            )
+            month -= 1
+        return activity
         
     
             

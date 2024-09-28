@@ -1045,16 +1045,24 @@ video {
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
-.grid-cols-\[repeat\(5\2c minmax\(14px\2c 14px\)\)\] {
-  grid-template-columns: repeat(5,minmax(14px,14px));
+.grid-cols-\[repeat\(5\2c minmax\(12px\2c 12px\)\)\] {
+  grid-template-columns: repeat(5,minmax(12px,12px));
 }
 
-.grid-rows-\[repeat\(7\2c _minmax\(14px\2c _14px\)\)\] {
-  grid-template-rows: repeat(7, minmax(14px, 14px));
+.grid-cols-\[repeat\(5\2c minmax\(10px\2c 10px\)\)\] {
+  grid-template-columns: repeat(5,minmax(10px,10px));
+}
+
+.grid-rows-\[repeat\(7\2c _minmax\(12px\2c _12px\)\)\] {
+  grid-template-rows: repeat(7, minmax(12px, 12px));
 }
 
 .grid-rows-\[repeat\(7\2c minmax\(14px\2c 14px\)\)\] {
   grid-template-rows: repeat(7,minmax(14px,14px));
+}
+
+.grid-rows-\[repeat\(7\2c _minmax\(10px\2c _10px\)\)\] {
+  grid-template-rows: repeat(7, minmax(10px, 10px));
 }
 
 .flex-col {
@@ -1151,6 +1159,10 @@ video {
 
 .overflow-y-auto {
   overflow-y: auto;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
 }
 
 .truncate {

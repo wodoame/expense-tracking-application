@@ -80,7 +80,7 @@ class AllExpenditures(View):
                 'total':products.aggregate(total=Sum('price')).get('total')
             })
         
-        context = {'records':records }
+        context = {'records':records, 'serializedData': ProductSerializer(Product.objects.all(), many=True).data }
         return render(request, 'pages/all-expenditures.html', context)
     
 # TODO: the delete and edit button functionality
@@ -89,20 +89,8 @@ class AllExpenditures(View):
 
 class AcitivityCalendar(View): 
     def get(self, request): 
-        months = (9, 8, 7, 6, 5, 4, 3, 2, 1)
-        monthsData = []
-        for month in months: 
-            data = dc.get_calendar_data(month)
-            ratios = dc.get_color_ratios(month, Product.objects.filter(date__month=month))
-            lastDays, otherDays, date = data
-            monthsData.append(
-                {
-                    'lastDays':lastDays, 
-                    'ratios': ratios, 
-                    'date': date
-                }
-            )
-        
+        # this is an expensive operation an it will be cached in the future
+        monthsData = dc.get_activity_in_last_year(Product.objects.all())
         context = {
             'monthsData': monthsData
         }
@@ -114,10 +102,11 @@ class DeleteProduct(View):
         print(request.POST)
         id = request.POST.get('id')
         Product.objects.get(id=id).delete()
-        return redirect('dashboard')
+        return redirect(request.META['HTTP_REFERER'])
 
 class Test(View): 
     def get(self, request): 
-        # data in the last year
-        
+        products = Product.objects.all()
+        data = dc.get_activity_in_last_year(products)
+        # print(data)
         return render(request, 'pages/test.html')

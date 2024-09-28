@@ -5,4 +5,24 @@
         {% include 'components/records.html' with items=record.products date=record.date total=record.total only %}
     {% endfor %}
 </div>
+{% include 'components/showDetailsModal.html' with id='show-details-modal' only %}
+{% include 'components/deleteProductModal.html' with id='delete-product-modal' %}
+        
+{{serializedData | json_script:'products'}}
+
+<script>
+    // Save scroll position before the page unloads
+window.addEventListener("beforeunload", function() {
+    localStorage.setItem("scrollPosition", window.scrollY);
+});
+
+// Restore scroll position when the page loads
+window.addEventListener("load", function() {
+    const scrollPosition = localStorage.getItem("scrollPosition");
+    if (scrollPosition) {
+        window.scrollTo(0, parseInt(scrollPosition, 10));
+    }
+});
+
+</script>
 {% endblock %}
