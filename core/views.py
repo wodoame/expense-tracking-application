@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.urls import reverse
 from django.views import View
 from .forms import AddProductForm
@@ -7,6 +7,8 @@ from .models import Product
 from .datechecker import DateChecker as dc
 from django.db.models import Count, Sum
 from .serializers import ProductSerializer
+from django.core.paginator import Paginator, EmptyPage 
+from django.core.cache import cache
 
 class RedirectView(View):
     def get(self, request): 
@@ -43,12 +45,10 @@ class Dashboard(View):
         return render(request, 'pages/dashboard.html', context)
     
     def post(self, request):
-        print(request.POST)
         form = AddProductForm(request.POST)
         cedis = request.POST.get('cedis')
         pesewas = request.POST.get('pesewas')
         price = float(cedis + '.' + pesewas)
-        print(price)
         if form.is_valid():
             print(form.cleaned_data)
             product = form.save(commit=False)
@@ -67,21 +67,43 @@ class Dashboard(View):
     
 class AllExpenditures(View): 
     def get(self, request):
-        # PERSONAL NOTE: It's okay if you don't remember why the code below works. I don't even fully understand it at the time of writing the code
-        results = Product.objects.values('date__date').annotate(Count('date__date')) # dates and number of items bought on that day
-        dates = [result['date__date'] for result in results] # getting only the dates
-        records = []
-        dates.sort() 
-        for date in dates:
-            products = Product.objects.filter(date__date=date)
-            records.append({
-                'date': date, 
-                'products': products, 
-                'total':products.aggregate(total=Sum('price')).get('total')
-            })
-        
-        context = {'records':records, 'serializedData': ProductSerializer(Product.objects.all(), many=True).data }
+        context = {'serializedData': ProductSerializer(Product.objects.all(), many=True).data }
         return render(request, 'pages/all-expenditures.html', context)
+    
+class Records(View):
+    def get(self, request): 
+        pageNumber = request.GET.get('page')
+        records = cache.get('records')
+        if not records:
+            # PERSONAL NOTE: It's okay if you don't remember why the code below works. I don't even fully understand it at the time of writing the code
+            results = Product.objects.values('date__date').annotate(Count('date__date')) # dates and number of items bought on that day
+            dates = [result['date__date'] for result in results] # getting only the dates
+            records = []
+            dates.sort(reverse=True) 
+            for date in dates:
+                products = Product.objects.filter(date__date=date)
+                records.append({
+                    'date': date, 
+                    'products': products, 
+                    'total':products.aggregate(total=Sum('price')).get('total')
+                })
+        
+            cache.set('records', records)
+            
+        paginator = Paginator(records, 2)
+        page = paginator.page(pageNumber)
+        try:
+            nextPageLink = f'/components/records/?page={page.next_page_number()}' 
+            print(nextPageLink)
+        except EmptyPage:
+            nextPageLink = None
+        items = page.object_list
+        return render(request, 'components/paginate-expenditures.html', {'records': items, 'nextPageLink': nextPageLink})
+            
+        
+    
+    
+    
     
 # TODO: the delete and edit button functionality
 # TODO: try to write a bash script to start the server and the tailwind build process
@@ -92,7 +114,7 @@ class AcitivityCalendar(View):
     def get(self, request): 
         response = cache.get('activityCalendar')
         if response:
-            # print(response.getvalue())
+            # print(response)
             return response
         
         monthsData = dc.get_activity_in_last_year(Product.objects.all())
@@ -111,23 +133,16 @@ class DeleteProduct(View):
         id = request.POST.get('id')
         Product.objects.get(id=id).delete()
         return redirect(request.META['HTTP_REFERER'])
-from django.core.paginator import Paginator
-from django.core.cache import cache
+
 class Test(View): 
     def get(self, request):
-        monthsData = cache.get('monthsData')
-        if not monthsData:
-            print('was evaluated')
-            monthsData = dc.get_activity_in_last_year(Product.objects.all())
-            cache.set('monthsData', monthsData, None)
-        
         # items = ['item1', 'item2', 'item3', 'item4', 'item5']
         paginator = Paginator(Product.objects.all(), 3)
         # print(paginator.page_range)
-        # print(paginator.num_pages)
-        page1 = paginator.page(1) 
+        print(paginator.num_pages)
+        page1 = paginator.page(9) 
         # print(page1)
-    
+        print(page1.next_page_number())
         # objects = page1.object_list 
         # print(objects)
         return render(request, 'pages/test.html')

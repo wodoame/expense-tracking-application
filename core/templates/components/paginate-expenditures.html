@@ -1,0 +1,8 @@
+{% for record in records %}
+        {% include 'components/records.html' with items=record.products date=record.date total=record.total only %}
+{% endfor %}
+{% if nextPageLink %}
+    <div hx-get="{{nextPageLink}}" hx-trigger="revealed" class="md:col-span-2 my-4" hx-swap="outerHTML">
+        {% include 'components/loader.html' %}
+    </div>
+{% endif %}
