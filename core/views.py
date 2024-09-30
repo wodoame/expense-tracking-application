@@ -75,7 +75,6 @@ class Records(View):
         pageNumber = request.GET.get('page')
         records = cache.get('records')
         if not records:
-            # PERSONAL NOTE: It's okay if you don't remember why the code below works. I don't even fully understand it at the time of writing the code
             results = Product.objects.values('date__date').annotate(Count('date__date')) # dates and number of items bought on that day
             dates = [result['date__date'] for result in results] # getting only the dates
             records = []
@@ -94,7 +93,6 @@ class Records(View):
         page = paginator.page(pageNumber)
         try:
             nextPageLink = f'/components/records/?page={page.next_page_number()}' 
-            print(nextPageLink)
         except EmptyPage:
             nextPageLink = None
         items = page.object_list
@@ -114,7 +112,6 @@ class AcitivityCalendar(View):
     def get(self, request): 
         response = cache.get('activityCalendar')
         if response:
-            # print(response)
             return response
         
         monthsData = dc.get_activity_in_last_year(Product.objects.all())
@@ -129,20 +126,10 @@ class AcitivityCalendar(View):
 
 class DeleteProduct(View): 
     def post(self, request): 
-        print(request.POST)
         id = request.POST.get('id')
         Product.objects.get(id=id).delete()
         return redirect(request.META['HTTP_REFERER'])
 
 class Test(View): 
     def get(self, request):
-        # items = ['item1', 'item2', 'item3', 'item4', 'item5']
-        paginator = Paginator(Product.objects.all(), 3)
-        # print(paginator.page_range)
-        print(paginator.num_pages)
-        page1 = paginator.page(9) 
-        # print(page1)
-        print(page1.next_page_number())
-        # objects = page1.object_list 
-        # print(objects)
         return render(request, 'pages/test.html')
