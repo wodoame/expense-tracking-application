@@ -36,7 +36,6 @@ class DateChecker:
         firstDateOfNextMonth = None
         if month == 12: 
             firstDateOfNextMonth = datetime(year + 1, 1, 1)
-            print(firstDateOfNextMonth)
         else: 
             firstDateOfNextMonth = datetime(year, month + 1, 1)
         lastDateOfCurrentMonth = firstDateOfNextMonth - timedelta(days=1)

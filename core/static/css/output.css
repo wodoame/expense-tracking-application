@@ -720,6 +720,14 @@ video {
   top: 2rem;
 }
 
+.bottom-2 {
+  bottom: 0.5rem;
+}
+
+.bottom-1 {
+  bottom: 0.25rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -1045,24 +1053,16 @@ video {
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
-.grid-cols-\[repeat\(5\2c minmax\(12px\2c 12px\)\)\] {
-  grid-template-columns: repeat(5,minmax(12px,12px));
-}
-
 .grid-cols-\[repeat\(5\2c minmax\(10px\2c 10px\)\)\] {
   grid-template-columns: repeat(5,minmax(10px,10px));
 }
 
-.grid-rows-\[repeat\(7\2c _minmax\(12px\2c _12px\)\)\] {
-  grid-template-rows: repeat(7, minmax(12px, 12px));
-}
-
-.grid-rows-\[repeat\(7\2c minmax\(14px\2c 14px\)\)\] {
-  grid-template-rows: repeat(7,minmax(14px,14px));
-}
-
 .grid-rows-\[repeat\(7\2c _minmax\(10px\2c _10px\)\)\] {
   grid-template-rows: repeat(7, minmax(10px, 10px));
+}
+
+.grid-rows-\[repeat\(7\2c minmax\(10px\2c 10px\)\)\] {
+  grid-template-rows: repeat(7,minmax(10px,10px));
 }
 
 .flex-col {
@@ -2131,4 +2131,20 @@ body{
 
 .\[\&\>\*\]\:font-bold>* {
   font-weight: 700;
+}
+
+.\[\&\>div\>span\]\:relative>div>span {
+  position: relative;
+}
+
+.\[\&\>div\>span\]\:bottom-\[6px\]>div>span {
+  bottom: 6px;
+}
+
+.\[\&\>span\]\:relative>span {
+  position: relative;
+}
+
+.\[\&\>span\]\:bottom-\[6px\]>span {
+  bottom: 6px;
 }

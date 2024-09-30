@@ -88,13 +88,21 @@ class AllExpenditures(View):
 # .aggregate() is used to perform some calculations across the whole queryset
 
 class AcitivityCalendar(View): 
+    # not essential to be recomputing this view everytime 
     def get(self, request): 
-        # this is an expensive operation an it will be cached in the future
+        response = cache.get('activityCalendar')
+        if response:
+            # print(response.getvalue())
+            return response
+        
         monthsData = dc.get_activity_in_last_year(Product.objects.all())
         context = {
             'monthsData': monthsData
         }
-        return render(request, 'components/activityCalendar.html', context)
+        
+        response = render(request, 'components/activityCalendar.html', context)
+        cache.set('activityCalendar', response)
+        return response 
 
 
 class DeleteProduct(View): 
@@ -103,10 +111,23 @@ class DeleteProduct(View):
         id = request.POST.get('id')
         Product.objects.get(id=id).delete()
         return redirect(request.META['HTTP_REFERER'])
-
+from django.core.paginator import Paginator
+from django.core.cache import cache
 class Test(View): 
-    def get(self, request): 
-        products = Product.objects.all()
-        data = dc.get_activity_in_last_year(products)
-        # print(data)
+    def get(self, request):
+        monthsData = cache.get('monthsData')
+        if not monthsData:
+            print('was evaluated')
+            monthsData = dc.get_activity_in_last_year(Product.objects.all())
+            cache.set('monthsData', monthsData, None)
+        
+        # items = ['item1', 'item2', 'item3', 'item4', 'item5']
+        paginator = Paginator(Product.objects.all(), 3)
+        # print(paginator.page_range)
+        # print(paginator.num_pages)
+        page1 = paginator.page(1) 
+        # print(page1)
+    
+        # objects = page1.object_list 
+        # print(objects)
         return render(request, 'pages/test.html')
