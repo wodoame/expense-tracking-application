@@ -22,7 +22,8 @@ urlpatterns = [
     path('', core_views.RedirectView.as_view()),
     path('dashboard/', core_views.Dashboard.as_view(), name='dashboard'),
     path('all-expenditures/', core_views.AllExpenditures.as_view(), name='all-expenditures'),
-    path('components/activityCalendar/', core_views.AcitivityCalendar.as_view()),
+    path('components/activityCalendar/', core_views.AcitivityCalendar.as_view()), 
+    path('components/records/', core_views.Records.as_view()), 
     path('delete-product/', core_views.DeleteProduct.as_view()),
     path('test/', core_views.Test.as_view()),
 ]
