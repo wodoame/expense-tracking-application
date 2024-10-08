@@ -1,11 +1,10 @@
 const products: Product[] = JSON.parse(document.getElementById('products').textContent); 
-const product = products[0]; 
 
 const getProduct = (id: string)=>{
     for(const product of products){
         if(product.id == +id){
-        console.log(product);
-        return product;
+         console.log(product);
+            return product;
         }
     }
 };
@@ -18,7 +17,7 @@ const setDetail = (id: string, value: string)=>{
 
 const showDetails = (e: Event)=>{
     e.stopPropagation();
-    const productId = (e.currentTarget as HTMLElement).id;
+    const productId = (<HTMLElement>e.currentTarget).id;
     const product = getProduct(productId);
     setDetail('product-name', product.name); 
     setDetail('product-price', `GHS ${product.price.toFixed(2)}`); 
@@ -28,12 +27,11 @@ const showDetails = (e: Event)=>{
 }
 
 const editProduct = (e: Event)=>{
-    // e.stopPropagation(); 
+   e.stopPropagation();
 }; 
 
 const deleteProduct = (e: Event)=>{
     e.stopPropagation();
-
     const productId = (<HTMLElement>(<HTMLElement>e.currentTarget).parentNode.parentNode.parentNode).id;
     console.log(productId);
     const product = getProduct(productId);

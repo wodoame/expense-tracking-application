@@ -1,4 +1,5 @@
 {% extends 'pages/base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -11,95 +12,14 @@
       {% endblock %}
   </div>
 
-  {% if successful %}
-    {% include 'components/toast.html' %}
-  {% endif %}
+{% if successful %}
+  {% include 'components/toast.html' %}
+{% endif %}
   
   <!-- removed the only keyword from the include tag to allow csrf_token to be passed down to it -->
   {% include 'components/addProductModal.html' with id='add-product-modal' %}
 
-  <script>
-    let currentId
-    
-    // this function called indirectly to toggle a specific modal
-    const toggle = (e, id)=>{
-      e.stopPropagation(); // stop other elements from retoggling the modal
-      currentId = id
-      console.log('currentId', id);
-      const modal = document.getElementById(id);
-      const body = document.body;
-      const animatedBackdrop = document.getElementById('animated-backdrop');
-        // console.log('toggling ...');
-        modal.classList.toggle('move'); 
-        animatedBackdrop.classList.toggle('hidden')
-        body.classList.toggle('overflow-hidden')
-      }
-
-
-      // closes the active modal when outside of it has been clicked
-      const handleClickOutside = (e)=>{
-          const modal = document.getElementById(currentId);
-          if(e.target == modal){
-             toggle(e, currentId);
-          }
-      };
-      
-      // closes the activemodal when the close button has been clicked
-      const closeModal = (e)=>{
-        toggle(e, currentId);
-      }
-
-      const openAddProductModal = (e)=>{
-        toggle(e, 'add-product-modal');
-      }
-  </script>
-
-  <script>
-           
-    const products = JSON.parse(document.getElementById('products').textContent); 
-
-    const getProduct = (id)=>{
-      for(const product of products){
-         if(product.id == id){
-            console.log(product);
-            return product;
-         }
-      }
-    };
-    
-    // instead of the function below if it becomes necessay (eg. if the UI needs to be dynamic ) I will use string literals to generate html and insert them 
-    // into the DOM using .insertAdjacentHTML() 
-    const setDetail = (id, value)=>{
-       document.getElementById(id).textContent = value;
-    };
-
-    const showDetails = (e)=>{
-       e.stopPropagation();
-       const productId = e.currentTarget.id;
-       const product = getProduct(productId);
-       setDetail('product-name', product.name); 
-       setDetail('product-price', `GHS ${product.price.toFixed(2)}`); 
-       setDetail('product-description', product.description || 'No description');
-       // document.getElementById('product-name')
-       toggle(e, 'show-details-modal');
-    }
-
-    const editProduct = (e)=>{
-     toggle(e)
-     // e.stopPropagation();
-    }; 
-
-    const deleteProduct = (e)=>{
-     e.stopPropagation();
-     const productId = e.currentTarget.parentNode.parentNode.parentNode.id;
-     console.log(productId);
-     const product = getProduct(productId);
-     setDetail('delete-product-name', product.name);
-     setDetail('delete-product-price', `GHS ${product.price.toFixed(2)}`); 
-     setDetail('delete-product-description', product.description || 'No description');
-     document.getElementById('delete-product-id').value = productId;
-     toggle(e, 'delete-product-modal') 
-    }; 
-
-   </script>
+  <script src="{% static 'js/modal-control.js' %}"></script>
+ <script src="{% static 'js/toast.js' %}"></script>
+  <script src="{% static 'js/manage-product.js' %}"></script>
 {% endblock %}

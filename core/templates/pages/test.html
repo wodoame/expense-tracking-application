@@ -1,11 +1,6 @@
 {% extends 'components/layout.html' %}
 
 {% block main %}
-   <button x-data @click="openModal" class="btn">click me</button>
-   {% include 'components/baseModal.html' with id='basic-modal' only %}
-   <script>
-        const openModal = (e)=>{
-          toggle(e, 'basic-modal');
-        };
-   </script>
+<script type="application/json" id="products">{}</script>
+   <button x-data="toast" @click="close" class="btn">click me</button>
 {% endblock %}

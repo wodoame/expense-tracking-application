@@ -1,6 +1,5 @@
 "use strict";
 const products = JSON.parse(document.getElementById('products').textContent);
-const product = products[0];
 const getProduct = (id) => {
     for (const product of products) {
         if (product.id == +id) {
@@ -25,7 +24,7 @@ const showDetails = (e) => {
     toggle(e, 'show-details-modal');
 };
 const editProduct = (e) => {
-    // e.stopPropagation(); 
+    e.stopPropagation();
 };
 const deleteProduct = (e) => {
     e.stopPropagation();

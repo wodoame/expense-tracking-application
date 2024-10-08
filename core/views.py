@@ -91,10 +91,9 @@ class Records(View):
             
         paginator = Paginator(records, 2)
         page = paginator.page(pageNumber)
-        try:
+        nextPageLink = None
+        if page.has_next():
             nextPageLink = f'/components/records/?page={page.next_page_number()}' 
-        except EmptyPage:
-            nextPageLink = None
         items = page.object_list
         return render(request, 'components/paginate-expenditures.html', {'records': items, 'nextPageLink': nextPageLink})
             

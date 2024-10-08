@@ -871,6 +871,10 @@ video {
   display: none;
 }
 
+.h-12 {
+  height: 3rem;
+}
+
 .h-3 {
   height: 0.75rem;
 }
@@ -897,6 +901,10 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-16 {
+  height: 4rem;
 }
 
 .max-h-full {
