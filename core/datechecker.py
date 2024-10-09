@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
-from django.db.models import Sum
+from django.db.models import Sum, Q
+from .models import Product
 class DateChecker:
     @staticmethod
     def get_week(date):
@@ -61,8 +62,14 @@ class DateChecker:
         lastDateOfMonth = firstDateOfNextMonth - timedelta(days=1)
         lastDayOfMonth = lastDateOfMonth.day
         ratios = {}
+        # loop over every day in the month
         for day in range(1, lastDayOfMonth + 1): 
-            total = products.filter(date__day=day, date__month=month,  date__year=year).aggregate(total=Sum('price', default=0)).get('total')
+            total = 0
+            for product in products: 
+                if (product.date.year, product.date.month, product.date.day) == (year, month, day):
+                    total += product.price
+                    # for better efficiency products which have already used for calculations should be removed somehow
+                    
             ratio = None
             if total == 0: 
                 ratio = 0
@@ -80,17 +87,19 @@ class DateChecker:
         return ratios 
     
     @staticmethod
-    def get_activity_in_last_year(products):
+    def get_activity_in_last_year():
         activity = []
         today = datetime.today()
         month = today.month 
         year = today.year
+        products = list(Product.objects.filter(Q(date__year=year)| Q(date__year=year - 1)))
         for i in range(12):
             # check if we've gone to the previous year
             if month == 0:
                 month = 12 
                 year -= 1
             data = DateChecker.get_calendar_data(year, month)
+            # ratios = {}
             ratios = DateChecker.get_color_ratios(year, month, products)
             activity.append(
                 {

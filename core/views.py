@@ -113,7 +113,7 @@ class AcitivityCalendar(View):
         if response:
             return response
         
-        monthsData = dc.get_activity_in_last_year(Product.objects.all())
+        monthsData = dc.get_activity_in_last_year()
         context = {
             'monthsData': monthsData
         }
