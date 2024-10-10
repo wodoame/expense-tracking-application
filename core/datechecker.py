@@ -99,7 +99,6 @@ class DateChecker:
                 month = 12 
                 year -= 1
             data = DateChecker.get_calendar_data(year, month)
-            # ratios = {}
             ratios = DateChecker.get_color_ratios(year, month, products)
             activity.append(
                 {

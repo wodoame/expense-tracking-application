@@ -568,44 +568,6 @@ video {
   }
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  -moz-column-gap: 0.5rem;
-       column-gap: 0.5rem;
-  border-radius: 9999px;
-  border-width: 1px;
-  border-color: transparent;
-  --tw-bg-opacity: 1;
-  background-color: rgb(37 99 235 / var(--tw-bg-opacity));
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.btn:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(29 78 216 / var(--tw-bg-opacity));
-}
-
-.btn:focus {
-  --tw-bg-opacity: 1;
-  background-color: rgb(29 78 216 / var(--tw-bg-opacity));
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-}
-
-.btn:disabled {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
 .input{
   /* @apply border border-gray-300 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white; */
   display: block;
