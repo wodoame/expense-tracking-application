@@ -41,6 +41,7 @@ class Dashboard(View):
             'serializedData':serializedData
             }     
         
+        print('happened before crash')
         
         return render(request, 'pages/dashboard.html', context)
     

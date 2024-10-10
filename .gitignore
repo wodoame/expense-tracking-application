@@ -4,3 +4,5 @@ db.sqlite3
 ideas/
 etavenv/
 *.pyc
+staticfiles/
+error.log
