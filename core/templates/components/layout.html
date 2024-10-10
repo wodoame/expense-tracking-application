@@ -12,8 +12,10 @@
       {% endblock %}
   </div>
 
-{% if successful %}
-  {% include 'components/toast.html' %}
+{% if messages %}
+ {% for message in messages %}
+  {% include 'components/toast.html' with message=message only %}
+ {% endfor %}
 {% endif %}
   
   <!-- removed the only keyword from the include tag to allow csrf_token to be passed down to it -->

@@ -2,5 +2,7 @@
 
 {% block main %}
 <script type="application/json" id="products">{}</script>
-{% include 'components/toast-new.html' %}
+{% for message in messages %}
+    {% include 'components/toast.html' with message=message %}
+{% endfor %}
 {% endblock %}

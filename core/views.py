@@ -9,13 +9,14 @@ from django.db.models import Count, Sum
 from .serializers import ProductSerializer
 from django.core.paginator import Paginator, EmptyPage 
 from django.core.cache import cache
+from django.contrib import messages
 
 class RedirectView(View):
     def get(self, request): 
         return redirect('dashboard')
 
 class Dashboard(View): 
-    def get(self, request, **kwargs):
+    def get(self, request):
         products = Product.objects.all()
         dateToday = datetime.today().date()
         dateYesterday = datetime.today().date() - timedelta(days=1)
@@ -35,14 +36,10 @@ class Dashboard(View):
             'dateYesterday': dateYesterday,
             'todayTotal': self.get_total_cost(today), 
             'yesterdayTotal': self.get_total_cost(yesterday), 
-            'successful': kwargs.get('successful'),
             'spentThisWeek': spentThisWeek,
             'spentLastWeek': spentLastWeek,
             'serializedData':serializedData
             }     
-        
-        print('happened before crash')
-        
         return render(request, 'pages/dashboard.html', context)
     
     def post(self, request):
@@ -51,15 +48,14 @@ class Dashboard(View):
         pesewas = request.POST.get('pesewas')
         price = float(cedis + '.' + pesewas)
         if form.is_valid():
-            print(form.cleaned_data)
             product = form.save(commit=False)
             product.price = price
             form.save()
         else: 
             print(form.errors.get_json_data())
-        return self.get(request, successful=True)
+        messages.success(request, 'Product added successfully')
+        return self.get(request)
     
-    # I could use aggregation instead (But this works already so no problem)
     def get_total_cost(self, items):
         totalCost = 0
         for item in items:
@@ -103,7 +99,7 @@ class Records(View):
     
     
     
-# TODO: the delete and edit button functionality
+# TODO: The Edit button functionality
 # TODO: try to write a bash script to start the server and the tailwind build process
 # .aggregate() is used to perform some calculations across the whole queryset
 
@@ -127,9 +123,14 @@ class AcitivityCalendar(View):
 class DeleteProduct(View): 
     def post(self, request): 
         id = request.POST.get('id')
-        Product.objects.get(id=id).delete()
+        try:
+            Product.objects.get(id=id).delete()
+            messages.success(request, 'Product deleted successfully')
+        except Product.DoesNotExist:
+            messages.error(request, 'Product already deleted') 
         return redirect(request.META['HTTP_REFERER'])
 
 class Test(View): 
     def get(self, request):
+        messages.success(request, 'Successfuly action')
         return render(request, 'pages/test.html')
