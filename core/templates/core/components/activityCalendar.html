@@ -1,0 +1,19 @@
+<div class="flex justify-center">
+    <div class="inline-flex border items-center mx-auto p-4 gap-4 overflow-x-auto rounded-md">
+        <div>
+            <h3 class="font-bold text-center mb-2 ">Day</h3>
+            <div class="grid [&>*]:text-sm [&>div>span]:relative [&>div>span]:bottom-[6px]  [&>*]:font-bold grid-rows-[repeat(7,minmax(10px,10px))] gap-1 grid-flow-col grid-cols-1">
+                <div></div>
+                <div> <span>Mon</span></div>
+                <div></div>
+                <div><span>Wed</span></div>
+                <div></div>
+                <div><span>Fri</span></div>
+                <div></div>
+            </div>
+        </div>
+        {% for month in monthsData reversed %}
+            {% include 'core/components/miniCalendar.html' with data=month.data ratios=month.ratios %}
+        {% endfor %}
+    </div>
+</div>

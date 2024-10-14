@@ -1,0 +1,22 @@
+{% extends 'core/pages/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% include 'core/components/navbar.html' %}
+    {% include 'core/components/sidebar.html' %}
+    
+    <div class="p-4 sm:ml-64 mt-16">
+        {% block main %}
+            <!-- main content goes here -->
+        {% endblock %}
+    </div>
+
+    {% include 'core/components/addProductModal.html' with id="add-product-modal" %}
+
+   <!-- <div id="animated-backdrop"></div> -->
+  <div class="bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
+
+
+ <script src="{% static 'js/modal-control.js' %}"></script>
+ <script src="{% static 'js/manage-product.js' %}"></script>
+{% endblock %}

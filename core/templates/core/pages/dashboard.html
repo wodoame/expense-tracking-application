@@ -1,0 +1,45 @@
+{% extends 'core/pages/layout.html' %}
+{% block main %}
+<h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Dashboard</h5>
+
+<!-- begin summary -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
+  <!-- begin card -->
+  <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Total spent this week</p>
+            <p class="text-2xl font-bold">GHS {{totalSpentThisWeek|floatformat:2}}</p>
+          </a>
+         <!-- end card  -->
+         <!-- begin card -->
+         <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Total spent last week</p>
+            <p class="text-2xl font-bold">GHS {{totalSpentLastWeek|floatformat:2}}</p>
+         </a>
+         <!-- end card  -->
+         <!-- begin card -->
+         <a href="#" class="block max-w-sm p-6 bg-whit border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <p class="font-normal text-gray-700 dark:text-gray-400 py-1">Highest weekly spending</p>
+            <p class="text-2xl font-bold">GHS 500.40</p>
+          </a>
+          <!-- end card  -->
+        </div>
+        <!-- end summary  -->
+        
+        <!-- begin activity -->
+<div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
+  <!-- today  -->
+   {% include 'core/components/records.html' with products=today date=dateToday total=todayTotal only %}
+   
+   <!-- yesterday -->
+   {% include 'core/components/records.html' with products=yesterday date=dateYesterday total=yesterdayTotal only %}
+
+</div> 
+<!-- activity -->
+ 
+<div class="my-12" hx-get="/components/activityCalendar/" hx-trigger="load">
+    <div>
+        <span class="loader"></span>
+     </div> 
+</div>
+
+{% endblock %}

@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+    --sidebar-width:16rem; 
+}
+
+
+@font-face {
+  font-family: "Poppins-Regular";
+  src: url('../fonts/Poppins-Regular.ttf');
+}
+/*
+
+@font-face {
+    font-family: 'Poppins-Medium';
+    src: url('./../fonts/Poppins-Medium.ttf');
+}
+
+@font-face {
+    font-family: "Poppins-Light";
+    src: url('../fonts/Poppins-Light.ttf');
+}
+@font-face {
+    font-family: "Poppins-Bold";
+    src: url('../fonts/Poppins-Bold.ttf');
+} */
+
+body{
+    font-family: 'Poppins-Regular';
+    @apply text-sm md:text-base;
+}
+
+/* loader styles */
+.loader {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: block;
+    margin:15px auto;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+  .loader::after,
+  .loader::before {
+    content: '';  
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #FF3D00;
+    width: 16px;
+    height: 16px;
+    transform: translate(-50%, 50%);
+    border-radius: 50%;
+  }
+  .loader::before {
+    left: auto;
+    right: 0;
+    @apply bg-indigo-500;
+    transform: translate(50%, 100%);
+  }
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+
+@layer components{
+    .btn{
+        @apply py-3 px-4 
+        inline-flex items-center gap-x-2
+        text-sm font-medium rounded-full border border-transparent
+        bg-blue-600 text-white hover:bg-blue-700 focus:outline-none
+        focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none;
+    }
+
+    .input{
+        /* @apply border border-gray-300 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white; */
+        @apply bg-gray-100 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full font-medium p-4 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white;
+    }
+
+}
+
+[x-cloak] { display: none !important; }
+[data-placement="bottom"]{
+    @apply !items-end md:!items-center;
+}
+
+.move{
+    @apply transform-none;
+}
+
+#navbar{
+  @apply w-full;
+}
+
+@media(min-width:768px){
+  #navbar{
+    width: calc(100% - var(--sidebar-width)); 
+    left: var(--sidebar-width);
+  }
+}
+
+#separator-sidebar span{
+    @apply font-bold;
+}
+
+
+.activity li{
+    @apply flex justify-between p-2 items-center; 
+}
+
+.activity .heading{
+    @apply text-lg font-bold dark:text-white;
+}
+
+.add-product-form label{
+    @apply font-bold;
+}
