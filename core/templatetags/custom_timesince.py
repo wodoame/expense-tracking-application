@@ -31,3 +31,13 @@ def timeOnly(value, arg=None):
         parsedDatetime = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return parsedDatetime.time()
     return value.time()
+
+@register.filter
+def dateOnly(value, arg=None):
+    """
+    Converts a string date to datetime.time object.
+    """
+    if isinstance(value, str): 
+        parsedDatetime = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return parsedDatetime.date().strftime('%A, %b %d, %Y')
+    return value.strftime('%A, %b %d, %Y')

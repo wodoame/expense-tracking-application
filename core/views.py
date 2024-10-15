@@ -93,8 +93,6 @@ class AllExpenditures(View):
                 'total':dc.get_total(products)
             })
             
-        print(records)
-        
         context = {
          'products':serializer.data,
          'records': records
