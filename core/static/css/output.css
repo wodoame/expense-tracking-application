@@ -1604,22 +1604,6 @@ video {
   src: url('../fonts/Poppins-Regular.ttf');
 }
 
-/*
-
-@font-face {
-    font-family: 'Poppins-Medium';
-    src: url('./../fonts/Poppins-Medium.ttf');
-}
-
-@font-face {
-    font-family: "Poppins-Light";
-    src: url('../fonts/Poppins-Light.ttf');
-}
-@font-face {
-    font-family: "Poppins-Bold";
-    src: url('../fonts/Poppins-Bold.ttf');
-} */
-
 body{
   font-family: 'Poppins-Regular';
   font-size: 0.875rem;
