@@ -1,0 +1,36 @@
+{% extends 'core/components/baseModal.html' %}
+{% block title %}Delete Product{% endblock %}
+{% block modalBody %}
+<form method="POST" action="/delete-product/" id="delete-product-form">
+    {% csrf_token %}
+    <div class="p-4">
+        <div>
+            <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">
+               Name
+            </div>
+            <div class="px-2 text-sm text-start" id="delete-product-name"></div>
+        </div>
+ 
+        <div>
+            <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">
+               Price
+            </div>
+            <div id="delete-product-price" class="px-2 text-sm text-start"></div>
+        </div>
+ 
+        <div>
+            <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">
+               Description
+            </div>
+            <div id="delete-product-description" class="px-2 text-sm text-start"></div>
+        </div>
+ 
+        <input type="hidden" name="id" id="delete-product-id">
+    </div>
+    <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+        <button @click="showFormLoader('delete-product-form')" class="text-white bg-blue-700 w-full rounded-full hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Confirm</button>
+        <button x-data @click="closeModal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium w-full rounded-full text-gray-900 focus:outline-none bg-white  border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
+    </div>
+</form>
+
+{% endblock %}

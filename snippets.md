@@ -41,3 +41,36 @@ The key points are:
 - We then convert the days value to an integer and append the "day(s) ago" text.
 
 This allows you to easily modify the output of the `timesince` filter to suit your specific needs.
+
+
+The datetime string `2024-10-15T08:52:01.380160Z` is in the **ISO 8601** format. This format is widely used for representing date and time in a standardized way. Here's a breakdown of the components:
+
+- `2024-10-15`: The date part in `YYYY-MM-DD` format.
+- `T`: The separator between the date and time parts.
+- `08:52:01.380160`: The time part in `HH:MM:SS.ssssss` format, where `ssssss` represents fractional seconds.
+- `Z`: Indicates that the time is in UTC (Coordinated Universal Time).
+
+This format is commonly used in APIs and databases because it is unambiguous and easily sortable.
+
+To extract only the time from the ISO 8601 datetime string `2024-10-15T08:52:01.380160Z`, you can use Python's `datetime` module. Here's how you can do it:
+
+```python
+from datetime import datetime
+
+iso_datetime_str = "2024-10-15T08:52:01.380160Z"
+parsed_datetime = datetime.fromisoformat(iso_datetime_str.replace("Z", "+00:00"))
+
+# Extract the time part
+time_only = parsed_datetime.time()
+
+print(time_only)
+```
+
+In this example:
+- The `datetime.fromisoformat` method parses the ISO 8601 string into a `datetime` object.
+- The `time()` method extracts the time part from the `datetime` object.
+
+The output will be:
+```
+08:52:01.380160
+```

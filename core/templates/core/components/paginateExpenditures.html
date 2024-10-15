@@ -1,0 +1,9 @@
+{% for item in items %}
+  {% include 'core/components/records.html' with products=item.products date=item.date total=item.total  %}
+{% endfor %}
+
+{% if nextPageNumber %}
+<div class="md:col-span-2 my-4" hx-vals='js:{"dates":getDates(), "records":getRecords()}' hx-get="/components/records/?page={{nextPageNumber}}" hx-trigger="revealed" hx-swap="outerHTML">  
+    {% include 'core/components/loader.html' %}
+</div>
+{% endif %}
