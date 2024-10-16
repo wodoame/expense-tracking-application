@@ -25,7 +25,6 @@ urlpatterns = [
     path('all-expenditures/', core_views.AllExpenditures.as_view(), name='all-expenditures'),
     path('components/activityCalendar/', core_views.ActivityCalendar.as_view()), 
     path('components/records/', core_views.Records.as_view()), 
-    path('delete-product/', core_views.DeleteProduct.as_view()),
     # path('signup/', auth_views.SignUp.as_view(), name='signup'),
     # path('complete-signup/', auth_views.CompleteSignUp.as_view(), name='complete-signup'),
     # path('signin/', auth_views.SignIn.as_view(), name='signin'),
