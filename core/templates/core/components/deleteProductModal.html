@@ -1,7 +1,7 @@
 {% extends 'core/components/baseModal.html' %}
 {% block title %}Delete Product{% endblock %}
 {% block modalBody %}
-<form method="POST" action="/delete-product/" id="delete-product-form">
+<form method="POST" action="/dashboard/?delete=1" id="delete-product-form">
     {% csrf_token %}
     <div class="p-4">
         <div>

@@ -44,6 +44,8 @@ class Dashboard(View):
     def post(self, request):
         if request.GET.get('edit'): 
             return self.handle_edit_product(request)
+        if request.GET.get('delete'):
+            return self.handle_delete_product(request)
         return self.handle_add_product(request)
         
     
@@ -65,7 +67,7 @@ class Dashboard(View):
                 print(errors) 
         except Product.DoesNotExist:
             messages.error(request, 'Product has been deleted')
-        return redirect('dashboard')
+        return redirect(request.META.get('HTTP_REFERER'))
     
     def handle_add_product(self, request):
         form = AddProductForm(request.POST)
@@ -80,20 +82,18 @@ class Dashboard(View):
         else: 
             errors = form.errors.get_json_data()
             print(errors)
-        return redirect('dashboard')
-        
-        
-
-class DeleteProduct(View):
-    def post(self, request): 
+        return redirect(request.META.get('HTTP_REFERER'))
+    
+    def handle_delete_product(self, request):
         productId = request.POST.get('id')
         try:
             Product.objects.get(id=productId).delete()
             messages.success(request, 'Product deleted successfully')
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
-        return redirect(request.META['HTTP_REFERER'])
-
+        return redirect(request.META.get('HTTP_REFERER'))
+        
+    
 class ActivityCalendar(View):
     def get(self, request): 
         monthsData = dc.get_activity_in_last_year()
