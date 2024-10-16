@@ -102,6 +102,7 @@ class AllExpenditures(View):
 class Records(View):
     def get(self, request):
         # I'm sending the data through the request instead of calling the database again
+        # A post request will probably be better because the link for the get request is too long
         records = json.loads(request.GET.get('records'))
         pageNumber = request.GET.get('page')
         paginator = Paginator(records, 4)
