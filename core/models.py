@@ -8,7 +8,7 @@ class Category(models.Model):
     
 class Product(models.Model):
     name = models.CharField(max_length=128)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='products', null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='products', null=True, blank=True)
     price = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=255, blank=True)
