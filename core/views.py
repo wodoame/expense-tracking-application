@@ -59,7 +59,6 @@ class Dashboard(View):
 
 class DeleteProduct(View):
     def post(self, request): 
-        print(request.POST)
         productId = request.POST.get('id')
         try:
             Product.objects.get(id=productId).delete()
@@ -100,10 +99,9 @@ class AllExpenditures(View):
         return render(request, 'core/pages/allExpenditures.html', context)
     
 class Records(View):
-    def get(self, request):
+    def post(self, request):
         # I'm sending the data through the request instead of calling the database again
-        # A post request will probably be better because the link for the get request is too long
-        records = json.loads(request.GET.get('records'))
+        records = json.loads(request.POST.get('records'))
         pageNumber = request.GET.get('page')
         paginator = Paginator(records, 4)
         page = paginator.page(pageNumber)

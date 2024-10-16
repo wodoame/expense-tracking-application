@@ -1,0 +1,3 @@
+<div class="md:col-span-2 my-4" hx-vals='js:{"records":getRecords(), "csrfmiddlewaretoken": getCSRFToken()}' hx-post="/components/records/?page={{nextPageNumber|default:1}}" hx-trigger="revealed" hx-swap="outerHTML">  
+    {% include 'core/components/loader.html' %}
+</div>
