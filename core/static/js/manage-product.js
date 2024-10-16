@@ -25,8 +25,23 @@ const showDetails = (e) => {
 };
 const editProduct = (e) => {
     e.stopPropagation();
-    //    const productId = (<HTMLElement>(<HTMLElement>e.currentTarget).parentNode.parentNode.parentNode).id;
-    //    const product = getProduct(productId);
+    const productId = e.currentTarget.parentNode.parentNode.parentNode.id;
+    const product = getProduct(productId);
+    const modal = document.getElementById('edit-product-modal');
+    const nameInput = modal.querySelector('[name=name]');
+    const cedisInput = modal.querySelector('[name=cedis]');
+    const pesewasInput = modal.querySelector('[name=pesewas]');
+    const descriptionInput = modal.querySelector('[name=description]');
+    const idInput = modal.querySelector('[name=id]');
+    const priceParts = product.price.toString().split('.');
+    if (priceParts.length > 1) {
+        pesewasInput.value = priceParts[1];
+    }
+    idInput.value = product.id.toString();
+    cedisInput.value = priceParts[0];
+    nameInput.value = product.name;
+    descriptionInput.value = product.description;
+    toggle(e, 'edit-product-modal');
 };
 const deleteProduct = (e) => {
     e.stopPropagation();

@@ -17,7 +17,6 @@ class RedirectView(View):
 class Dashboard(View):
     def get(self, request):
         products = Product.objects.all() 
-        # print(products.first())
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
         thisWeek = dc.get_week(dateToday)
@@ -43,6 +42,32 @@ class Dashboard(View):
         return render(request, 'core/pages/dashboard.html', context)
     
     def post(self, request):
+        if request.GET.get('edit'): 
+            return self.handle_edit_product(request)
+        return self.handle_add_product(request)
+        
+    
+    def handle_edit_product(self, request):
+        productId = request.POST.get('id')
+        try:
+            instance = Product.objects.get(id=productId)
+            form = AddProductForm(request.POST, instance=instance)
+            cedis = request.POST.get('cedis')
+            pesewas = request.POST.get('pesewas')
+            price = float(cedis + '.' + pesewas)
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.price = price
+                form.save() 
+                messages.success(request, 'Product edited successfully')
+            else: 
+                errors = form.errors.get_json_data()
+                print(errors) 
+        except Product.DoesNotExist:
+            messages.error(request, 'Product has been deleted')
+        return redirect('dashboard')
+    
+    def handle_add_product(self, request):
         form = AddProductForm(request.POST)
         cedis = request.POST.get('cedis')
         pesewas = request.POST.get('pesewas')
@@ -56,6 +81,8 @@ class Dashboard(View):
             errors = form.errors.get_json_data()
             print(errors)
         return redirect('dashboard')
+        
+        
 
 class DeleteProduct(View):
     def post(self, request): 
