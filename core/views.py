@@ -144,8 +144,6 @@ class Records(View):
 
 class Test(View):
     def get(self, request): 
-        result = dc.get_activity_in_last_year()
-        print(result)
-        return render(request, 'core/pages/test.html')
+        return render(request, 'core/components/blank.html')
     
         
