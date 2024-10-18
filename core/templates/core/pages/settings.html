@@ -1,0 +1,42 @@
+{% extends 'core/pages/layout.html' %}
+{% block main %}
+<h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Settings</h5>
+<div class="grid grid-cols-1 gap-y-4">
+    <a href="#" class="block w-full p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <h3 class="p-2 text-xl font-bold tracking-tight border-b text-gray-900 dark:text-white">
+            Appearance
+        </h3>
+        <div class="p-2 flex justify-between">
+            <div class="flex items-center gap-2 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                Theme
+            </div>
+           <span>Light</span>
+        </div>
+    </a>
+    <a href="#" class="block w-full p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <h3 class="p-2 text-xl font-bold tracking-tight border-b text-gray-900 dark:text-white">
+            Account Details
+        </h3>
+        <div class="grid grid-cols-1 gap-2">
+            <div class="p-2 flex justify-between">
+                <div class="flex items-center gap-2 font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Username
+                </div>
+               <span>bmwodoame</span>
+            </div>
+
+            <div class="p-2 flex justify-between">
+                <div class="flex items-center gap-2 font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    Email
+                </div>
+               <span>bmwodoame@gmail.com</span>
+            </div>
+
+        </div>
+    </a>
+
+</div>
+{% endblock %}

@@ -24,9 +24,6 @@ def timesince(value, arg=None):
         return ''
 @register.filter
 def timeOnly(value, arg=None):
-    """
-    Converts a string date to datetime.time object.
-    """
     if isinstance(value, str): 
         parsedDatetime = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return parsedDatetime.time()
@@ -34,9 +31,6 @@ def timeOnly(value, arg=None):
 
 @register.filter
 def dateOnly(value, arg=None):
-    """
-    Converts a string date to datetime.time object.
-    """
     if isinstance(value, str): 
         parsedDatetime = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return parsedDatetime.date().strftime('%A, %b %d, %Y')

@@ -142,6 +142,9 @@ class Records(View):
             }
         return render(request, 'core/components/paginateExpenditures.html', context)
 
+class Settings(View): 
+    def get(self, request):
+        return render(request, 'core/pages/settings.html')
 class Test(View):
     def get(self, request): 
         return render(request, 'core/components/blank.html')
