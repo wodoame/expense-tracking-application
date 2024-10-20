@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from datetime import datetime, timedelta
-from .models import Product
+from .models import Product, Category
 from .datechecker import DateChecker as dc
 from django.core.paginator import Paginator 
 from django.db.models import Count
 from .forms import AddProductForm
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, CategorySerializer
 from django.contrib import messages 
 import json
 
@@ -28,6 +28,7 @@ class Dashboard(View):
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
         serializer = ProductSerializer(products, many=True)
+        cateogorySerializer = CategorySerializer(Category.objects.all(), many=True) 
         context = {
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
@@ -37,7 +38,8 @@ class Dashboard(View):
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
-            'products': serializer.data
+            'products': serializer.data, 
+            'categories': cateogorySerializer.data 
         }
         return render(request, 'core/pages/dashboard.html', context)
     
@@ -70,11 +72,13 @@ class Dashboard(View):
         return redirect(request.META.get('HTTP_REFERER'))
     
     def handle_add_product(self, request):
+        print(request.POST)
         form = AddProductForm(request.POST)
         cedis = request.POST.get('cedis')
         pesewas = request.POST.get('pesewas')
         price = float(cedis + '.' + pesewas)
         if form.is_valid():
+            print(form.cleaned_data)
             product = form.save(commit=False)
             product.price = price
             form.save()
@@ -105,7 +109,9 @@ class ActivityCalendar(View):
 class AllExpenditures(View): 
     def get(self, request):
         products = Product.objects.all()
+        categories = Category.objects.all()
         serializer = ProductSerializer(products, many=True)
+        categorySerializer = CategorySerializer(categories, many=True)
         results = products.values('date__date').annotate(Count('date__date'))
         dates = [result['date__date'] for result in results] # getting only the dates
         dates.sort(reverse=True)
@@ -118,10 +124,11 @@ class AllExpenditures(View):
                 'products': serializer2.data, 
                 'total':dc.get_total(products)
             })
-            
+        
         context = {
          'products':serializer.data,
-         'records': records
+         'records': records, 
+         'categories': categorySerializer.data,
         }
         return render(request, 'core/pages/allExpenditures.html', context)
     
@@ -147,6 +154,10 @@ class Settings(View):
         return render(request, 'core/pages/settings.html')
 class Test(View):
     def get(self, request): 
-        return render(request, 'core/components/blank.html')
+        serializer = CategorySerializer(Category.objects.all(), many=True) 
+        context = {
+            'categories': serializer.data
+        }
+        return render(request, 'core/pages/test.html', context)
     
         

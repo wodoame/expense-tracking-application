@@ -10,7 +10,6 @@
             <!-- main content goes here -->
         {% endblock %}
     </div>
-
     {% include 'core/components/addProductModal.html' with id="add-product-modal" %}
     {% include 'core/components/deleteProductModal.html' with id="delete-product-modal" %}
     {% include 'core/components/showDetailsModal.html' with id="show-details-modal" %}
@@ -20,7 +19,9 @@
   <div class="bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
  
 {{products|json_script:"products"}}
+{{categories|json_script:'categories'}}
  <script src="{% static 'js/modal-control.js' %}"></script>
  <script src="{% static 'js/manage-product.js' %}"></script>
  <script src="{% static 'js/toast.js' %}"></script>
+ <script src="{% static 'js/objectSelect.js' %}"></script>
 {% endblock %}

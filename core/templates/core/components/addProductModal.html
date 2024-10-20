@@ -8,6 +8,12 @@
               <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
               <input type="text" name="name" id="name" class="input" placeholder="Type product name" required>
           </div>
+
+          <div class="col-span-2">
+            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+            {% include 'core/components/objectSelect.html' with name='category' listId='categories' only  %}
+         </div>
+          
           <div class="col-span-1">
               <label for="cedis" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cedis</label>
               <input type="number" name="cedis" id="cedis" class="input" placeholder="GHS 20" required>
@@ -16,7 +22,7 @@
               <label for="pesewas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pesewas</label>
               <input type="number" name="pesewas" id="pesawas" class="input" placeholder="20" value="00" required="">
           </div>
-         
+           
           
           <div class="col-span-2">
               <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Description</label>
