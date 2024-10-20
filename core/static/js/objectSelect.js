@@ -1,5 +1,5 @@
 "use strict";
-let objectSelect;
+let setCategory;
 (function () {
     let listId;
     let objects = [];
@@ -10,7 +10,7 @@ let objectSelect;
         Alpine.data('objectSelect', () => ({
             open: false,
             listId: listId,
-            objects: objects,
+            objects: objects, // represent filtered results
             original: objects,
             isFocused: false,
             selected: selected,
@@ -19,22 +19,23 @@ let objectSelect;
             filter(e) {
                 this.objects = this.original.filter((obj) => obj.name.toLowerCase().includes(e.currentTarget.value.toLowerCase()));
             },
-            setCategory(category) {
-                // TODO: some products don't have categories so I can't actually select one for them. Will find a workaround later.
-                if (category) {
-                    this.selected = category;
-                }
-                this.open = false;
-            },
             setup() {
-                const items = JSON.parse(document.getElementById(this.listId).textContent);
+                const items = [{ id: null, name: 'None' }, ...JSON.parse(document.getElementById(this.listId).textContent)]; // added a default selected to be None
                 const editProductForm = document.getElementById('edit-product-form');
                 this.selected = items[0];
                 this.original = items;
                 this.objects = items;
-                console.log(this);
                 if (editProductForm.contains(this.self))
-                    objectSelect = this;
+                    setCategory = (category) => {
+                        // TODO: some products don't have categories so I can't actually select one for them. Will find a workaround later.
+                        if (category) {
+                            this.selected = category;
+                        }
+                        else {
+                            this.selected = { id: null, name: 'None' };
+                        }
+                        this.open = false;
+                    };
                 // I tried returning 'this.setCategory' to a global variable but I was not able to access 'this' object when I called the variable
                 // I decided to return 'this' itself and this fixed that issue
             }

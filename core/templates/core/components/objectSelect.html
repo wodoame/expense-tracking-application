@@ -1,11 +1,11 @@
 <div class="relative" x-data="objectSelect" x-init="submitProperty='{{submitProperty|default:'id'}}';listId='{{listId}}';self=$el;" x-effect="setup" @click.outside="open=false;selected={...selected};objects={...original};">
     <div>
-      <button type="button" :class="{'outline-indigo-500 outline outline-2': isFocused }" class="p-4 bg-gray-100 rounded-md flex items-center w-full">
+      <button type="button" :class="{'outline-none border-blue-500 transition-colors duration-100;': isFocused }" class="p-4 bg-white border-2 border-gray-200 rounded-md flex items-center w-full">
         <div class="flex-grow">
           <input type="hidden" name="{{name}}" :value="selected[submitProperty]">
-          <input type="text" @input="filter" @focus="isFocused=true; open=true;" @blur="isFocused=false" class="outline-none bg-transparent text-sm font-medium w-full" :value="selected.name">
+          <input type="text" x-ref="filterInput" @input="filter" @focus="isFocused=true; open=true;" @blur="isFocused=false" class="outline-none bg-transparent text-sm font-medium w-full" :value="selected.name">
         </div>
-        <div>
+        <div @click="$refs.filterInput.focus()">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="stroke-gray-400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </div>
       </button>

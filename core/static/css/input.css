@@ -66,9 +66,12 @@ body{
         focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none;
     }
 
-    .input{
-        /* @apply border border-gray-300 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white; */
+    /* .input{
         @apply bg-gray-100 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full font-medium p-4 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white;
+    } */
+
+    .input{
+      @apply w-full p-4 text-gray-700 bg-white border-2 text-sm font-medium rounded-md border-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-100;
     }
 
 }

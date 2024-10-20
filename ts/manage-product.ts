@@ -46,7 +46,7 @@ const editProduct = (e: Event)=>{
        categoryInput.value = product.category.id.toString();
    }
    idInput.value = product.id.toString();
-   objectSelect.setCategory(product.category);
+   setCategory(product.category);
    cedisInput.value = priceParts[0];
    nameInput.value = product.name; 
    descriptionInput.value = product.description; 
