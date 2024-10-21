@@ -1,23 +1,28 @@
 "use strict";
 let setCategory;
 (function () {
-    let listId;
-    let objects = [];
-    let selected = {};
-    let submitProperty;
-    let self;
     document.addEventListener('alpine:init', () => {
         Alpine.data('objectSelect', () => ({
             open: false,
-            listId: listId,
-            objects: objects, // represent filtered results
-            original: objects,
+            listId: '',
+            objects: [], // represent filtered results
+            original: [],
             isFocused: false,
-            selected: selected,
-            submitProperty: submitProperty,
-            self: self,
+            selected: {},
+            submitProperty: '',
+            self: undefined,
+            newSearch: '',
+            newCategory: {},
             filter(e) {
                 this.objects = this.original.filter((obj) => obj.name.toLowerCase().includes(e.currentTarget.value.toLowerCase()));
+                if (this.objects.length == 0) {
+                    this.newSearch = e.currentTarget.value;
+                }
+            },
+            select(selected) {
+                this.selected = selected;
+                this.open = false;
+                this.objects = [...this.original];
             },
             setup() {
                 const items = [{ id: null, name: 'None' }, ...JSON.parse(document.getElementById(this.listId).textContent)]; // added a default selected to be None

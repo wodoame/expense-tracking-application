@@ -50,12 +50,21 @@ class Dashboard(View):
             return self.handle_delete_product(request)
         return self.handle_add_product(request)
         
+    def check_category(self, request):
+        categoryId = request.POST.get('category')
+        if int(categoryId) == 0:
+            category = Category.objects.create(name=request.POST.get('newCategoryName'))
+            postDict = request.POST.dict()
+            postDict['category'] = category.id
+            return postDict
+        return request.POST
     
+        
     def handle_edit_product(self, request):
         productId = request.POST.get('id')
         try:
             instance = Product.objects.get(id=productId)
-            form = AddProductForm(request.POST, instance=instance)
+            form = AddProductForm(self.check_category(request), instance=instance)
             cedis = request.POST.get('cedis')
             pesewas = request.POST.get('pesewas')
             price = float(cedis + '.' + pesewas)
@@ -71,9 +80,9 @@ class Dashboard(View):
             messages.error(request, 'Product has been deleted')
         return redirect(request.META.get('HTTP_REFERER'))
     
-    def handle_add_product(self, request):
-        print(request.POST)
-        form = AddProductForm(request.POST)
+    from django.http import HttpRequest
+    def handle_add_product(self, request: HttpRequest):
+        form = AddProductForm(self.check_category(request))
         cedis = request.POST.get('cedis')
         pesewas = request.POST.get('pesewas')
         price = float(cedis + '.' + pesewas)

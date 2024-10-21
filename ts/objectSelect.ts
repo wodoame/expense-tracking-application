@@ -1,23 +1,28 @@
 let setCategory: any;
 (function(){
-    let listId: string;
-    let objects: any[] = [];
-    let selected = {}; 
-    let submitProperty: string; 
-    let self:HTMLElement;
     document.addEventListener('alpine:init', ()=>{
       Alpine.data('objectSelect', ()=>({
         open:false, 
-        listId:listId,
-        objects: objects, // represent filtered results
-        original: objects,
+        listId:'',
+        objects: [], // represent filtered results
+        original: [],
         isFocused: false, 
-        selected: selected,
-        submitProperty: submitProperty, 
-        self:self,
+        selected: {},
+        submitProperty: '', 
+        self:undefined,
+        newSearch:'', 
+        newCategory: {},
         filter(e:Event){
             this.objects = this.original.filter((obj)=> (<string>obj.name).toLowerCase().includes((<HTMLInputElement>e.currentTarget).value.toLowerCase())); 
+            if(this.objects.length == 0){
+               this.newSearch = (<HTMLInputElement>e.currentTarget).value; 
+            }
         }, 
+        select(selected:object){
+          this.selected = selected; 
+          this.open = false; 
+          this.objects = [...this.original]
+        },
         setup(){
           const items =  [{id: null, name: 'None'}, ...JSON.parse(document.getElementById(this.listId).textContent)]; // added a default selected to be None
           const editProductForm = document.getElementById('edit-product-form');
