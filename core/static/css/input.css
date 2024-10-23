@@ -14,7 +14,7 @@
 
 body{
     font-family: 'Poppins-Regular';
-    @apply text-sm md:text-base;
+    @apply text-sm md:text-base dark:text-gray-500;
 }
 
 /* loader styles */
@@ -77,9 +77,6 @@ body{
 }
 
 [x-cloak] { display: none !important; }
-[data-placement="bottom"]{
-    @apply !items-end md:!items-center;
-}
 
 .move{
     @apply transform-none;
