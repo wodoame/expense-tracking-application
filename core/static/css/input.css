@@ -14,7 +14,7 @@
 
 body{
     font-family: 'Poppins-Regular';
-    @apply text-sm md:text-base dark:text-gray-500;
+    @apply text-sm md:text-base dark:text-gray-400;
 }
 
 /* loader styles */
@@ -71,7 +71,7 @@ body{
     } */
 
     .input{
-      @apply w-full p-4 text-gray-700 bg-white border-2 text-sm font-medium rounded-md border-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-100;
+      @apply w-full p-4 text-gray-700 bg-white dark:bg-transparent dark:focus:border-blue-500 dark:text-gray-400 dark:border-gray-100/5 border-2 text-sm font-medium rounded-md border-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-100;
     }
 
 }

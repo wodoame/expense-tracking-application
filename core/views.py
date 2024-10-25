@@ -52,7 +52,8 @@ class Dashboard(View):
         
     def check_category(self, request):
         categoryId = request.POST.get('category')
-        if int(categoryId) == 0:
+        
+        if categoryId != '' and int(categoryId) == 0:
             category = Category.objects.create(name=request.POST.get('newCategoryName'))
             postDict = request.POST.dict()
             postDict['category'] = category.id
