@@ -1,33 +1,5 @@
 {% extends 'core/components/baseModal.html' %}
 {% block title %}Details{% endblock %}
 {% block modalBody %}
-<div class="p-4">
-    <div>
-        <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">
-           Name
-        </div>
-        <div class="px-2 text-sm text-start" id="product-name"></div>
-    </div>
-
-    <div>
-        <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">
-           Price
-        </div>
-        <div id="product-price" class="px-2 text-sm text-start"></div>
-    </div>
-
-    <div>
-        <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">
-           Category
-        </div>
-        <div id="product-category" class="px-2 text-sm text-start"></div>
-    </div>
-
-    <div>
-        <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">
-           Description
-        </div>
-        <div id="product-description" class="px-2 text-sm text-start"></div>
-    </div>
- </div>
+{% include 'core/components/productDetails.html'   %}
 {% endblock %}

@@ -10,18 +10,19 @@ const getProduct = (id) => {
 };
 // instead of the function below if it becomes necessay (eg. if the UI needs to be dynamic ) I will use string literals to generate html and insert them 
 // into the DOM using .insertAdjacentHTML() 
-const setDetail = (id, value) => {
-    document.getElementById(id).textContent = value;
+const setDetail = (modal, query, value) => {
+    modal.querySelector(query).textContent = value;
 };
 const showDetails = (e) => {
     e.stopPropagation();
     const productId = e.currentTarget.id;
     const product = getProduct(productId);
-    setDetail('product-name', product.name);
-    setDetail('product-price', `GHS ${product.price.toFixed(2)}`);
-    setDetail('product-category', product.category ? product.category.name : 'None');
-    setDetail('product-description', product.description || 'No description');
-    // TODO: make a reusable component for the details section so that you can use it in the delete modal
+    const id = 'show-details-modal';
+    const modal = document.getElementById(id);
+    setDetail(modal, `#${id}-product-name`, product.name);
+    setDetail(modal, `#${id}-product-price`, `GHS ${product.price.toFixed(2)}`);
+    setDetail(modal, `#${id}-product-category`, product.category ? product.category.name : 'None');
+    setDetail(modal, `#${id}-product-description`, product.description || 'No description');
     toggle(e, 'show-details-modal');
 };
 const editProduct = (e) => {
@@ -52,12 +53,13 @@ const editProduct = (e) => {
 const deleteProduct = (e) => {
     e.stopPropagation();
     const productId = e.currentTarget.parentNode.parentNode.parentNode.id;
-    console.log(productId);
     const product = getProduct(productId);
-    setDetail('delete-product-name', product.name);
-    setDetail('delete-product-price', `GHS ${product.price.toFixed(2)}`);
-    setDetail('delete-product-category', product.category ? product.category.name : 'None');
-    setDetail('delete-product-description', product.description || 'No description');
-    document.getElementById('delete-product-id').value = productId;
+    const id = 'delete-product-modal';
+    const modal = document.getElementById(id);
+    setDetail(modal, `#${id}-product-name`, product.name);
+    setDetail(modal, `#${id}-product-price`, `GHS ${product.price.toFixed(2)}`);
+    setDetail(modal, `#${id}-product-category`, product.category ? product.category.name : 'None');
+    setDetail(modal, `#${id}-product-description`, product.description || 'No description');
+    modal.querySelector('#delete-product-id').value = productId;
     toggle(e, 'delete-product-modal');
 };
