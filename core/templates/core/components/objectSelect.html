@@ -11,7 +11,7 @@
         </div>
       </button>
     </div>
-    <div x-show="open" x-cloak  class="z-50 w-full absolute my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:shadow-lg dark:border-darkborder dark:divide-gray-600">
+    <div x-show="open" x-cloak  class="z-50 w-full absolute my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:shadow-dark1 dark:bg-dark2 dark:shadow-md dark:border-darkborder dark:divide-gray-600">
       <ul class="py-1 max-h-60 overflow-y-auto" role="none">
         <template x-if="objects.length == 0">
           <li @click="newCategory={id:0, name:newSearch};select(newCategory)">
