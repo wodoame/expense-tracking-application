@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.views import View
 from datetime import datetime, timedelta
 from .models import Product, Category
-from .datechecker import DateChecker as dc
+import core.datechecker as dc 
 from django.core.paginator import Paginator 
 from django.db.models import Count
 from .forms import AddProductForm
@@ -10,6 +10,7 @@ from .serializers import ProductSerializer, CategorySerializer
 from django.contrib import messages 
 import json
 import pandas as pd
+from .stats import Context, WeeklyStats
 
 class RedirectView(View):
     def get(self, request):
@@ -20,12 +21,10 @@ class Dashboard(View):
         products = Product.objects.all() 
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
-        thisWeek = dc.get_week(dateToday)
-        lastWeek = (thisWeek[0] - timedelta(days=7), thisWeek[1] - timedelta(days=7))
+        statContext = Context(WeeklyStats(products))
+        stats = statContext.apply() 
         today = [product for product in products if product.date.date() == dateToday]
         yesterday = [product for product in products if product.date.date() == dateYesterday]
-        totalSpentThisWeek = dc.get_total_spent_in_week(thisWeek, products)
-        totalSpentLastWeek = dc.get_total_spent_in_week(lastWeek, products)
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
         serializer = ProductSerializer(products, many=True)
@@ -34,8 +33,9 @@ class Dashboard(View):
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
             'today': today, 
-            'totalSpentThisWeek': totalSpentThisWeek,
-            'totalSpentLastWeek': totalSpentLastWeek,
+            'totalSpentThisWeek': stats[0],
+            'totalSpentLastWeek': stats[1],
+            'highestWeeklySpending': stats[2],
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
