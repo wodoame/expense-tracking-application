@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.views import View
 from datetime import datetime, timedelta
 from .models import Product, Category
@@ -9,6 +9,7 @@ from .forms import AddProductForm
 from .serializers import ProductSerializer, CategorySerializer
 from django.contrib import messages 
 import json
+import pandas as pd
 
 class RedirectView(View):
     def get(self, request):
@@ -162,12 +163,18 @@ class Records(View):
 class Settings(View): 
     def get(self, request):
         return render(request, 'core/pages/settings.html')
+    
 class Test(View):
     def get(self, request): 
-        serializer = CategorySerializer(Category.objects.all(), many=True) 
-        context = {
-            'categories': serializer.data
-        }
+        context = {}
+        products = ProductSerializer(Product.objects.all(), many=True).data 
+        # filterDate = pd.to_datetime('2024-10-18T14:25:46.566644Z')
+        # print(filterDate)
+        df = pd.DataFrame(products)
+        print(df)
+        print('maximum amount', df.get('price').max())
+        filteredDf = df['date'] > '2024-10-18T14:25:46.566644Z'
+        print(filteredDf)
         return render(request, 'core/pages/test.html', context)
     
         

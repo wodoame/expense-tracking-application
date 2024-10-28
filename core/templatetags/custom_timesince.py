@@ -22,6 +22,7 @@ def timesince(value, arg=None):
         return str(django_timesince(value, arg).split(',')[0]) + ' ago'
     except (ValueError, TypeError):
         return ''
+    
 @register.filter
 def timeOnly(value, arg=None):
     if isinstance(value, str): 
