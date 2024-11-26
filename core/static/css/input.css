@@ -17,6 +17,14 @@ body{
     @apply text-sm md:text-base dark:text-gray-400;
 }
 
+*{
+  scrollbar-width:thin;
+}
+
+
+
+
+
 /* loader styles */
 .loader {
     width: 30px;
