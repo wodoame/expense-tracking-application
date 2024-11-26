@@ -54,9 +54,10 @@ def get_color_ratios(year, month, df: pd.DataFrame):
     # determine some metrics like highest spent in the month
     for day in range(1, lastDateOfMonth.day + 1):
         total = 0 # total for the day
-        date = datetime(year, month, day).date() # current date
-        filteredDf = df[df.get('date').dt.date == date] # create a dataframe which contains products bought on a specific day
-        total = filteredDf.get('price').sum() # find the sum
+        if not df.empty:
+            date = datetime(year, month, day).date() # current date
+            filteredDf = df[df.get('date').dt.date == date] # create a dataframe which contains products bought on a specific day
+            total = filteredDf.get('price').sum() # find the sum
         totals.append([day, total])
         maxDailySpendingThisMonth = max(maxDailySpendingThisMonth, total)
     
@@ -64,7 +65,7 @@ def get_color_ratios(year, month, df: pd.DataFrame):
     # calculate color ratio based on highest daily spending
     for day, total in totals:
         ratio = None
-        conversion = None
+        conversion = None # percentage of highest daily spending
         if maxDailySpendingThisMonth != 0:
             conversion = (total / maxDailySpendingThisMonth) * 100
         else: 
@@ -92,7 +93,8 @@ def get_activity_in_last_year():
     activity = []
     products = ProductSerializer(Product.objects.all(), many=True).data
     df = pd.DataFrame(products)
-    df['date'] = pd.to_datetime(df['date'])
+    if not df.empty:
+        df['date'] = pd.to_datetime(df['date'])
     for i in range(12):
         if month == 0: 
             month = 12
