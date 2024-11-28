@@ -26,9 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
+
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
@@ -83,23 +84,24 @@ WSGI_APPLICATION = 'expense_tracking_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv('DBNAME'),
-#         'USER': os.getenv('USER'),
-#         'PASSWORD': os.getenv('SUPERBASE_PASSWORD'),
-#         'HOST': os.getenv('HOST'),  # Change if your database is hosted elsewhere
-#         'PORT': os.getenv('DBPORT'),       # Default PostgreSQL port
-#     }
-# }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DBNAME'),
+            'USER': os.getenv('USER'),
+            'PASSWORD': os.getenv('SUPERBASE_PASSWORD'),
+            'HOST': os.getenv('HOST'),  # Change if your database is hosted elsewhere
+            'PORT': os.getenv('DBPORT'),       # Default PostgreSQL port
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
