@@ -66,10 +66,17 @@ vi .env
 #add the following line to the .env file
 DJANGO_SECRET_KEY=your_secret_key_here
 ```
-
 Save and exit the file.
 
-📢 Tip: Contact the maintainers after forking the repo to get the secret key.
+You can generate a secret key like this
+
+```python
+  import os
+  from django.core.management.utils import get_random_secret_key
+  SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', get_random_secret_key())
+
+  # If you wish to store the secret key in your .env file you can print and copy the output of get_random_secret_key() 
+```
 
 ### 5. Apply Migrations
 
