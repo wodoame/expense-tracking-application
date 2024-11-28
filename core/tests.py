@@ -1,12 +1,8 @@
-import pandas as pd
-import numpy as np
-data = [
-    {"name": "Alice", "age": 25, "city": "New York"},
-    {"name": "Bob", "age": 30, "city": "San Francisco"},
-    {"name": "Charlie", "age": 35, "city": "Los Angeles"}
-]
+from django.test import SimpleTestCase
+from django.conf import settings
 
-df = pd.DataFrame(data)
-print(df)
-print()
-print(df.get('age'))
+class SettingsTest(SimpleTestCase):
+    def test_debug_is_false(self):
+        self.assertFalse(settings.DEBUG, 'Debug must be false in production')
+        
+    
