@@ -25,7 +25,6 @@ class Dashboard(View):
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
-            'products': products,
             'categories': categories
         }
         
@@ -107,33 +106,32 @@ class ActivityCalendar(View):
 
 class AllExpenditures(View): 
     def get(self, request):
-        products = Product.objects.all()
-        categories = Category.objects.all()
-        serializer = ProductSerializer(products, many=True)
-        categorySerializer = CategorySerializer(categories, many=True)
-        results = products.values('date__date').annotate(Count('date__date'))
-        dates = [result['date__date'] for result in results] # getting only the dates
+        products = ProductSerializer(Product.objects.all(), many=True).data
+        categories = CategorySerializer(Category.objects.all(), many=True).data
+        dates = dc.collectDates(products)
         dates.sort(reverse=True)
         records = []
+        
+        # group the products by date
         for date in dates: 
-            products = Product.objects.filter(date__date=date)
-            serializer2 = ProductSerializer(products, many=True)
+            subProducts = ProductSerializer(Product.objects.filter(date__date=date), many=True).data
             records.append({
                 'date': date, 
-                'products': serializer2.data, 
-                'total':dc.get_total(products)
+                'products': subProducts, 
+                'total':dc.get_total(subProducts)
             })
         
         context = {
-         'products':serializer.data,
+         'products':products,
          'records': records, 
-         'categories': categorySerializer.data,
+         'categories': categories,
         }
         return render(request, 'core/pages/allExpenditures.html', context)
     
 class Records(View):
     def post(self, request):
         # I'm sending the data through the request instead of calling the database again
+        # will be replaced with a caching system
         records = json.loads(request.POST.get('records'))
         pageNumber = request.GET.get('page')
         paginator = Paginator(records, 4)

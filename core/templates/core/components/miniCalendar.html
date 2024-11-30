@@ -9,11 +9,11 @@
      <div>Fri</div>
      <div>Sat</div> -->
      {% for day in data.0 %}
-       <div class="text-gray-400 bg-gray-200 dark:bg-gray-700 dark:border-gray-500"></div>
+       <div class="text-gray-400 bg-gray-300/90 dark:bg-gray-700 dark:border-gray-500"></div>
      {% endfor %}
      {% for day, ratio in ratios.items %}
      {% if ratio == 0 %}
-      <div class="text-gray-400 bg-gray-200 dark:bg-gray-700 dark:border-gray-500"></div>
+      <div class="text-gray-400 bg-gray-300/90 dark:bg-gray-700 dark:border-gray-500"></div>
      {% else %}
       <div class="text-gray-400 bg-teal-500/{{ratio}}"></div>
      {% endif %}

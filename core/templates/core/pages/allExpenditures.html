@@ -17,7 +17,7 @@
     function getCSRFToken(){
         return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
-
-
 </script>
+
+{{products|json_script:"products"}}
 {% endblock %}

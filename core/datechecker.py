@@ -12,6 +12,9 @@ def get_week(date: datetime):
     weekStart = date - timedelta(days=distanceFromSunday)
     weekEnd = date + timedelta(days=distanceFromSaturday)
     return (weekStart, weekEnd)    
+
+def datefromisoformat(date: str):
+    return datetime.fromisoformat(date)
     
 def get_total(products):
     total = 0
@@ -19,8 +22,10 @@ def get_total(products):
         total += product.get('price')
     return total
 
-def datefromisoformat(date: str):
-    return datetime.fromisoformat(date)
+def collectDates(products: list[dict]):
+    uniqueDates = list(set(datefromisoformat(product.get('date')).date() for product in products))
+    return uniqueDates
+        
 
 def get_total_spent_in_week(week, products):
     total = 0

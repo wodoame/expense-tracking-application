@@ -32,7 +32,6 @@ let setCategory;
                 this.objects = items;
                 if (editProductForm.contains(this.self))
                     setCategory = (category) => {
-                        // TODO: some products don't have categories so I can't actually select one for them. Will find a workaround later.
                         if (category) {
                             this.selected = category;
                         }
@@ -41,8 +40,6 @@ let setCategory;
                         }
                         this.open = false;
                     };
-                // I tried returning 'this.setCategory' to a global variable but I was not able to access 'this' object when I called the variable
-                // I decided to return 'this' itself and this fixed that issue
             }
         }));
     });
