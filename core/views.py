@@ -149,6 +149,16 @@ class Records(View):
 class Settings(View): 
     def get(self, request):
         return render(request, 'core/pages/settings.html')
+
+class CategoriesPage(View): 
+    def get(self, request):
+        categories = CategorySerializer(Category.objects.all(), many=True).data
+        context = {
+            'categories': categories
+        }
+        return render(request, 'core/pages/categories.html', context)
+    
+
     
 class Test(View):
     def get(self, request): 

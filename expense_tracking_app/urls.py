@@ -27,6 +27,7 @@ urlpatterns = [
     path('components/activityCalendar/', core_views.ActivityCalendar.as_view()), 
     path('components/records/', core_views.Records.as_view()),
     path('settings/', core_views.Settings.as_view()),
+    path('categories/', core_views.CategoriesPage.as_view()),
     # path('signup/', auth_views.SignUp.as_view(), name='signup'),
     # path('complete-signup/', auth_views.CompleteSignUp.as_view(), name='complete-signup'),
     # path('signin/', auth_views.SignIn.as_view(), name='signin'),
