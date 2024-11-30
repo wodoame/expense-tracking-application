@@ -5,17 +5,16 @@ class RedirectView(View):
 
 class Dashboard(View):
     def get(self, request):
-        products = Product.objects.all() 
+        products = ProductSerializer(Product.objects.all(), many=True).data
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
         statContext = Context(WeeklyStats(products))
         stats = statContext.apply() 
-        today = [product for product in products if product.date.date() == dateToday]
-        yesterday = [product for product in products if product.date.date() == dateYesterday]
+        today = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateToday]
+        yesterday = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateYesterday]
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
-        serializer = ProductSerializer(products, many=True)
-        cateogorySerializer = CategorySerializer(Category.objects.all(), many=True) 
+        categories = CategorySerializer(Category.objects.all(), many=True).data
         context = {
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
@@ -26,9 +25,11 @@ class Dashboard(View):
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
-            'products': serializer.data, 
-            'categories': cateogorySerializer.data 
+            'products': products,
+            'categories': categories
         }
+        
+        print(context.get('products'))
         return render(request, 'core/pages/dashboard.html', context)
     
     def post(self, request):
