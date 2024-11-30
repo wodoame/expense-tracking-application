@@ -27,17 +27,18 @@ def timesince(value, arg=None):
 @register.filter
 def timeOnly(value, arg=None):
     if isinstance(value, str): 
-        parsedDatetime = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        parsedDatetime = datetime.fromisoformat(value)
         return parsedDatetime.time()
     return value.time()
 
 @register.filter
 def dateOnly(value, arg=None):
     if isinstance(value, str): 
-        parsedDatetime = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        parsedDatetime = datetime.fromisoformat(value)
         return parsedDatetime.date().strftime('%A, %b %d, %Y')
     return value.strftime('%A, %b %d, %Y')
 
 @register.filter
 def json_string(value):
-    return json.dumps(value)
+    result = json.dumps(value)
+    return result

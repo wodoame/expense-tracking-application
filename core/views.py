@@ -1,4 +1,5 @@
 from .views_dependencies import * 
+# ! There is a bug where when there's ' in the text the json parses it into "
 class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
