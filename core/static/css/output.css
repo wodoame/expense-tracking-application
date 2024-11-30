@@ -1515,8 +1515,8 @@ video {
   --tw-bg-opacity: 0.95;
 }
 
-.fill-gray-500 {
-  fill: #6b7280;
+.fill-current {
+  fill: currentColor;
 }
 
 .fill-pink-600 {
@@ -1525,10 +1525,6 @@ video {
 
 .fill-teal-600 {
   fill: #0d9488;
-}
-
-.fill-current {
-  fill: currentColor;
 }
 
 .stroke-current {
@@ -1665,6 +1661,10 @@ video {
 
 .text-start {
   text-align: start;
+}
+
+.text-end {
+  text-align: end;
 }
 
 .align-middle {
@@ -2059,9 +2059,19 @@ body{
   transition-duration: 75ms;
 }
 
+.group:hover .sidebar-icon {
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+
 :is(.dark .sidebar-icon) {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+:is(.dark .group:hover .sidebar-icon) {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .hover\:border-gray-300:hover {
@@ -2302,10 +2312,6 @@ body{
 :is(.dark .dark\:bg-white) {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-:is(.dark .dark\:fill-gray-400) {
-  fill: #9ca3af;
 }
 
 :is(.dark .dark\:stroke-gray-400) {
