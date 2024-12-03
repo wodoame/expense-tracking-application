@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 import core.views as core_views
-# import authentication.views as auth_views
+import authentication.views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('__debug__/', include('debug_toolbar.urls')),
@@ -28,9 +28,10 @@ urlpatterns = [
     path('components/records/', core_views.Records.as_view()),
     path('settings/', core_views.Settings.as_view()),
     path('categories/', core_views.CategoriesPage.as_view()),
-    # path('signup/', auth_views.SignUp.as_view(), name='signup'),
+    path('signup/', auth_views.SignUp.as_view(), name='signup'),
+    path('signin/', auth_views.SignIn.as_view(), name='signin'),
+    path('logout/', auth_views.Logout.as_view(), name='logout'),
     # path('complete-signup/', auth_views.CompleteSignUp.as_view(), name='complete-signup'),
-    # path('signin/', auth_views.SignIn.as_view(), name='signin'),
     # path('components/signupContinued/', auth_views.SignUpContinued.as_view()),
     path('test/', core_views.Test.as_view()),
 ]
