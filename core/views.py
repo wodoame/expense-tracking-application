@@ -58,10 +58,17 @@ class Dashboard(View):
             pesewas = request.POST.get('pesewas')
             price = float(cedis + '.' + pesewas)
             if form.is_valid():
+                print('form is valid')
                 instance = form.save(commit=False)
                 instance.price = price
                 form.save() 
                 messages.success(request, 'Product edited successfully')
+                date = dc.datefromisoformat(request.POST.get('date')).date() 
+                items = [record(date)]
+                context = {
+                    'items':items
+                }
+                return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
                 print(errors) 
@@ -87,14 +94,20 @@ class Dashboard(View):
         return redirect(request.META.get('HTTP_REFERER'))
     
     def handle_delete_product(self, request):
+        print(request.POST)
         productId = request.POST.get('id')
         try:
             Product.objects.get(id=productId).delete()
             messages.success(request, 'Product deleted successfully')
+            date = dc.datefromisoformat(request.POST.get('date')).date() 
+            items = [record(date)]
+            context = {
+                'items':items
+            }
+            return render(request, 'core/components/paginateExpenditures.html', context) 
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
         return redirect(request.META.get('HTTP_REFERER'))
-        
     
 class ActivityCalendar(View):
     def get(self, request): 
@@ -114,12 +127,7 @@ class AllExpenditures(View):
         
         # group the products by date
         for date in dates: 
-            subProducts = ProductSerializer(Product.objects.filter(date__date=date), many=True).data
-            records.append({
-                'date': date, 
-                'products': subProducts, 
-                'total':dc.get_total(subProducts)
-            })
+            records.append(record(date))
         
         context = {
          'products':products,
@@ -163,14 +171,10 @@ class CategoriesPage(View):
 class Test(View):
     def get(self, request): 
         context = {}
-        products = ProductSerializer(Product.objects.all(), many=True).data 
-        # filterDate = pd.to_datetime('2024-10-18T14:25:46.566644Z')
-        # print(filterDate)
-        df = pd.DataFrame(products)
-        print(df)
-        print('maximum amount', df.get('price').max())
-        filteredDf = df['date'] > '2024-10-18T14:25:46.566644Z'
-        print(filteredDf)
         return render(request, 'core/pages/test.html', context)
+    
+    def post(self, request): 
+       pass
+        
     
         

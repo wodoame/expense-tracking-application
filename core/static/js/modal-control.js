@@ -20,7 +20,7 @@ const handleClickOutside = (e) => {
         toggle(e, currentId);
     }
 };
-// closes the activemodal when the close button has been clicked
+// closes the active modal when the close button has been clicked
 const closeModal = (e) => {
     toggle(e, currentId);
 };
@@ -35,4 +35,30 @@ function showFormLoader(id) {
         loader.classList.remove('invisible');
         // form.submit();
     }
+}
+function submitEditForm(e) {
+    const form = document.getElementById('edit-product-form');
+    const formData = htmx.values(form);
+    const tr = htmx.find(`#product-${formData.id}`);
+    const elementToReplace = htmx.closest(tr, '.record');
+    elementToReplace.querySelector('.skeleton').classList.remove('hidden');
+    closeModal(e);
+    htmx.ajax('POST', '/dashboard/?edit=1', {
+        values: formData,
+        target: elementToReplace,
+        swap: 'outerHTML'
+    });
+}
+function submitDeleteForm(e) {
+    const form = document.getElementById('delete-product-form');
+    const formData = htmx.values(form);
+    const tr = htmx.find(`#product-${formData.id}`);
+    const elementToReplace = htmx.closest(tr, '.record');
+    elementToReplace.querySelector('.skeleton').classList.remove('hidden');
+    closeModal(e);
+    htmx.ajax('POST', '/dashboard/?delete=1', {
+        values: formData,
+        target: elementToReplace,
+        swap: 'outerHTML'
+    });
 }

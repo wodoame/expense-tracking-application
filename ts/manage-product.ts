@@ -23,6 +23,7 @@ const editProduct = (e: Event)=>{
    const pesewasInput = <HTMLInputElement>modal.querySelector('[name=pesewas]'); 
    const descriptionInput = <HTMLInputElement>modal.querySelector('[name=description]'); 
    const idInput = <HTMLInputElement>modal.querySelector('[name=id]'); 
+   const dateInput = <HTMLInputElement>modal.querySelector('[name=date]'); 
    const categoryInput = <HTMLInputElement>modal.querySelector('[name=category]');
    const priceParts = product.price.toString().split('.');
    if(priceParts.length > 1){
@@ -32,6 +33,7 @@ const editProduct = (e: Event)=>{
        categoryInput.value = product.category.id.toString();
    }
    idInput.value = product.id.toString();
+   dateInput.value = product.date;
    setCategory(product.category);
    cedisInput.value = priceParts[0];
    nameInput.value = product.name; 
@@ -49,6 +51,9 @@ const deleteProduct = (e: Event)=>{
     setDetail(modal, `#${id}-product-price`, `GHS ${product.price.toFixed(2)}`); 
     setDetail(modal, `#${id}-product-category`, product.category? product.category.name: 'None'); 
     setDetail(modal, `#${id}-product-description`, product.description || 'No description');
-    (<HTMLInputElement>modal.querySelector('#delete-product-id')).value = product.id.toString();
+    const idInput = <HTMLInputElement>modal.querySelector('#delete-product-id'); 
+    const dateInput = <HTMLInputElement>modal.querySelector('[name=date]'); 
+    idInput.value = product.id.toString();
+    dateInput.value = product.date; 
     toggle(e, 'delete-product-modal') 
 }; 

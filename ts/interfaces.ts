@@ -8,4 +8,5 @@ interface Product{
     price:number; 
     description:string;
     category: Category;
+    date: string;
 }

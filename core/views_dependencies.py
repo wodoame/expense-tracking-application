@@ -11,3 +11,4 @@ from django.contrib import messages
 import json
 import pandas as pd
 from .stats import Context, WeeklyStats
+from .utils import record

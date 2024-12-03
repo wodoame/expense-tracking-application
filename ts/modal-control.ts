@@ -23,7 +23,7 @@ const toggle = (e:Event, id:string)=>{
       }
   };
   
-  // closes the activemodal when the close button has been clicked
+  // closes the active modal when the close button has been clicked
   const closeModal = (e: Event)=>{
     toggle(e, currentId);
   }
@@ -41,4 +41,31 @@ const toggle = (e:Event, id:string)=>{
       loader.classList.remove('invisible');
       // form.submit();
     } 
+ }
+
+ function submitEditForm(e: Event){
+     const form = <HTMLFormElement>document.getElementById('edit-product-form');
+     const formData = htmx.values(form);
+     const tr = htmx.find(`#product-${formData.id}`);
+     const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
+     elementToReplace.querySelector('.skeleton').classList.remove('hidden');
+     closeModal(e);
+     htmx.ajax('POST', '/dashboard/?edit=1', {
+      values: formData,
+      target: elementToReplace,
+      swap: 'outerHTML'
+     });
+ }
+ function submitDeleteForm(e: Event){
+     const form = <HTMLFormElement>document.getElementById('delete-product-form');
+     const formData = htmx.values(form);
+     const tr = htmx.find(`#product-${formData.id}`);
+     const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
+     elementToReplace.querySelector('.skeleton').classList.remove('hidden');
+     closeModal(e);
+     htmx.ajax('POST', '/dashboard/?delete=1', {
+      values: formData,
+      target: elementToReplace,
+      swap: 'outerHTML'
+     });
  }
