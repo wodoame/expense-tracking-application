@@ -12,5 +12,5 @@ import json
 import pandas as pd
 from .stats import Context, WeeklyStats
 from .utils import record
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 
