@@ -127,3 +127,8 @@ body{
 .sidebar-icon{
    @apply w-5 h-5 transition duration-75 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white;
 }
+
+/* record skeleton */
+.record-skeleton{
+  @apply bg-gray-300 dark:bg-gray-500 animate-pulse rounded;
+}
