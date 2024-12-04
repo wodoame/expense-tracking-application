@@ -2,7 +2,7 @@ from .views_dependencies import *
 class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
-
+# @login_required
 class Dashboard(View):
     def get(self, request):
         products = ProductSerializer(Product.objects.all(), many=True).data
@@ -108,7 +108,7 @@ class Dashboard(View):
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
         return redirect(request.META.get('HTTP_REFERER'))
-    
+# @login_required    
 class ActivityCalendar(View):
     def get(self, request): 
         monthsData = dc.get_activity_in_last_year()
@@ -116,7 +116,7 @@ class ActivityCalendar(View):
             'monthsData': monthsData, 
         }
         return render(request, 'core/components/activityCalendar.html', context)
-
+# @login_required
 class AllExpenditures(View): 
     def get(self, request):
         products = ProductSerializer(Product.objects.all(), many=True).data
@@ -135,7 +135,7 @@ class AllExpenditures(View):
          'categories': categories,
         }
         return render(request, 'core/pages/allExpenditures.html', context)
-    
+# @login_required    
 class Records(View):
     def post(self, request):
         # I'm sending the data through the request instead of calling the database again
@@ -153,11 +153,11 @@ class Records(View):
             'nextPageNumber':nextPageNumber
             }
         return render(request, 'core/components/paginateExpenditures.html', context)
-
+# @login_required
 class Settings(View): 
     def get(self, request):
         return render(request, 'core/pages/settings.html')
-
+# @login_required
 class CategoriesPage(View): 
     def get(self, request):
         categories = CategorySerializer(Category.objects.all(), many=True).data
@@ -167,7 +167,7 @@ class CategoriesPage(View):
         return render(request, 'core/pages/categories.html', context)
     
 
-    
+# @login_required
 class Test(View):
     def get(self, request): 
         context = {}
