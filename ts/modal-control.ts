@@ -45,16 +45,21 @@ const toggle = (e:Event, id:string)=>{
 
  function submitEditForm(e: Event){
      const form = <HTMLFormElement>document.getElementById('edit-product-form');
-     const formData = htmx.values(form);
-     const tr = htmx.find(`#product-${formData.id}`);
-     const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
-     elementToReplace.querySelector('.skeleton').classList.remove('hidden');
-     closeModal(e);
-     htmx.ajax('POST', '/dashboard/?edit=1', {
-      values: formData,
-      target: elementToReplace,
-      swap: 'outerHTML'
-     });
+     if(form.checkValidity()){
+       const formData = htmx.values(form);
+       const tr = htmx.find(`#product-${formData.id}`);
+       const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
+       elementToReplace.querySelector('.skeleton').classList.remove('hidden');
+       closeModal(e);
+       htmx.ajax('POST', '/dashboard/?edit=1', {
+        values: formData,
+        target: elementToReplace,
+        swap: 'outerHTML'
+       });
+     }
+     else{
+      form.reportValidity(); // display the validation messages
+     }
  }
  function submitDeleteForm(e: Event){
      const form = <HTMLFormElement>document.getElementById('delete-product-form');
