@@ -68,14 +68,14 @@ DJANGO_SECRET_KEY=your_secret_key_here
 ```
 Save and exit the file.
 
+*NOTE: A secret key is generated for you already so it's not necessary to generate one yourself*
 You can generate a secret key like this
 
 ```python
-  import os
   from django.core.management.utils import get_random_secret_key
-  SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', get_random_secret_key())
+  get_random_secret_key()
 
-  # If you wish to store the secret key in your .env file you can print and copy the output of get_random_secret_key() 
+  # If you wish to store the secret key in your .env file you can print and copy the output of get_random_secret_key()
 ```
 
 ### 5. Apply Migrations
@@ -112,7 +112,7 @@ Once your PR is reviewed, necessary steps will be taken to integrate your contri
 ## 🛠 Tech Stack
 
 Backend: Django
-Frontend: HTML, CSS, JavaScript
+Frontend: HTML, CSS, JavaScript, Alpine.js, HTMX
 Database: SQLite3 (default for development)
 Environment Configuration: python-decouple (via .env files)
 
