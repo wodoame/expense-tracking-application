@@ -1,6 +1,6 @@
 node_modules/
 .env
-db.sqlite3
+*.sqlite3
 ideas/
 etavenv/
 *.pyc

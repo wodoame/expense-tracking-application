@@ -38,16 +38,21 @@ function showFormLoader(id) {
 }
 function submitEditForm(e) {
     const form = document.getElementById('edit-product-form');
-    const formData = htmx.values(form);
-    const tr = htmx.find(`#product-${formData.id}`);
-    const elementToReplace = htmx.closest(tr, '.record');
-    elementToReplace.querySelector('.skeleton').classList.remove('hidden');
-    closeModal(e);
-    htmx.ajax('POST', '/dashboard/?edit=1', {
-        values: formData,
-        target: elementToReplace,
-        swap: 'outerHTML'
-    });
+    if (form.checkValidity()) {
+        const formData = htmx.values(form);
+        const tr = htmx.find(`#product-${formData.id}`);
+        const elementToReplace = htmx.closest(tr, '.record');
+        elementToReplace.querySelector('.skeleton').classList.remove('hidden');
+        closeModal(e);
+        htmx.ajax('POST', '/dashboard/?edit=1', {
+            values: formData,
+            target: elementToReplace,
+            swap: 'outerHTML'
+        });
+    }
+    else {
+        form.reportValidity(); // display the validation messages
+    }
 }
 function submitDeleteForm(e) {
     const form = document.getElementById('delete-product-form');

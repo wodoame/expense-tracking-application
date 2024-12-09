@@ -604,8 +604,6 @@ video {
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 500;
-  --tw-text-opacity: 1;
-  color: rgb(55 65 81 / var(--tw-text-opacity, 1));
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 100ms;
@@ -622,20 +620,20 @@ video {
   border-color: rgb(243 244 246 / 0.05);
   background-color: transparent;
   --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity, 1));
+  color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
-.input:is(.dark *)::-moz-placeholder {
+:is(.dark .input)::-moz-placeholder {
   --tw-placeholder-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-placeholder-opacity, 1));
+  color: rgb(107 114 128 / var(--tw-placeholder-opacity));
 }
 
-.input:is(.dark *)::placeholder {
+:is(.dark .input)::placeholder {
   --tw-placeholder-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-placeholder-opacity, 1));
+  color: rgb(107 114 128 / var(--tw-placeholder-opacity));
 }
 
-.input:focus:is(.dark *) {
+:is(.dark .input:focus) {
   --tw-border-opacity: 1;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1));
 }
@@ -1135,16 +1133,6 @@ video {
   transform: none;
 }
 
-@keyframes pulse {
-  50% {
-    opacity: .5;
-  }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
 .cursor-default {
   cursor: default;
 }
@@ -1475,12 +1463,7 @@ video {
 
 .bg-gray-200 {
   --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
-}
-
-.bg-gray-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
 .bg-gray-300\/90 {
@@ -2165,15 +2148,27 @@ body:is(.dark *) {
 
 .group:hover .sidebar-icon:is(.dark *) {
   --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.placeholder\:pl-3::-moz-placeholder {
-  padding-left: 0.75rem;
+/* record skeleton */
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
 }
 
-.placeholder\:pl-3::placeholder {
-  padding-left: 0.75rem;
+.record-skeleton {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: 0.25rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+}
+
+:is(.dark .record-skeleton) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
 }
 
 .hover\:border-gray-300:hover {

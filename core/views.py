@@ -161,8 +161,9 @@ class Settings(View):
 class CategoriesPage(View): 
     def get(self, request):
         categories = CategorySerializer(Category.objects.all(), many=True).data
+        productsWithNoCategory = Product.objects.filter(category=None)
         context = {
-            'categories': categories
+            'categories': categories + [{'name': 'Uncategorized', 'product_count': productsWithNoCategory.count()}], 
         }
         return render(request, 'core/pages/categories.html', context)
     

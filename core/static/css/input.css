@@ -80,7 +80,7 @@ body{
     } */
 
     .input{
-      @apply w-full p-4 text-gray-700 bg-white dark:bg-transparent dark:focus:border-blue-500 dark:text-gray-400 dark:placeholder-gray-500  dark:border-gray-100/5 border-2 text-sm font-medium rounded-md border-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-100;
+      @apply w-full p-4 placeholder:text-gray-500 bg-white dark:bg-transparent dark:focus:border-blue-500 dark:text-gray-400  dark:border-gray-100/5 border-2 text-sm font-medium rounded-md border-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-100;
     }
 
 }
@@ -126,4 +126,9 @@ body{
 
 .sidebar-icon{
    @apply w-5 h-5 transition duration-75 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white;
+}
+
+/* record skeleton */
+.record-skeleton{
+  @apply bg-gray-300 dark:bg-gray-500 animate-pulse rounded;
 }

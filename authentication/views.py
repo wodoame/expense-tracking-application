@@ -22,6 +22,7 @@ class SignUp(View):
             login(request, user)
             return redirect('dashboard')
         else:
+            print(form.errors.get_json_data())
             return render(request, 'auth/pages/signup.html', {'form': form})
             
             
