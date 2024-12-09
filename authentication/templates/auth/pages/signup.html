@@ -1,8 +1,62 @@
-<h1>Signup</h1>
-<form method="post" action=" {% url "signup" %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign Up</button>
-    <p>Don't have an account?</p><button><a href="{% url "signin"%}">Sign In</a></button>
-</form>
+{% extends "auth/pages/layout.html" %}
+{% load static %}
+{% block title %}
+    Xpense | Signup
+{% endblock title %}
+
+
+{% block content %}
+
+    <div class="p-4">
+        <img class="h-10" src="{% static 'imgs/logo-100x100.png' %}" alt="xpense_logo">
+    </div>
+    {% include "auth/components/alerts.html" %}
+    <div class="rounded-2xl h-max p-5 gap-2  transform -translate-x-1/2 absolute left-1/2 top-32 bg-gradient-to-r from-yellow-100 to-blue-200 flex flex-col shadow-lg">
+        <a onclick="goBack()">
+            <p class="underline cursor-pointer text-blue-500">Back</p>        
+        </a>
+        <h2 class="text-center my-6 font-bold text-xl">Welcome to Xpense</h2>
+        
+        
+        <form action="{% url "signup" %}" class="gap-3 w-full flex flex-col justify-center items-center" method="POST">
+            {% csrf_token %}
+            <div>
+                <label class="font-medium" for="email">Email</label><br>
+                <input class="rounded-full p-1 border border-black placeholder:pl-3" type="email" name="email" id="email" placeholder="example@gmail.com" required>
+            </div>
+            <div>
+                <label class="font-medium" for="username">Username</label><br>
+                <input class="rounded-full p-1 border border-black placeholder:pl-3" type="text" name="username" id="username" placeholder="Gritty" required>
+            </div>
+            <div class="relative">
+                <label class="font-medium" for="password">Password</label><br>
+                <input class="rounded-full p-1 border border-black placeholder:pl-3" type="password" name="password1" id="password" required>
+                <svg onclick="togglePasswordVisibility('password', this)" class="w-6 h-6 text-gray-800 dark:text-white absolute right-2 top-1/2 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.933 13.909A4.357 4.357 0 0 1 3 12c0-1 4-6 9-6m7.6 3.8A5.068 5.068 0 0 1 21 12c0 1-3 6-9 6-.314 0-.62-.014-.918-.04M5 19 19 5m-4 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                  </svg>
+                  
+                
+            </div>
+
+            <div class="relative">
+                <label class="font-medium" for="confirmPassword">Confirm Password</label><br>
+                <input class="rounded-full p-1 border border-black placeholder:pl-3" type="password" name="password2" id="confirmPassword" required>
+                <svg onclick="togglePasswordVisibility('confirmPassword', this)" class="w-6 h-6 text-gray-800 dark:text-white absolute right-2 top-1/2 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.933 13.909A4.357 4.357 0 0 1 3 12c0-1 4-6 9-6m7.6 3.8A5.068 5.068 0 0 1 21 12c0 1-3 6-9 6-.314 0-.62-.014-.918-.04M5 19 19 5m-4 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                  </svg>
+                  
+                
+            </div>
+
+            <button class="w-full p-1 bg-blue-500 rounded-full hover:bg-gradient-to-l from-blue-500 to-yellow-500 hover:text-white">Sign Up</button>
+        </form>
+        <p class="mx-auto text-sm mt-1">Already have an account? <a class="text-blue-500" href="{% url "signin" %}">Sign In</a></p>
+    </div>
+
+    
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static "main.js" %}"></script>
+{% endblock scripts %}
 

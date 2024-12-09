@@ -1,0 +1,19 @@
+{% if form.errors %}
+    <div class="left-1/2 flex justify-center items-center w-1/4">
+
+        <ul>
+            {% for field in form %}
+                {% if field.errors %}
+                <div>
+                    <li><strong>{{ field.label }}:</strong> {% for error in field.errors %} <span>{{ error }}</span>{% endfor %}</li>
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% if form.non_field_errors %}
+                <div>
+                    <li><strong>Non-field errors:</strong> {% for error in form.non_field_errors %} <span>{{ error }}</span>{% endfor %}</li>
+                </div>
+            {% endif %}
+        </ul>
+    </div>
+{% endif %}

@@ -138,6 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'staticfiles/'
 
 # Was checking an error (NOTE: linking to non-existent static files can cause errors in production)
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

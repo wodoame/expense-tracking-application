@@ -8,6 +8,9 @@ class SignUp(View):
     
     def get(self, request):
         '''returns the signup page'''
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+        
         form = UserCreationForm()
         return render(request, 'auth/pages/signup.html', {'form': form})
     
