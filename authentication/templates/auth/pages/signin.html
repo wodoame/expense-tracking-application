@@ -6,17 +6,16 @@
 
 
 {% block content %}
+    {% include  'core/components/toastWrapper.html' %}
     <div class="p-4">
         <img class="h-10" src="{% static 'imgs/logo-100x100.png' %}" alt="xpense_logo">
     </div>
-    {% include "auth/components/alerts.html" %}
-
     <div class="rounded-2xl h-max p-5 gap-2  transform -translate-x-1/2 absolute left-1/2 top-32 bg-gradient-to-r from-yellow-100 to-blue-200 flex flex-col shadow-lg">
         <a onclick="goBack()">
             <p class="underline cursor-pointer text-blue-500">Back</p>        
         </a>
         <h2 class="text-center my-6 font-bold text-xl">Welcome Back!</h2>
-        <form action="{% url "signin" %}" class="gap-3 w-full flex flex-col justify-center items-center" method="POST">
+        <form action="{% url 'signin' %}" class="gap-3 w-full flex flex-col justify-center items-center" method="POST">
             {% csrf_token %}
             <div>
                 <label class="font-medium" for="username">Username</label><br>
@@ -34,7 +33,7 @@
 
             <button class="w-full p-1 bg-blue-500 rounded-full hover:bg-gradient-to-l from-blue-500 to-yellow-500 hover:text-white">Sign In</button>
         </form>
-        <p class="mx-auto text-sm mt-1">Don't have an account? <a class="text-blue-500" href="{% url "signup" %}">Sign Up</a></p>
+        <p class="mx-auto text-sm mt-1">Don't have an account? <a class="text-blue-500" href="{% url 'signup' %}">Sign Up</a></p>
     </div>
 
     
@@ -42,5 +41,8 @@
 
 {% block scripts %}
     <script src="{% static "main.js" %}"></script>
+    <script src="{% static 'js/toast.js' %}"></script>
+    <script src="{% static 'js/flowbitejs.min.js' %}"></script>
+
 {% endblock scripts %}
 
