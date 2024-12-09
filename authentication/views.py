@@ -49,6 +49,8 @@ class SignIn(View):
             if user is not None:
                 login(request, user)
                 return redirect('dashboard')
+        return render(request, 'auth/pages/signin.html', {'form': form})
+
             
 class Logout(View):
     '''logout'''
