@@ -94,12 +94,13 @@ def get_color_ratios(year, month, df: pd.DataFrame):
         ratios[day] = ratio
     return ratios
 
-def get_activity_in_last_year():
+def get_activity_in_last_year(request):
     dateToday = datetime.today()
     year = dateToday.year
     month = dateToday.month
     activity = []
-    products = ProductSerializer(Product.objects.all(), many=True).data
+    user = request.user
+    products = ProductSerializer(user.products.all(), many=True).data
     df = pd.DataFrame(products)
     if not df.empty:
         df['date'] = pd.to_datetime(df['date'])

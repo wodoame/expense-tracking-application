@@ -2,10 +2,12 @@ from .views_dependencies import *
 class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
-# @login_required
+
+@method_decorator(login_required(login_url='signin'), name='dispatch')
 class Dashboard(View):
     def get(self, request):
-        products = ProductSerializer(Product.objects.all(), many=True).data
+        user = request.user
+        products = ProductSerializer(user.products.all(), many=True).data
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
         statContext = Context(WeeklyStats(products))
@@ -14,7 +16,7 @@ class Dashboard(View):
         yesterday = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateYesterday]
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
-        categories = CategorySerializer(Category.objects.all(), many=True).data
+        categories = CategorySerializer(user.categories.all(), many=True).data
         context = {
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
@@ -27,8 +29,6 @@ class Dashboard(View):
             'yesterdayTotal':yesterdayTotal,
             'categories': categories
         }
-        
-        print(context.get('products'))
         return render(request, 'core/pages/dashboard.html', context)
     
     def post(self, request):
@@ -42,7 +42,7 @@ class Dashboard(View):
         categoryId = request.POST.get('category')
         
         if categoryId != '' and int(categoryId) == 0:
-            category = Category.objects.create(name=request.POST.get('newCategoryName'))
+            category = Category.objects.create(name=request.POST.get('newCategoryName'), user=request.user)
             postDict = request.POST.dict()
             postDict['category'] = category.id
             return postDict
@@ -52,19 +52,19 @@ class Dashboard(View):
     def handle_edit_product(self, request):
         productId = request.POST.get('id')
         try:
-            instance = Product.objects.get(id=productId)
-            form = AddProductForm(self.check_category(request), instance=instance)
+            product = Product.objects.get(id=productId)
+            form = AddProductForm(self.check_category(request), instance=product)
             cedis = request.POST.get('cedis')
             pesewas = request.POST.get('pesewas')
             price = float(cedis + '.' + pesewas)
             if form.is_valid():
-                print('form is valid')
-                instance = form.save(commit=False)
-                instance.price = price
+                product = form.save(commit=False)
+                product.price = price
+                product.user = request.user
                 form.save() 
                 messages.success(request, 'Product edited successfully')
                 date = dc.datefromisoformat(request.POST.get('date')).date() 
-                items = [record(date)]
+                items = [record(date, request)]
                 context = {
                     'items':items
                 }
@@ -76,16 +76,15 @@ class Dashboard(View):
             messages.error(request, 'Product has been deleted')
         return redirect(request.META.get('HTTP_REFERER'))
     
-    from django.http import HttpRequest
     def handle_add_product(self, request: HttpRequest):
         form = AddProductForm(self.check_category(request))
         cedis = request.POST.get('cedis')
         pesewas = request.POST.get('pesewas')
         price = float(cedis + '.' + pesewas)
         if form.is_valid():
-            print(form.cleaned_data)
             product = form.save(commit=False)
             product.price = price
+            product.user = request.user
             form.save()
             messages.success(request, 'Product added successfully')
         else: 
@@ -100,10 +99,12 @@ class Dashboard(View):
             Product.objects.get(id=productId).delete()
             messages.success(request, 'Product deleted successfully')
             date = dc.datefromisoformat(request.POST.get('date')).date() 
-            items = [record(date)]
+            items = [record(date, request)]
             context = {
                 'items':items
             }
+            if not items[0].get('products'):
+                return render(request, 'core/components/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
             return render(request, 'core/components/paginateExpenditures.html', context) 
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
@@ -111,23 +112,25 @@ class Dashboard(View):
 # @login_required    
 class ActivityCalendar(View):
     def get(self, request): 
-        monthsData = dc.get_activity_in_last_year()
+        monthsData = dc.get_activity_in_last_year(request)
         context = {
             'monthsData': monthsData, 
         }
         return render(request, 'core/components/activityCalendar.html', context)
-# @login_required
+
+@method_decorator(login_required(login_url='signin'), name='dispatch')
 class AllExpenditures(View): 
     def get(self, request):
-        products = ProductSerializer(Product.objects.all(), many=True).data
-        categories = CategorySerializer(Category.objects.all(), many=True).data
+        user = request.user
+        products = ProductSerializer(user.products.all(), many=True).data
+        categories = CategorySerializer(user.categories.all(), many=True).data
         dates = dc.collectDates(products)
         dates.sort(reverse=True)
         records = []
         
         # group the products by date
         for date in dates: 
-            records.append(record(date))
+            records.append(record(date, request))
         
         context = {
          'products':products,
@@ -160,7 +163,8 @@ class Settings(View):
 # @login_required
 class CategoriesPage(View): 
     def get(self, request):
-        categories = CategorySerializer(Category.objects.all(), many=True).data
+        user = request.user
+        categories = CategorySerializer(user.categories.all(), many=True).data
         productsWithNoCategory = Product.objects.filter(category=None)
         context = {
             'categories': categories + [{'name': 'Uncategorized', 'product_count': productsWithNoCategory.count()}], 
