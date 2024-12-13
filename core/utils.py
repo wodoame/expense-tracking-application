@@ -4,7 +4,8 @@ from .datechecker import get_total
 import asyncio 
 
 def record(date, request):
-    products = ProductSerializer(Product.objects.filter(date__date=date, user=request.user), many=True).data
+    user = request.user
+    products = ProductSerializer(user.products.filter(date__date=date), many=True).data
     result = {
         'date': date, 
         'products': products, 
