@@ -176,7 +176,7 @@ class CategoriesPage(View):
 class Test(View):
     def get(self, request): 
         context = {}
-        return render(request, 'auth/pages/layout.html', context)
+        return render(request, 'core/components/chart.html', context)
     
     def post(self, request): 
        pass

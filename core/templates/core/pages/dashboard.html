@@ -1,64 +1,8 @@
 {% extends 'core/pages/layout.html' %}
 {% block main %}
 {% include 'core/components/pageHeading.html' with text="Dashboard" %}
-{% comment %}
-<div class="p-4 flex items-center justify-center gap-8">
-  <!-- Circular Progress -->
-<div class="relative w-40 h-40">
-  <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-    <!-- Background Circle -->
-    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200 dark:text-neutral-700" stroke-width="2"></circle>
-    <!-- Progress Circle -->
-    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-blue-600 dark:text-blue-500" stroke-width="2" stroke-dasharray="100" stroke-dashoffset="75" stroke-linecap="round"></circle>
-  </svg>
 
-  <!-- Percentage Text -->
-  <div class="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
-    <span class="text-center text-sm font-medium text-gray-500">35%</span>
-  </div>
 
-</div>
-<!-- End Circular Progress -->
-<div class="space-y-4">
-  <!-- Multiple bars Progress -->
-  <div class="flex w-full h-1.5 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-700">
-    <div class="flex flex-col justify-center overflow-hidden bg-blue-400 text-xs text-white text-center whitespace-nowrap" style="width: 25%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    <div class="flex flex-col justify-center overflow-hidden bg-blue-700 text-xs text-white text-center whitespace-nowrap" style="width: 15%" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-    <div class="flex flex-col justify-center overflow-hidden bg-gray-800 text-xs text-white text-center whitespace-nowrap dark:bg-white" style="width: 30%" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-    <div class="flex flex-col justify-center overflow-hidden bg-orange-600 text-xs text-white text-center whitespace-nowrap" style="width: 5%" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
-  </div>
-  <!-- End Multiple bars Progress -->
-
-<!-- Legend -->
-  <div class="flex flex-wrap gap-4">
-   
-    <div class="inline-flex items-center">
-      <span class="w-2 h-2 inline-block bg-blue-400 rounded-full me-2"></span>
-      <span class="text-gray-600 dark:text-neutral-400 text-sm">Food 25%</span>
-    </div>
-    <div class="inline-flex items-center">
-      <span class="w-2 h-2 inline-block bg-blue-600 rounded-full me-2"></span>
-      <span class="text-gray-600 dark:text-neutral-400 text-sm">Transport 15%</span>
-    </div>
-    <div class="inline-flex items-center">
-      <span class="w-2 h-2 inline-block bg-gray-800 rounded-full me-2"></span>
-      <span class="text-gray-600 dark:text-neutral-400 text-sm">Entertainment 30%</span>
-    </div>
-    <div class="inline-flex items-center">
-      <span class="w-2 h-2 inline-block bg-orange-600 rounded-full me-2"></span>
-      <span class="text-gray-600 dark:text-neutral-400 text-sm">Education 5%</span>
-    </div>
-    <div class="inline-flex items-center">
-      <span class="w-2 h-2 inline-block bg-gray-200 rounded-full me-2"></span>
-      <span class="text-gray-600 dark:text-neutral-400 text-sm">Others 21%</span>
-    </div>
-  
-  </div>
-  <!-- Legend -->
-</div>
-
-</div>
-{% endcomment %}
 
 <!-- begin summary -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
@@ -82,6 +26,11 @@
           <!-- end card  -->
         </div>
         <!-- end summary  -->
+<!-- chart -->
+<div>
+    {% include 'core/components/chart.html'   %}
+</div>
+<!-- /chart -->
         
         <!-- begin activity -->
 <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
