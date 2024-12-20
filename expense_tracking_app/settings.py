@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv 
 from django.core.management.utils import get_random_secret_key
+from django_components import ComponentsSettings
 
 load_dotenv()
 
@@ -46,10 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core', 
     'authentication',
+    'django_components',
     # 'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'django_components.middleware.ComponentDependencyMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
@@ -63,11 +66,29 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'expense_tracking_app.urls'
 
+# django components 
+
+COMPONENTS = ComponentsSettings(
+    dirs=[
+        BASE_DIR / 'core' / 'templates' / 'components' 
+    ],
+)
+
+
+STATICFILES_FINDERS = [
+    # Default finders
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    # Django components
+    "django_components.finders.ComponentsFileSystemFinder",
+]
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'APP_DIRS': True,
+        # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -75,6 +96,21 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            
+            'loaders':[(
+                'django.template.loaders.cached.Loader', [
+                    # Default Django loader
+                    'django.template.loaders.filesystem.Loader',
+                    # Inluding this is the same as APP_DIRS=True
+                    'django.template.loaders.app_directories.Loader',
+                    # Components loader
+                    'django_components.template_loader.Loader',
+                ]
+            )],
+        
+            'builtins': [
+                'django_components.templatetags.component_tags',
+            ]
         },
     },
 ]

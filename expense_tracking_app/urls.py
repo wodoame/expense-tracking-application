@@ -21,6 +21,7 @@ import authentication.views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('__debug__/', include('debug_toolbar.urls')),
+    path('', include("django_components.urls")),
     path('', core_views.RedirectView.as_view()),
     path('dashboard/', core_views.Dashboard.as_view(), name='dashboard'),
     path('all-expenditures/', core_views.AllExpenditures.as_view(), name='all-expenditures'),
