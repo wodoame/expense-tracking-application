@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block content %}
-    {% include 'core/components/navbar.html' %}
-    {% include 'core/components/sidebar.html' %}
+    {% component 'navbar' / %}
+    {% component 'sidebar' / %}
     
     <div class="p-4 sm:ml-64 mt-16">
         {% block main %}
@@ -15,13 +15,15 @@
     {% include 'core/components/showDetailsModal.html' with id="show-details-modal" %}
     {% include 'core/components/editProductModal.html' with id="edit-product-modal" %}
 
-{% include 'core/components/toastWrapper.html' %}
+{% component 'toastWrapper' / %}
   <div class="bg-gray-900/50  fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
  
 {{categories|json_script:'categories'}}
  <script src="{% static 'js/modal-control.js' %}"></script>
  <script src="{% static 'js/manage-product.js' %}"></script>
- <script src="{% static 'js/toast.js' %}"></script>
+ {# 
+    <script src="{% static 'js/toast.js' %}"></script>
+ #}
  <script src="{% static 'js/objectSelect.js' %}"></script>
  <script src="{% static 'js/themeToggler.js' %}"></script>
 {% endblock %}

@@ -52,7 +52,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django_components.middleware.ComponentDependencyMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
@@ -62,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_components.middleware.ComponentDependencyMiddleware',
 ]
 
 ROOT_URLCONF = 'expense_tracking_app.urls'
@@ -70,7 +70,8 @@ ROOT_URLCONF = 'expense_tracking_app.urls'
 
 COMPONENTS = ComponentsSettings(
     dirs=[
-        BASE_DIR / 'core' / 'templates' / 'components' 
+        BASE_DIR / 'core' / 'templates' / 'core' / 'components', 
+        BASE_DIR / 'core' / 'static' # no components here but I want to be able to grab js file using static/js/jsfilename.js 
     ],
 )
 
