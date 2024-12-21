@@ -10,3 +10,8 @@ interface Product{
     category: Category;
     date: string;
 }
+
+type ModalInstance = {
+    toggle: (e: Event)=>void; 
+    isOpen: boolean; 
+}

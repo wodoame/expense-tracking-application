@@ -156,6 +156,7 @@ class Records(View):
             'nextPageNumber':nextPageNumber
             }
         return render(request, 'core/components/paginateExpenditures.html', context)
+    
 # @login_required
 class Settings(View): 
     def get(self, request):

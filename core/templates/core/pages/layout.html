@@ -10,7 +10,12 @@
             <!-- main content goes here -->
         {% endblock %}
     </div>
+    {#     
     {% include 'core/components/addProductModal.html' with id="add-product-modal" %}
+    #}
+     
+    {% component 'addProductModal' / %}
+
     {% include 'core/components/deleteProductModal.html' with id="delete-product-modal" %}
     {% include 'core/components/showDetailsModal.html' with id="show-details-modal" %}
     {% include 'core/components/editProductModal.html' with id="edit-product-modal" %}
@@ -26,4 +31,7 @@
  #}
  <script src="{% static 'js/objectSelect.js' %}"></script>
  <script src="{% static 'js/themeToggler.js' %}"></script>
+ 
+ <script src="{% static 'js/modal-init.js' %}"></script>
+ <script src="{% static 'js/modals.js' %}"></script>
 {% endblock %}
