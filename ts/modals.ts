@@ -4,8 +4,8 @@ class BaseModal{
    constructor(id: string){
         this.modal = modalManager.getModal(id);
    }
-   toggle(e: Event){
-      this.modal.toggle(e);
+   toggle(){
+      this.modal.toggle();
    }
 }
 

@@ -4,8 +4,8 @@ class BaseModal {
     constructor(id) {
         this.modal = modalManager.getModal(id);
     }
-    toggle(e) {
-        this.modal.toggle(e);
+    toggle() {
+        this.modal.toggle();
     }
 }
 class AddProductModal extends BaseModal {

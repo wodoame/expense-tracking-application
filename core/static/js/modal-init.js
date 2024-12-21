@@ -12,15 +12,14 @@ class ModalManager {
 }
 const modalManager = new ModalManager();
 document.addEventListener('alpine:init', () => {
-    // this is where the actual creation of a modal takes place
+    // this is where the actual creation of a modal instance takes place
     Alpine.data('baseModal', (id) => ({
         isOpen: false,
         init() {
             modalManager.createModal(id, this);
         },
         // functionalities defined here can be used in the components directly
-        toggle(e) {
-            e.stopPropagation(); // stop propagation to prevent other elements retoggling the modal
+        toggle() {
             this.isOpen = !this.isOpen;
             const animatedBackdrop = document.getElementById('animated-backdrop');
             const body = document.body;
@@ -29,7 +28,7 @@ document.addEventListener('alpine:init', () => {
         },
         handleClickOutside(e) {
             if (e.target == e.currentTarget) {
-                this.toggle(e);
+                this.toggle();
             }
         }
     }));
