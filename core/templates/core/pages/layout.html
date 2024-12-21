@@ -14,8 +14,8 @@
     {% include 'core/components/addProductModal.html' with id="add-product-modal" %}
     #}
      
-    {% component 'addProductModal' / %}
-
+    {% component 'addProductModal' id='add-product-modal' / %}
+    {% component 'addCategoryModal' id='add-category-modal' / %}
     {% include 'core/components/deleteProductModal.html' with id="delete-product-modal" %}
     {% include 'core/components/showDetailsModal.html' with id="show-details-modal" %}
     {% include 'core/components/editProductModal.html' with id="edit-product-modal" %}

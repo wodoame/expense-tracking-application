@@ -19,6 +19,8 @@ class AddProductModal extends BaseModal {
         }
     }
 }
+class AddCategoryModal extends BaseModal {
+}
 const getAddProductModal = (() => {
     let instance = undefined; // just a reference to the modal if it has been called already 
     return () => {
@@ -26,6 +28,16 @@ const getAddProductModal = (() => {
             return instance;
         }
         instance = new AddProductModal('add-product-modal');
+        return instance;
+    };
+})();
+const getAddCategoryModal = (() => {
+    let instance = undefined; // just a reference to the modal if it has been called already 
+    return () => {
+        if (instance) {
+            return instance;
+        }
+        instance = new AddCategoryModal('add-category-modal');
         return instance;
     };
 })();

@@ -1,0 +1,19 @@
+{% component 'baseModal' %}
+    {% fill 'title' %}Add Category{% endfill %}
+    {% fill 'body' %}
+    <form class="p-4 md:p-5 add-product-form" method="POST" id="{% block formId %}add-product-form{% endblock %}" action="{% block action %}/dashboard/{% endblock %}">
+        {% csrf_token %}
+         <div class="grid gap-4 mb-4 grid-cols-2">
+             <div class="col-span-2">
+                 <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
+                 <input type="text" name="name" maxlength="128" id="name" class="input" placeholder="Type product name" required>
+             </div> 
+         </div>
+         <!-- showFormLoader('add-product-form') -->
+         <button type="button" @click="getAddProductModal().submitForm()" class="text-white inline-flex w-full items-center rounded-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold text-sm px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+             <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+             Add new category
+         </button>
+     </form>  
+    {% endfill %}
+{% endcomponent %}
