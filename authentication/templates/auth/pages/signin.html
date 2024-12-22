@@ -6,7 +6,7 @@
 
 
 {% block content %}
-    {% include  'core/components/toastWrapper.html' %}
+    {% component 'toastWrapper' / %}
     <div class="p-4">
         <img class="h-10" src="{% static 'imgs/logo-100x100.png' %}" alt="xpense_logo">
     </div>
@@ -40,8 +40,7 @@
 {% endblock content %}
 
 {% block scripts %}
-    <script src="{% static "main.js" %}"></script>
-    <script src="{% static 'js/toast.js' %}"></script>
+    <script src="{% static 'main.js' %}"></script>
     <script src="{% static 'js/flowbitejs.min.js' %}"></script>
 
 {% endblock scripts %}
