@@ -4,8 +4,11 @@ class BaseModal {
     constructor(id) {
         this.modal = modalManager.getModal(id);
     }
-    toggle() {
-        this.modal.toggle();
+    open() {
+        this.modal.open();
+    }
+    close() {
+        this.modal.close();
     }
 }
 class AddProductModal extends BaseModal {

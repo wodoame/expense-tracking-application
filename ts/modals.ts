@@ -4,8 +4,12 @@ class BaseModal{
    constructor(id: string){
         this.modal = modalManager.getModal(id);
    }
-   toggle(){
-      this.modal.toggle();
+   open(){
+      this.modal.open();
+   }
+   
+   close(){
+      this.modal.close();
    }
 }
 

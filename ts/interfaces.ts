@@ -12,6 +12,8 @@ interface Product{
 }
 
 type ModalInstance = {
-    toggle: ()=>void; 
+    toggleSideEffects: (force:boolean)=>void;
+    open: ()=>void; 
+    close: ()=>void; 
     isOpen: boolean; 
 }

@@ -22,21 +22,30 @@ function createModalInstance(id) {
             modalManager.createModal(id, this);
         },
         // functionalities defined here can be used in the components directly
-        toggle() {
-            this.isOpen = !this.isOpen;
+        open() {
+            this.isOpen = true;
+            this.toggleSideEffects(!this.isOpen);
+            history.pushState(null, '');
+            localStorage.setItem('modalOpen', 'true');
+            modalManager.currentlyOpenModal = this;
+            console.log('state has been set');
+        },
+        close() {
+            this.isOpen = false;
+            this.toggleSideEffects(!this.isOpen);
+            // no matter what closes the modal remove these from localStorage
+            localStorage.removeItem('modalOpen');
+            localStorage.removeItem('forwarded');
+        },
+        toggleSideEffects(force) {
             const animatedBackdrop = document.getElementById('animated-backdrop');
             const body = document.body;
-            animatedBackdrop.classList.toggle('hidden');
-            body.classList.toggle('overflow-hidden');
-            if (this.isOpen) {
-                history.pushState(null, '');
-                localStorage.setItem('modalOpen', 'true');
-                modalManager.currentlyOpenModal = this;
-            }
+            animatedBackdrop.classList.toggle('hidden', force); // note when force is true the class is added and if it's false it is removed
+            body.classList.toggle('overflow-hidden', !force);
         },
         handleClickOutside(e) {
             if (e.target == e.currentTarget) {
-                this.toggle();
+                this.close();
             }
         }
     };
@@ -47,12 +56,11 @@ function createModal() {
 function handleCloseModal() {
     if (localStorage.getItem('modalOpen')) {
         localStorage.removeItem('modalOpen');
-        localStorage.setItem('forwarded', ' true');
+        localStorage.setItem('forwarded', 'true');
         history.forward();
     }
     else if (localStorage.getItem('forwarded')) {
-        localStorage.removeItem('forwarded');
-        modalManager.currentlyOpenModal.toggle();
+        modalManager.currentlyOpenModal.close();
     }
 }
 window.addEventListener('popstate', handleCloseModal);
