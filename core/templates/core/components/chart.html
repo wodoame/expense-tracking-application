@@ -1,0 +1,32 @@
+{% load static %}
+<div>
+    <canvas id="myChart"></canvas>
+  </div>
+
+  
+   
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+    
+    
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels:[{% for product in chart_item %}'{{ product.name }}',{% endfor %}] ,
+        datasets: [{
+          label: 'Amount Spent',
+          data: [{% for product in chart_item %}'{{ product.price }}',{% endfor %}] ,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
