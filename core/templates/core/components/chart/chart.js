@@ -1,12 +1,16 @@
 const ctx = document.getElementById('myChart');
+const categories = JSON.parse(document.getElementById('categories').textContent);
+const categoryName = categories.map(category => category.name);
+const categoryData = categories.map(category => category.product_count);
+console.log(categories);
   
 new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: categoryName ,
     datasets: [{
       label: 'Amount Spent',
-      data: [12, 19, 3, 5, 2, 3],
+      data: categoryData,
       borderWidth: 1
     }]
   },
