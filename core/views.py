@@ -1,4 +1,5 @@
 from .views_dependencies import * 
+from .models import Product
 class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
@@ -17,6 +18,8 @@ class Dashboard(View):
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
         categories = CategorySerializer(user.categories.all(), many=True).data
+        #changes
+        chart_item = Product.objects.all()
         context = {
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
@@ -27,7 +30,9 @@ class Dashboard(View):
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
-            'categories': categories
+            'categories': categories,
+            #changes
+            'chart_item':chart_item,
         }
         return render(request, 'core/pages/dashboard.html', context)
     
