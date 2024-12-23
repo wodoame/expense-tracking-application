@@ -2,7 +2,7 @@ const ctx = document.getElementById('myChart');
 const categories = JSON.parse(document.getElementById('categories').textContent);
 const categoryName = categories.map(category => category.name);
 const categoryData = categories.map(category => category.product_count);
-console.log(categories);
+
   
 new Chart(ctx, {
   type: 'bar',
