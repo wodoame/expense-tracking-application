@@ -25,16 +25,31 @@ class AddProductModal extends BaseModal {
 class AddCategoryModal extends BaseModal {
 }
 class DataFieldsModal extends BaseModal {
-}
-class DeleteProductModal extends BaseModal {
     constructor() {
         super(...arguments);
         // fields 
         this.dataFields = {};
-        this.formFields = {};
     }
     setDataField(key, value) {
         this.dataFields[key] = value;
+    }
+}
+class ShowDetailsModal extends DataFieldsModal {
+    setDetails(data) {
+        const product = JSON.parse(data);
+        // set data field text contents
+        this.dataFields.name.textContent = product.name;
+        this.dataFields.price.textContent = `GHS ${product.price.toFixed(2)}`;
+        this.dataFields.category.textContent = product.category ? product.category.name : 'None';
+        this.dataFields.description.textContent = product.description || 'No description';
+        this.open();
+    }
+}
+class DeleteProductModal extends DataFieldsModal {
+    constructor() {
+        super(...arguments);
+        // fields 
+        this.formFields = {};
     }
     setFormField(key, value) {
         this.formFields[key] = value;
@@ -92,6 +107,16 @@ const getDeleteProductModal = (() => {
             return instance;
         }
         instance = new DeleteProductModal('delete-product-modal');
+        return instance;
+    };
+})();
+const getShowDetailsModal = (() => {
+    let instance = undefined;
+    return () => {
+        if (instance) {
+            return instance;
+        }
+        instance = new ShowDetailsModal('show-details-modal');
         return instance;
     };
 })();

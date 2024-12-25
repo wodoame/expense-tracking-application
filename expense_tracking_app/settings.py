@@ -29,6 +29,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
+USE_DEVELOPMENT_DATABASE = os.getenv('USE_DEVELOPMENT_DATABASE', 'False') == 'True'
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -122,7 +124,7 @@ WSGI_APPLICATION = 'expense_tracking_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG:
+if DEBUG or USE_DEVELOPMENT_DATABASE:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
