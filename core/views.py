@@ -104,7 +104,7 @@ class Dashboard(View):
                 'items':items
             }
             if not items[0].get('products'):
-                return render(request, 'core/components/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
+                return render(request, 'core/components/toastWrapper/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
             return render(request, 'core/components/paginateExpenditures.html', context) 
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
