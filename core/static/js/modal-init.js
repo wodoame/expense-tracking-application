@@ -28,7 +28,6 @@ function createModalInstance(id) {
             history.pushState(null, '');
             localStorage.setItem('modalOpen', 'true');
             modalManager.currentlyOpenModal = this;
-            console.log('state has been set');
         },
         close() {
             this.isOpen = false;
