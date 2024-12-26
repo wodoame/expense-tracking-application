@@ -29,7 +29,7 @@ class AddCategoryModal extends BaseModal{
 }
 
 class DataFieldsModal extends BaseModal{
-    // fields 
+    // data fields 
     dataFields: {[key: string]: HTMLElement} = {};
     setDataField(key:string, value:HTMLElement){
         this.dataFields[key] = value;
@@ -49,7 +49,7 @@ class ShowDetailsModal extends DataFieldsModal{
 }
 
 class DeleteProductModal extends DataFieldsModal{
-    // fields 
+    // form fields 
     formFields: {[key: string]: HTMLInputElement} = {};
 
     setFormField(key: string, value:HTMLInputElement){

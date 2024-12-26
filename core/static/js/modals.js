@@ -27,7 +27,7 @@ class AddCategoryModal extends BaseModal {
 class DataFieldsModal extends BaseModal {
     constructor() {
         super(...arguments);
-        // fields 
+        // data fields 
         this.dataFields = {};
     }
     setDataField(key, value) {
@@ -48,7 +48,7 @@ class ShowDetailsModal extends DataFieldsModal {
 class DeleteProductModal extends DataFieldsModal {
     constructor() {
         super(...arguments);
-        // fields 
+        // form fields 
         this.formFields = {};
     }
     setFormField(key, value) {

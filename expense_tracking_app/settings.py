@@ -29,8 +29,6 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-USE_DEVELOPMENT_DATABASE = os.getenv('USE_DEVELOPMENT_DATABASE', 'False') == 'True'
-
 
 ALLOWED_HOSTS = ['*']
 
@@ -124,7 +122,7 @@ WSGI_APPLICATION = 'expense_tracking_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG or USE_DEVELOPMENT_DATABASE:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -137,7 +135,7 @@ else:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('DBNAME'),
             'USER': os.getenv('USER'),
-            'PASSWORD': os.getenv('SUPERBASE_PASSWORD'),
+            'PASSWORD': os.getenv('PASSWORD'),
             'HOST': os.getenv('HOST'),  # Change if your database is hosted elsewhere
             'PORT': os.getenv('DBPORT'),       # Default PostgreSQL port
         }

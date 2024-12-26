@@ -54,16 +54,3 @@ function submitEditForm(e) {
         form.reportValidity(); // display the validation messages
     }
 }
-function submitDeleteForm(e) {
-    const form = document.getElementById('delete-product-form');
-    const formData = htmx.values(form);
-    const tr = htmx.find(`#product-${formData.id}`);
-    const elementToReplace = htmx.closest(tr, '.record');
-    elementToReplace.querySelector('.skeleton').classList.remove('hidden');
-    closeModal(e);
-    htmx.ajax('POST', '/dashboard/?delete=1', {
-        values: formData,
-        target: elementToReplace,
-        swap: 'outerHTML'
-    });
-}
