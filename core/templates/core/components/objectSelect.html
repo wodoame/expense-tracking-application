@@ -2,7 +2,7 @@
     <div>
       <button type="button" :class="{'outline-none !border-blue-500 transition-colors duration-100;': isFocused }" class="p-4 bg-white dark:bg-transparent border-2 dark:border-gray-100/5 border-gray-200 rounded-md flex items-center w-full">
         <div class="flex-grow">
-          <input type="hidden" name="{{name}}" :value="selected[submitProperty]">
+          <input type="hidden" name="{{name}}" x-init="formId=='edit-product-form'?modal.setFormField('category', $el):null" :value="selected[submitProperty]">
           <input type="hidden" name="newCategoryName" :value="newCategory.name">
           <input type="text" x-ref="filterInput" @input="filter" @focus="isFocused=true; open=true;" @blur="isFocused=false" class="outline-none bg-transparent text-sm font-medium w-full" :value="selected.name">
         </div>

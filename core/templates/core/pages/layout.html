@@ -10,28 +10,19 @@
             <!-- main content goes here -->
         {% endblock %}
     </div>
-    {#
-         
-    #}
      
     {% component 'addProductModal' id='add-product-modal' / %}
     {% component 'addCategoryModal' id='add-category-modal' / %}
     {% component 'deleteProductModal' id='delete-product-modal' / %}
     {% component 'showDetailsModal' id="show-details-modal" / %}
-    {% include 'core/components/editProductModal.html' with id="edit-product-modal" %}
+    {% component 'editProductModal' id="edit-product-modal" / %}
 
 {% component 'toastWrapper' / %}
   <div class="bg-gray-900/50  fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
  
 {{categories|json_script:'categories'}}
- <script src="{% static 'js/modal-control.js' %}"></script>
- <script src="{% static 'js/manage-product.js' %}"></script>
- {# 
-    <script src="{% static 'js/toast.js' %}"></script>
- #}
  <script src="{% static 'js/objectSelect.js' %}"></script>
  <script src="{% static 'js/themeToggler.js' %}"></script>
- 
  <script src="{% static 'js/modal-init.js' %}"></script>
  <script src="{% static 'js/modals.js' %}"></script>
 {% endblock %}

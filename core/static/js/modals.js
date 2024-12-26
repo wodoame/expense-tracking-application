@@ -34,6 +34,16 @@ class DataFieldsModal extends BaseModal {
         this.dataFields[key] = value;
     }
 }
+class FormFieldsModal extends BaseModal {
+    constructor() {
+        super(...arguments);
+        // form fields 
+        this.formFields = {};
+    }
+    setFormField(key, value) {
+        this.formFields[key] = value;
+    }
+}
 class ShowDetailsModal extends DataFieldsModal {
     setDetails(data) {
         const product = JSON.parse(data);
@@ -80,6 +90,44 @@ class DeleteProductModal extends DataFieldsModal {
         });
     }
 }
+class EditProductModal extends FormFieldsModal {
+    setDetails(data) {
+        const product = JSON.parse(data);
+        const priceParts = product.price.toString().split('.');
+        this.formFields.name.value = product.name;
+        this.formFields.cedis.value = priceParts[0];
+        console.log(priceParts);
+        if (product.category) {
+            this.formFields.category.value = product.category.id.toString();
+        }
+        if (priceParts.length > 1) {
+            this.formFields.pesewas.value = priceParts[1];
+        }
+        this.formFields.id.value = product.id.toString();
+        this.formFields.description.value = product.description;
+        this.formFields.date.value = product.date;
+        setCategory(product.category);
+        this.open();
+    }
+    submitForm() {
+        const form = document.getElementById('edit-product-form');
+        if (form.checkValidity()) {
+            const formData = htmx.values(form);
+            const tr = htmx.find(`#product-${formData.id}`);
+            const elementToReplace = htmx.closest(tr, '.record');
+            elementToReplace.querySelector('.skeleton').classList.remove('hidden');
+            this.close();
+            htmx.ajax('POST', '/dashboard/?edit=1', {
+                values: formData,
+                target: elementToReplace,
+                swap: 'outerHTML'
+            });
+        }
+        else {
+            form.reportValidity(); // display the validation messages
+        }
+    }
+}
 const getAddProductModal = (() => {
     let instance = undefined; // just a reference to the modal if it has been called already 
     return () => {
@@ -117,6 +165,16 @@ const getShowDetailsModal = (() => {
             return instance;
         }
         instance = new ShowDetailsModal('show-details-modal');
+        return instance;
+    };
+})();
+const getEditProductModal = (() => {
+    let instance = undefined;
+    return () => {
+        if (instance) {
+            return instance;
+        }
+        instance = new EditProductModal('edit-product-modal');
         return instance;
     };
 })();

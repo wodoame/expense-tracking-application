@@ -1,0 +1,44 @@
+{% component 'baseModal' %}
+{% fill 'title'  %}Edit Product{% endfill %}
+{% fill 'body'  %}
+<form class="p-4 md:p-5 add-product-form" x-data="{modal: getEditProductModal(), formId: 'edit-product-form'}" method="POST" id="edit-product-form">
+    {% csrf_token %}
+     <div class="grid gap-4 mb-4 grid-cols-2">
+         <div class="col-span-2">
+             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
+             <input type="text" name="name" x-init="modal.setFormField('name', $el)" maxlength="128" id="name" class="input" placeholder="Type product name" required>
+         </div>
+
+         <div class="col-span-2">
+           <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category</label>
+           {% include 'core/components/objectSelect.html' with name='category' listId='categories' only  %}
+        </div>
+         
+         <div class="col-span-1">
+             <label for="cedis" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Cedis</label>
+             <input type="number" min="0" name="cedis" x-init="modal.setFormField('cedis', $el)" id="cedis" placeholder="e.g. 20" class="input [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" required>
+         </div>
+         <div class="col-span-1">
+             <label for="pesewas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Pesewas</label>
+             <input type="number" min="0" name="pesewas" x-init="modal.setFormField('pesewas', $el)" id="pesawas" class="input [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"  value="00" required="">
+         </div>
+          
+         
+         <div class="col-span-2">
+             <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product Description</label>
+             <textarea id="description" maxlength="255" name="description" x-init="modal.setFormField('description', $el)" rows="4" class="input resize-none" placeholder="Write product description here"></textarea>                    
+         </div>
+     </div>
+         
+     <input type="hidden" name="id" x-init="modal.setFormField('id', $el)">
+     <input type="hidden" name="date" x-init="modal.setFormField('date', $el)">
+
+        <!-- showFormLoader('add-product-form') -->
+        <button type="button" @click="modal.submitForm()" class="text-white inline-flex w-full items-center rounded-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold text-sm px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+            Edit
+        </button>
+    
+     </form>   
+{% endfill %}
+{% endcomponent %}
