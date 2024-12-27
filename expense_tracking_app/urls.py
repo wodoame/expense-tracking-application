@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 import core.views as core_views
 import authentication.views as auth_views
+
+handler404 = 'authentication.views.not_found_404'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('__debug__/', include('debug_toolbar.urls')),

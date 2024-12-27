@@ -28,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = False
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
@@ -122,7 +123,9 @@ WSGI_APPLICATION = 'expense_tracking_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG:
+TEST404 = os.getenv('TEST_404', 'False') == 'True'
+print(f'DEB {DEBUG}, 404 {TEST404}')
+if DEBUG or TEST404:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -177,6 +180,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'staticfiles/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'authentication/static'),
+]
 
 # Was checking an error (NOTE: linking to non-existent static files can cause errors in production)
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

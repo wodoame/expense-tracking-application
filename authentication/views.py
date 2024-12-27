@@ -69,3 +69,7 @@ class Logout(View):
         '''logout a user'''
         logout(request)
         return redirect('signin')
+    
+def not_found_404(request, exception):
+    '''404 page'''
+    return render(request, 'auth/pages/404.html', {}, status=404)

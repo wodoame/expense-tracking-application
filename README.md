@@ -53,6 +53,10 @@ pip install -r requirements.txt
 
 #Note: If you encounter issues with psycopg2, install psycopg2-binary instead
 pip install psycopg2-binary
+
+or run this command
+
+pip install requirements-psycopg2-binary.txt
 ```
 
 ### 4. Configure Environment Variables
@@ -66,6 +70,7 @@ vi .env
 #add the following line to the .env file
 DJANGO_SECRET_KEY=your_secret_key_here
 ```
+
 Save and exit the file.
 
 *NOTE: A secret key is generated for you already so it's not necessary to generate one yourself*
