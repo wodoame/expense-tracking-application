@@ -1,13 +1,7 @@
 {% extends 'core/pages/base.html' %}
 {% load static %}
 {% block content %}
-{% component 'addProductModal' / %}
-    <div class="p-4">
-        <button class="btn" x-data @click="getModal('add-product-modal').toggle($event)">toggle modal</button>
-    </div>
-     
-    <div class="bg-gray-900/50  fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
-
-    <script src="{% static 'js/modal-init.js' %}"></script>
-    <script src="{% static 'js/baseModal.js' %}"></script>
+   <div class="p-4">
+       {% include 'core/components/datepickers/simpleDatePicker.html' %}
+   </div>
 {% endblock %}

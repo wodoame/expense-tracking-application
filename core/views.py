@@ -176,8 +176,11 @@ class CategoriesPage(View):
 # @login_required
 class Test(View):
     def get(self, request): 
-        context = {}
-        messages.success(request, 'Loaded component')
+        calendar = Calendar()
+        month = 12
+        weeks = calendar.monthdatescalendar(2024, month)
+        context = {'weeks': weeks, 'month': month, 'today': datetime.today().date()}
+        # messages.success(request, 'Loaded component')
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
