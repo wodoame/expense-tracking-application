@@ -2,6 +2,8 @@ from .models import Product
 from .serializers import ProductSerializer
 from .datechecker import get_total
 import asyncio 
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required as lr 
 
 def record(date, request):
     user = request.user
@@ -14,4 +16,8 @@ def record(date, request):
     
     # asyncio.run(asyncio.sleep(2))
     return result
+
+def login_required(cls):
+    cls = method_decorator(lr(login_url='signin'), name='dispatch')(cls)
+    return cls
 

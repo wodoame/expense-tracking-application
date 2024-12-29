@@ -3,7 +3,7 @@ class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
 
-@method_decorator(login_required(login_url='signin'), name='dispatch')
+@login_required
 class Dashboard(View):
     def get(self, request):
         user = request.user
@@ -118,7 +118,7 @@ class ActivityCalendar(View):
         }
         return render(request, 'core/components/activityCalendar.html', context)
 
-@method_decorator(login_required(login_url='signin'), name='dispatch')
+login_required
 class AllExpenditures(View): 
     def get(self, request):
         user = request.user
