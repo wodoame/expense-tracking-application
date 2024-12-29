@@ -10,7 +10,7 @@ class Dashboard(View):
         products = ProductSerializer(user.products.all(), many=True).data
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
-        statContext = Context(WeeklyStats(products))
+        statContext = Context(WeeklyStats(products, request.user))
         stats = statContext.apply() 
         today = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateToday]
         yesterday = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateYesterday]
