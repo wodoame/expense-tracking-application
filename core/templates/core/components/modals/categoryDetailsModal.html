@@ -1,0 +1,36 @@
+{% component 'baseModal' %}
+    {% fill 'title' %}Details{% endfill %}
+    {% fill 'body' %}
+    <div class="p-4 bg-white" x-data="{df:getCategoryDetailsModal().df}">
+        <div>
+            <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+               Name
+            </div>
+            <div class="px-2 text-sm text-start dark:text-neutral-200" x-init="df.setDataField('name', $el)"></div>
+        </div>
+    
+        <div>
+            <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+               Number of items
+            </div>
+            <div class="px-2">
+                <span class="text-sm bg-blue-100 text-blue-800 px-2 rounded-full"><span x-init="df.setDataField('product_count', $el)"></span> items</span>
+            </div>
+            <!-- <div class="flex items-center gap-4">
+                <div class="px-2 text-sm text-start dark:text-neutral-200" x-init="df.setDataField('product_count', $el)"></div>
+                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm">
+                    <span class="mr-2">See items</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div> -->
+        </div>
+
+        <div>
+            <div class="py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+               Description
+            </div>
+            <div class="px-2 text-sm text-start dark:text-neutral-200" x-init="df.setDataField('description', $el)"></div>
+        </div>
+    </div>
+    {% endfill %}
+{% endcomponent %}

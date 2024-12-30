@@ -148,6 +148,24 @@ class EditProductModal extends BaseModal{
   }
 }
 
+class CategoryDetailsModal extends BaseModal{
+    df: DataFields;
+    constructor(id: string, df: DataFields){
+        super(id);
+        this.df = df;
+    }
+    
+    setDetails(data: string){
+        const category: Category = JSON.parse(data);
+        const dataFields = this.df.dataFields;
+        // set data field text contents
+        dataFields.name.textContent = category.name;
+        dataFields.product_count.textContent = category.product_count.toString();
+        dataFields.description.textContent = category.description || 'No description';
+        this.open();
+    }
+}
+
 
 const getAddProductModal = (()=>{
    let instance = undefined; // just a reference to the modal if it has been called already 
@@ -208,4 +226,17 @@ const getEditProductModal = (()=>{
        instance = new EditProductModal('edit-product-modal', ff);
        return instance;
    };
+})();
+
+const getCategoryDetailsModal = (()=>{
+   let instance = undefined; 
+   return ()=>{
+       if(instance){
+           return instance; 
+       }
+       const df = new DataFields(); 
+       instance = new CategoryDetailsModal('category-details-modal', df);
+       return instance;
+   };
 })(); 
+

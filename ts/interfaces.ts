@@ -1,6 +1,8 @@
 interface Category{
     id: number; 
     name:string;
+    product_count:number;
+    description?:string; 
 }
 interface Product{
     id:number; 
