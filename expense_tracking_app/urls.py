@@ -38,4 +38,5 @@ urlpatterns = [
     # path('complete-signup/', auth_views.CompleteSignUp.as_view(), name='complete-signup'),
     # path('components/signupContinued/', auth_views.SignUpContinued.as_view()),
     path('test/', core_views.Test.as_view()),
+    path('routes/', core_views.Routes.as_view()),
 ]

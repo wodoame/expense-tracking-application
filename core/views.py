@@ -29,7 +29,8 @@ class Dashboard(View):
             'yesterdayTotal':yesterdayTotal,
             'categories': categories
         }
-        return render(request, 'core/pages/dashboard.html', context)
+        # return render(request, 'core/pages/dashboard.html', context)
+        return render(request, 'core/routes/fakeDashboard.html', context)
     
     def post(self, request):
         if request.GET.get('edit'): 
@@ -137,7 +138,8 @@ class AllExpenditures(View):
          'records': records, 
          'categories': categories,
         }
-        return render(request, 'core/pages/allExpenditures.html', context)
+        # return render(request, 'core/pages/allExpenditures.html', context)
+        return render(request, 'core/routes/fakeExpendituresPage.html', context)
 # @login_required    
 class Records(View):
     def post(self, request):
@@ -176,15 +178,27 @@ class CategoriesPage(View):
 # @login_required
 class Test(View):
     def get(self, request): 
-        calendar = Calendar()
-        month = 12
-        weeks = calendar.monthdatescalendar(2024, month)
-        context = {'weeks': weeks, 'month': month, 'today': datetime.today().date()}
-        # messages.success(request, 'Loaded component')
+        context = {}
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
        pass
+
+import asyncio
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+class Routes(View): 
+    def get(self, request): 
+        context = {}
+        if request.GET.get('all'):
+            return JsonResponse(
+                {
+                  '/dashboard/': render_to_string('core/routes/fakePage.html', {'url': '/dashboard/'}),
+                  '/all-expenditures/': render_to_string('core/routes/fakePage.html', {'url': '/all-expenditures/'}),
+                }
+            )
+        asyncio.run(asyncio.sleep(2))
+        return render(request, 'core/components/blank.html', context)
         
     
         

@@ -1,17 +1,8 @@
-{% extends 'core/pages/base.html' %}
+{% extends 'core/pages/layout.html' %}
 {% load static %}
-{% block content %}
-   <div class="p-4">
-    <div class="w-64 p-6 bg-white rounded-lg transition-shadow duration-300">
-        <div class="flex justify-between items-start mb-2">
-            <h3 class="text-xl font-semibold">Electronics</h3>
-            <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">142 items</span>
-        </div>
-        <p class="text-gray-600 text-sm mb-4">Discover our latest collection of cutting-edge electronics, from smartphones to smart home devices.</p>
-        <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-            <span class="mr-2">See products</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-    </div>
-   </div>
+{% block main %}
+   <main id="main-content" class="p-4">
+    
+   </main>
+   <script src="{% static 'js/router.js' %}"></script>
 {% endblock %}
