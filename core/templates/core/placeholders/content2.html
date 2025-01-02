@@ -1,6 +1,3 @@
-{% extends 'core/pages/layout.html' %}
-{% block main %}
-{% include 'core/components/pageHeading.html' with text="Expenditures"   %}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
   {% include 'core/components/paginator.html' %}
 </div>
@@ -18,5 +15,3 @@
         return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
 </script>
-
-{% endblock %}

@@ -15,3 +15,5 @@ from .utils import record, login_required
 from django.utils.decorators import method_decorator
 from django.http import HttpRequest
 from calendar import Calendar
+from django.template.loader import render_to_string
+from django.http import JsonResponse

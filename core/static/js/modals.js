@@ -86,7 +86,7 @@ class DeleteProductModal extends BaseModal {
         const elementToReplace = htmx.closest(tr, '.record');
         elementToReplace.querySelector('.skeleton').classList.remove('hidden');
         this.close();
-        htmx.ajax('POST', '/dashboard/?delete=1', {
+        htmx.ajax('POST', '/actual-dashboard/?delete=1', {
             values: formData,
             target: elementToReplace,
             swap: 'outerHTML'
@@ -125,7 +125,7 @@ class EditProductModal extends BaseModal {
             const elementToReplace = htmx.closest(tr, '.record');
             elementToReplace.querySelector('.skeleton').classList.remove('hidden');
             this.close();
-            htmx.ajax('POST', '/dashboard/?edit=1', {
+            htmx.ajax('POST', '/actual-dashboard/?edit=1', {
                 values: formData,
                 target: elementToReplace,
                 swap: 'outerHTML'

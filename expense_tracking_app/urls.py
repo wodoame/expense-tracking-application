@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 import core.views as core_views
 import authentication.views as auth_views
+import core.placeholder_views as placeholder_views
 
 handler404 = 'authentication.views.not_found_404'
 
@@ -26,9 +27,11 @@ urlpatterns = [
     # path('__debug__/', include('debug_toolbar.urls')),
     path('', include("django_components.urls")),
     path('', core_views.RedirectView.as_view()),
-    path('dashboard/', core_views.Dashboard.as_view(), name='dashboard'),
-    path('all-expenditures/', core_views.AllExpenditures.as_view(), name='all-expenditures'),
-    path('components/activityCalendar/', core_views.ActivityCalendar.as_view()), 
+    path('dashboard/', placeholder_views.Dashboard.as_view(), name='dashboard'),
+    path('actual-dashboard/', core_views.Dashboard.as_view(), name='actual-dashboard'),
+    path('all-expenditures/', placeholder_views.AllExpenditures.as_view(), name='all-expenditures'),
+    path('actual-all-expenditures/', core_views.AllExpenditures.as_view(), name='actual-all-expenditures'),
+    path('components/activityCalendar/', core_views.ActivityCalendar.as_view()),
     path('components/records/', core_views.Records.as_view()),
     path('settings/', core_views.Settings.as_view()),   
     path('categories/', core_views.CategoriesPage.as_view()),

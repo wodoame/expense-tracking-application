@@ -7,6 +7,7 @@ class Router {
         this.routes = data;
     }
     navigate(route) {
+        history.pushState({}, '', route);
         htmx.swap('#main-content', this.routes[route], { swapStyle: 'innerHTML', transition: true });
     }
 }
@@ -14,6 +15,7 @@ class Routes {
     constructor(router) {
         this.router = router;
     }
+    // To navigate to a route it's as easy as doing: routes.routeName()
     dashboard() {
         this.router.navigate('/dashboard/');
     }

@@ -7,3 +7,4 @@ etavenv/
 staticfiles/
 error.log
 trial.py
+.idea/

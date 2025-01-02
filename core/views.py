@@ -6,6 +6,7 @@ class RedirectView(View):
 @login_required
 class Dashboard(View):
     def get(self, request):
+        # asyncio.run(asyncio.sleep(3))
         user = request.user
         products = ProductSerializer(user.products.all(), many=True).data
         dateToday = datetime.today().date()
@@ -29,7 +30,6 @@ class Dashboard(View):
             'yesterdayTotal':yesterdayTotal,
             'categories': categories
         }
-        # return render(request, 'core/pages/dashboard.html', context)
         return render(request, 'core/routes/fakeDashboard.html', context)
     
     def post(self, request):
@@ -119,9 +119,10 @@ class ActivityCalendar(View):
         }
         return render(request, 'core/components/activityCalendar.html', context)
 
-login_required
+@login_required
 class AllExpenditures(View): 
     def get(self, request):
+        # asyncio.run(asyncio.sleep(3))
         user = request.user
         products = ProductSerializer(user.products.all(), many=True).data
         categories = CategorySerializer(user.categories.all(), many=True).data
@@ -138,8 +139,8 @@ class AllExpenditures(View):
          'records': records, 
          'categories': categories,
         }
-        # return render(request, 'core/pages/allExpenditures.html', context)
-        return render(request, 'core/routes/fakeExpendituresPage.html', context)
+        return render(request, 'core/placeholders/content2.html', context)
+
 # @login_required    
 class Records(View):
     def post(self, request):
@@ -184,20 +185,17 @@ class Test(View):
     def post(self, request): 
        pass
 
-import asyncio
-from django.http import JsonResponse
-from django.template.loader import render_to_string
+
 class Routes(View): 
     def get(self, request): 
         context = {}
         if request.GET.get('all'):
             return JsonResponse(
                 {
-                  '/dashboard/': render_to_string('core/routes/fakePage.html', {'url': '/dashboard/'}),
-                  '/all-expenditures/': render_to_string('core/routes/fakePage.html', {'url': '/all-expenditures/'}),
+                  '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html'),
+                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html'),
                 }
             )
-        asyncio.run(asyncio.sleep(2))
         return render(request, 'core/components/blank.html', context)
         
     

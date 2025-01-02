@@ -5,7 +5,7 @@
     {% component 'navbar' / %}
     {% component 'sidebar' / %}
     
-    <div class="p-4 sm:ml-64 mt-16">
+    <div class="p-4 sm:ml-64 mt-16" id="main-content">
         {% block main %}
             <!-- main content goes here -->
         {% endblock %}
@@ -22,6 +22,7 @@
   <div class="bg-gray-900/50  fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
  
 {{categories|json_script:'categories'}}
+ <script src="{% static 'js/router.js' %}"></script>
  <script src="{% static 'js/objectSelect.js' %}"></script>
  <script src="{% static 'js/themeToggler.js' %}"></script>
  <script src="{% static 'js/modal-init.js' %}"></script>
