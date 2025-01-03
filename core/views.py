@@ -117,28 +117,6 @@ class ActivityCalendar(View):
         }
         return render(request, 'core/components/activityCalendar.html', context)
 
-# @login_required
-# class AllExpenditures(View): 
-#     def get(self, request):
-#         # asyncio.run(asyncio.sleep(3))
-#         user = request.user
-#         products = ProductSerializer(user.products.all(), many=True).data
-#         categories = CategorySerializer(user.categories.all(), many=True).data
-#         dates = dc.collectDates(products)
-#         dates.sort(reverse=True)
-#         records = []
-        
-#         # group the products by date
-#         for date in dates: 
-#             records.append(record(date, request))
-        
-#         context = {
-#          'products':products,
-#          'records': records, 
-#          'categories': categories,
-#         }
-#         return render(request, 'core/placeholders/content2.html', context)
-
 # @login_required    
 class Records(View):
     def post(self, request):
@@ -154,7 +132,9 @@ class Records(View):
         items = page.object_list
         context = {
             'items':items, 
-            'nextPageNumber':nextPageNumber
+            'nextPageNumber':nextPageNumber,
+            'row_count': range(5),
+            'card_count': range(5)
             }
         return render(request, 'core/components/paginateExpenditures.html', context)
     
@@ -177,7 +157,7 @@ class CategoriesPage(View):
 # @login_required
 class Test(View):
     def get(self, request): 
-        context = {}
+        context = {'row_count': range(5)}
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
@@ -190,8 +170,8 @@ class Routes(View):
         if request.GET.get('all'):
             return JsonResponse(
                 {
-                  '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html'),
-                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html'),
+                  '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html', getRecordSkeletonContext()),
+                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext())
                 }
             )
         return render(request, 'core/components/blank.html', context)

@@ -1,3 +1,10 @@
-<div class="md:col-span-2 my-4" hx-vals='js:{"records":getRecords(), "csrfmiddlewaretoken": getCSRFToken()}' hx-post="/components/records/?page={{nextPageNumber|default:1}}" hx-trigger="revealed" hx-swap="outerHTML">  
-    {% include 'core/components/loader.html' %}
+<div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 items-start"
+  hx-vals='js:{"records":getRecords(), "csrfmiddlewaretoken": getCSRFToken()}'
+  hx-post="/components/records/?page={{nextPageNumber|default:1}}"
+  hx-trigger="revealed"
+  hx-swap="outerHTML"
+>
+    {% for i in card_count %}
+      {% include 'core/components/staticRecordSkeleton.html' %}
+    {% endfor %}
 </div>

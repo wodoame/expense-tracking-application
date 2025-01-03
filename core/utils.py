@@ -21,3 +21,9 @@ def login_required(cls):
     cls = method_decorator(lr(login_url='signin'), name='dispatch')(cls)
     return cls
 
+def getRecordSkeletonContext():
+    return {
+        'row_count': range(5),
+        'card_count': range(5)
+    }
+

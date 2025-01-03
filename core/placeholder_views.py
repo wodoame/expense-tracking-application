@@ -2,13 +2,16 @@ from .views_dependencies import *
 @login_required
 class Dashboard(View):
     def get(self, request):
-        context = AllExpenditures.get_context(request)
+        context = getRecordSkeletonContext()
+        context.update(AllExpenditures.get_context(request))
         return render(request, 'core/placeholders/dashboard.html', context)
     
 @login_required    
 class AllExpenditures(View):
     def get(self, request):
-        return render(request, 'core/placeholders/allExpenditures.html', self.get_context(request))
+        context = getRecordSkeletonContext()
+        context.update(self.get_context(request))
+        return render(request, 'core/placeholders/allExpenditures.html', context)
     
     @staticmethod
     def get_context(request):
