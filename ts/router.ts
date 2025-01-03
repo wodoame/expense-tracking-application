@@ -10,7 +10,8 @@ class Router{
     }
     navigate(route: string){
         history.pushState({}, '', route); 
-        htmx.swap('#main-content', this.routes[route], {swapStyle: 'innerHTML', transition:true})
+        htmx.swap('#main-content', this.routes[route], {swapStyle: 'innerHTML', transition:true});
+        getSidebar().hide();
     }
     
 }
