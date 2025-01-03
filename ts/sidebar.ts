@@ -1,6 +1,6 @@
 const getSidebar = (()=>{
     let instance = undefined; 
-    return ()=>{
+    return ():DrawerInstance =>{
         if(instance){
             return instance; 
         }

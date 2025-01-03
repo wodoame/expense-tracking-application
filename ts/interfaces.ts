@@ -19,3 +19,9 @@ type ModalInstance = {
     close: ()=>void; 
     isOpen: boolean; 
 }
+
+type DrawerInstance = {
+    hide:()=>void;
+    show:()=>void;
+    toggle: ()=>void;
+}
