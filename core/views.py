@@ -17,7 +17,6 @@ class Dashboard(View):
         yesterday = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateYesterday]
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
-        categories = CategorySerializer(user.categories.all(), many=True).data
         context = {
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
@@ -28,7 +27,6 @@ class Dashboard(View):
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
-            'categories': categories
         }
         return render(request, 'core/routes/fakeDashboard.html', context)
     
