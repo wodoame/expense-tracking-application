@@ -119,27 +119,27 @@ class ActivityCalendar(View):
         }
         return render(request, 'core/components/activityCalendar.html', context)
 
-@login_required
-class AllExpenditures(View): 
-    def get(self, request):
-        # asyncio.run(asyncio.sleep(3))
-        user = request.user
-        products = ProductSerializer(user.products.all(), many=True).data
-        categories = CategorySerializer(user.categories.all(), many=True).data
-        dates = dc.collectDates(products)
-        dates.sort(reverse=True)
-        records = []
+# @login_required
+# class AllExpenditures(View): 
+#     def get(self, request):
+#         # asyncio.run(asyncio.sleep(3))
+#         user = request.user
+#         products = ProductSerializer(user.products.all(), many=True).data
+#         categories = CategorySerializer(user.categories.all(), many=True).data
+#         dates = dc.collectDates(products)
+#         dates.sort(reverse=True)
+#         records = []
         
-        # group the products by date
-        for date in dates: 
-            records.append(record(date, request))
+#         # group the products by date
+#         for date in dates: 
+#             records.append(record(date, request))
         
-        context = {
-         'products':products,
-         'records': records, 
-         'categories': categories,
-        }
-        return render(request, 'core/placeholders/content2.html', context)
+#         context = {
+#          'products':products,
+#          'records': records, 
+#          'categories': categories,
+#         }
+#         return render(request, 'core/placeholders/content2.html', context)
 
 # @login_required    
 class Records(View):
