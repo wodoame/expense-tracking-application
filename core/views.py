@@ -68,6 +68,7 @@ class Dashboard(View):
                 context = {
                     'items':items
                 }
+                Records.invalidate_cache(request)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
@@ -93,7 +94,7 @@ class Dashboard(View):
         referer = request.META.get('HTTP_REFERER')
         path = urlparse(referer).path
         if path == '/all-expenditures/':
-            cache.delete(f'records-{request.user.username}') # remove records from cache
+            Records.invalidate_cache(request) # remove records from cache
             return redirect('/components/records/')
         if path == '/dashboard/':
             return redirect('actual-dashboard')
@@ -111,12 +112,13 @@ class Dashboard(View):
             context = {
                 'items':items
             }
+            Records.invalidate_cache(request) 
             if not items[0].get('products'):
                 return render(request, 'core/components/toastWrapper/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
             return render(request, 'core/components/paginateExpenditures.html', context) 
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
-        return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'core/components/toastWrapper/toastWrapper.html')
 # @login_required    
 class ActivityCalendar(View):
     def get(self, request): 
@@ -149,6 +151,9 @@ class Records(View):
             }
         context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
+    @staticmethod
+    def invalidate_cache(request):
+        cache.delete(f'records-{request.user.username}')
     
 # @login_required
 class Settings(View): 
