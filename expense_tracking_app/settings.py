@@ -124,7 +124,6 @@ WSGI_APPLICATION = 'expense_tracking_app.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 TEST404 = os.getenv('TEST_404', 'False') == 'True'
-print(f'DEB {DEBUG}, 404 {TEST404}')
 if DEBUG or TEST404:
     DATABASES = {
         'default': {
