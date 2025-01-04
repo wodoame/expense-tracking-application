@@ -5,7 +5,7 @@
     {% component 'navbar' / %}
     {% component 'sidebar' / %}
     
-    <div class="p-4 sm:ml-64 mt-16">
+    <div class="p-4 sm:ml-64 mt-16" id="main-content">
         {% block main %}
             <!-- main content goes here -->
         {% endblock %}
@@ -16,13 +16,32 @@
     {% component 'deleteProductModal' id='delete-product-modal' / %}
     {% component 'showDetailsModal' id="show-details-modal" / %}
     {% component 'editProductModal' id="edit-product-modal" / %}
+    {% component 'categoryDetailsModal' id="category-details-modal" / %}
 
 {% component 'toastWrapper' / %}
   <div class="bg-gray-900/50  fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
  
 {{categories|json_script:'categories'}}
+ <script src="{% static 'js/router.js' %}"></script>
  <script src="{% static 'js/objectSelect.js' %}"></script>
  <script src="{% static 'js/themeToggler.js' %}"></script>
  <script src="{% static 'js/modal-init.js' %}"></script>
  <script src="{% static 'js/modals.js' %}"></script>
+ <script src="{% static 'js/sidebar.js' %}"></script>
+ <script src="{% static 'js/chart.umd.min.js' %}"></script>
+ {% csrf_token %}
+ {{records|json_script:'records'}}
+ <script>
+     // please don't try to parse any of the below content to JSON
+     const productRecords = document.getElementById('records').textContent;
+
+     function getRecords(){
+         return productRecords;
+     }
+
+     function getCSRFToken(){
+         return document.querySelector('[name=csrfmiddlewaretoken]').value;
+     }
+ </script>
+
 {% endblock %}

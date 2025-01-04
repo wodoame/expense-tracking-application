@@ -1,8 +1,4 @@
-{% extends 'core/pages/layout.html' %}
-{% block main %}
 {% include 'core/components/pageHeading.html' with text="Dashboard" %}
-
-
 
 <!-- begin summary -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4">
@@ -49,4 +45,4 @@
      </div> 
 </div>
 
-{% endblock %}
+{% component_js_dependencies %}

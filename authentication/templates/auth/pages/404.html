@@ -4,16 +4,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="{% static 'imgs/logo-100x100.png' %}"
-">
+    <link rel="icon" href="{% static 'imgs/logo-100x100.png' %}">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
     <title>Xpense | Not Found</title>
     <style>
       body {
         text-align: center;
         font-family: Arial, sans-serif;
         background: linear-gradient(to left, #00bfff, #ffffe0);
-                {% comment %} background-color: whitesmoke; {% endcomment %}
-
+        /* background-color: whitesmoke;*/
         color: #333;
       }
       .main {
@@ -68,7 +67,7 @@
     </div>
     <div class="main">
       <h1>Oops! The page you are looking for doesn't exist.</h1>
-      <img class="gif" src="{% static "imgs/error-404.png" %}" alt="404 png"> 
+      <img class="gif" src="{% static 'imgs/error-404.png' %}" alt="404 png"> 
       <p><a href="/">Go back Home</a></p>
     </div>
   </body>

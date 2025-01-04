@@ -1,4 +1,5 @@
 {% extends 'core/pages/layout.html' %}
+{% load custom_filters %}
 {% block main %}
 
 {% include 'core/components/pageHeading.html' with text="Categories"   %}
@@ -21,13 +22,13 @@
                 <thead>
                   <tr>
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Name</th>
-                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Number Of Items</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase text-nowrap">Number Of Items</th>
                     <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y dark:divide-gray-100/5">
                   {% for category in categories %}
-                  <tr x-data @click="">
+                  <tr x-data="{data:$el.dataset.info}" @click="getCategoryDetailsModal().setDetails(data)" data-info='{{category|json_string}}'>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
                        {{category.name}}
                     </td>

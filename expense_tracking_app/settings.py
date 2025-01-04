@@ -123,8 +123,8 @@ WSGI_APPLICATION = 'expense_tracking_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-TEST404 = os.getenv('TEST_404', 'False') == 'True'
-if DEBUG or TEST404:
+USE_DEVELOPMENT_DATABASE = os.getenv('USE_DEVELOPMENT_DATABASE', 'False') == 'True'
+if DEBUG or USE_DEVELOPMENT_DATABASE:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

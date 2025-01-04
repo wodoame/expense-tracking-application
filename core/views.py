@@ -3,20 +3,20 @@ class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
 
-@method_decorator(login_required(login_url='signin'), name='dispatch')
+@login_required
 class Dashboard(View):
     def get(self, request):
+        # asyncio.run(asyncio.sleep(3))
         user = request.user
         products = ProductSerializer(user.products.all(), many=True).data
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
-        statContext = Context(WeeklyStats(products))
+        statContext = Context(WeeklyStats(products, request.user))
         stats = statContext.apply() 
         today = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateToday]
         yesterday = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateYesterday]
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
-        categories = CategorySerializer(user.categories.all(), many=True).data
         context = {
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
@@ -27,9 +27,8 @@ class Dashboard(View):
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
-            'categories': categories
         }
-        return render(request, 'core/pages/dashboard.html', context)
+        return render(request, 'core/routes/fakeDashboard.html', context)
     
     def post(self, request):
         if request.GET.get('edit'): 
@@ -118,26 +117,6 @@ class ActivityCalendar(View):
         }
         return render(request, 'core/components/activityCalendar.html', context)
 
-@method_decorator(login_required(login_url='signin'), name='dispatch')
-class AllExpenditures(View): 
-    def get(self, request):
-        user = request.user
-        products = ProductSerializer(user.products.all(), many=True).data
-        categories = CategorySerializer(user.categories.all(), many=True).data
-        dates = dc.collectDates(products)
-        dates.sort(reverse=True)
-        records = []
-        
-        # group the products by date
-        for date in dates: 
-            records.append(record(date, request))
-        
-        context = {
-         'products':products,
-         'records': records, 
-         'categories': categories,
-        }
-        return render(request, 'core/pages/allExpenditures.html', context)
 # @login_required    
 class Records(View):
     def post(self, request):
@@ -153,7 +132,9 @@ class Records(View):
         items = page.object_list
         context = {
             'items':items, 
-            'nextPageNumber':nextPageNumber
+            'nextPageNumber':nextPageNumber,
+            'row_count': range(5),
+            'card_count': range(5)
             }
         return render(request, 'core/components/paginateExpenditures.html', context)
     
@@ -176,12 +157,24 @@ class CategoriesPage(View):
 # @login_required
 class Test(View):
     def get(self, request): 
-        context = {}
-        messages.success(request, 'Loaded component')
+        context = {'row_count': range(5)}
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
        pass
+
+
+class Routes(View): 
+    def get(self, request): 
+        context = {}
+        if request.GET.get('all'):
+            return JsonResponse(
+                {
+                  '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html', getRecordSkeletonContext()),
+                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext())
+                }
+            )
+        return render(request, 'core/components/blank.html', context)
         
     
         

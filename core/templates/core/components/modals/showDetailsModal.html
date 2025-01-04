@@ -1,7 +1,7 @@
 {% component 'baseModal' %}
     {% fill 'title' %}Details{% endfill %}
     {% fill 'body' %}
-        <div x-data="{modal: getShowDetailsModal()}">
+        <div x-data="{df: getShowDetailsModal().df}">
             {% include 'core/components/productDetails.html'   %}
         </div>
     {% endfill %}

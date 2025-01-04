@@ -6,3 +6,5 @@ etavenv/
 *.pyc
 staticfiles/
 error.log
+trial.py
+.idea/

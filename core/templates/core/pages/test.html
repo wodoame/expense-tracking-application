@@ -1,13 +1,55 @@
-{% extends 'core/pages/base.html' %}
+{% extends 'core/pages/layout.html' %}
 {% load static %}
-{% block content %}
-{% component 'addProductModal' / %}
-    <div class="p-4">
-        <button class="btn" x-data @click="getModal('add-product-modal').toggle($event)">toggle modal</button>
-    </div>
-     
-    <div class="bg-gray-900/50  fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
+{% block main %}
+<style>
+     .loader2 {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 3px solid;
+  border-color: #FFF #FFF transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.loader2::after {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid;
+  border-color: transparent #FF3D00 #FF3D00;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  animation: rotationBack 0.5s linear infinite;
+  transform-origin: center center;
+}
 
-    <script src="{% static 'js/modal-init.js' %}"></script>
-    <script src="{% static 'js/baseModal.js' %}"></script>
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+</style>
+   <main id="main-content" class="p-4">
+       {% include 'core/components/staticRecordSkeleton.html' %}
+   </main>
 {% endblock %}

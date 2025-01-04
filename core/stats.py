@@ -2,8 +2,9 @@ from datetime import datetime, timedelta
 import core.datechecker as dc 
 
 class WeeklyStats:
-    def __init__(self, products):
+    def __init__(self, products, user):
         self.products = products
+        self.user = user
         
     def calculate(self):
         dateToday = datetime.today().date()
@@ -13,10 +14,8 @@ class WeeklyStats:
         totalSpentLastWeek = dc.get_total_spent_in_week(lastWeek, self.products)
         highestWeeklySpending = max(totalSpentThisWeek, totalSpentLastWeek)
         week = lastWeek
-        
-        # I'll change the condition below to when a user creates an account
-        # check all amounts spent in every previous week till the time the user created the account
-        while week[0] >= datetime(dateToday.year, 1, 1).date(): 
+
+        while week[0] >= self.user.date_joined.date(): 
             week = (week[0] - timedelta(days=7), week[1] - timedelta(days=7))
             totalSpent = dc.get_total_spent_in_week(week, self.products)
             highestWeeklySpending = max(highestWeeklySpending, totalSpent)

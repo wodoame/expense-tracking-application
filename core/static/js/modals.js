@@ -24,9 +24,8 @@ class AddProductModal extends BaseModal {
 }
 class AddCategoryModal extends BaseModal {
 }
-class DataFieldsModal extends BaseModal {
+class DataFields {
     constructor() {
-        super(...arguments);
         // data fields 
         this.dataFields = {};
     }
@@ -34,9 +33,9 @@ class DataFieldsModal extends BaseModal {
         this.dataFields[key] = value;
     }
 }
-class FormFieldsModal extends BaseModal {
+;
+class FormFields {
     constructor() {
-        super(...arguments);
         // form fields 
         this.formFields = {};
     }
@@ -44,36 +43,40 @@ class FormFieldsModal extends BaseModal {
         this.formFields[key] = value;
     }
 }
-class ShowDetailsModal extends DataFieldsModal {
+class ShowDetailsModal extends BaseModal {
+    constructor(id, df) {
+        super(id);
+        this.df = df;
+    }
     setDetails(data) {
         const product = JSON.parse(data);
+        const dataFields = this.df.dataFields;
         // set data field text contents
-        this.dataFields.name.textContent = product.name;
-        this.dataFields.price.textContent = `GHS ${product.price.toFixed(2)}`;
-        this.dataFields.category.textContent = product.category ? product.category.name : 'None';
-        this.dataFields.description.textContent = product.description || 'No description';
+        dataFields.name.textContent = product.name;
+        dataFields.price.textContent = `GHS ${product.price.toFixed(2)}`;
+        dataFields.category.textContent = product.category ? product.category.name : 'None';
+        dataFields.description.textContent = product.description || 'No description';
         this.open();
     }
 }
-class DeleteProductModal extends DataFieldsModal {
-    constructor() {
-        super(...arguments);
-        // form fields 
-        this.formFields = {};
-    }
-    setFormField(key, value) {
-        this.formFields[key] = value;
+class DeleteProductModal extends BaseModal {
+    constructor(id, df, ff) {
+        super(id);
+        this.df = df;
+        this.ff = ff;
     }
     setDetails(data) {
         const product = JSON.parse(data);
+        const dataFields = this.df.dataFields;
+        const formFields = this.ff.formFields;
         // set data field text contents
-        this.dataFields.name.textContent = product.name;
-        this.dataFields.price.textContent = `GHS ${product.price.toFixed(2)}`;
-        this.dataFields.category.textContent = product.category ? product.category.name : 'None';
-        this.dataFields.description.textContent = product.description || 'No description';
+        dataFields.name.textContent = product.name;
+        dataFields.price.textContent = `GHS ${product.price.toFixed(2)}`;
+        dataFields.category.textContent = product.category ? product.category.name : 'None';
+        dataFields.description.textContent = product.description || 'No description';
         // set form field values
-        this.formFields.id.value = product.id.toString();
-        this.formFields.date.value = product.date;
+        formFields.id.value = product.id.toString();
+        formFields.date.value = product.date;
         this.open();
     }
     submitForm() {
@@ -83,29 +86,34 @@ class DeleteProductModal extends DataFieldsModal {
         const elementToReplace = htmx.closest(tr, '.record');
         elementToReplace.querySelector('.skeleton').classList.remove('hidden');
         this.close();
-        htmx.ajax('POST', '/dashboard/?delete=1', {
+        htmx.ajax('POST', '/actual-dashboard/?delete=1', {
             values: formData,
             target: elementToReplace,
             swap: 'outerHTML'
         });
     }
 }
-class EditProductModal extends FormFieldsModal {
+class EditProductModal extends BaseModal {
+    constructor(id, ff) {
+        super(id);
+        this.ff = ff;
+    }
     setDetails(data) {
         const product = JSON.parse(data);
+        const formFields = this.ff.formFields;
         const priceParts = product.price.toString().split('.');
-        this.formFields.name.value = product.name;
-        this.formFields.cedis.value = priceParts[0];
+        formFields.name.value = product.name;
+        formFields.cedis.value = priceParts[0];
         console.log(priceParts);
         if (product.category) {
-            this.formFields.category.value = product.category.id.toString();
+            formFields.category.value = product.category.id.toString();
         }
         if (priceParts.length > 1) {
-            this.formFields.pesewas.value = priceParts[1];
+            formFields.pesewas.value = priceParts[1];
         }
-        this.formFields.id.value = product.id.toString();
-        this.formFields.description.value = product.description;
-        this.formFields.date.value = product.date;
+        formFields.id.value = product.id.toString();
+        formFields.description.value = product.description;
+        formFields.date.value = product.date;
         setCategory(product.category);
         this.open();
     }
@@ -117,7 +125,7 @@ class EditProductModal extends FormFieldsModal {
             const elementToReplace = htmx.closest(tr, '.record');
             elementToReplace.querySelector('.skeleton').classList.remove('hidden');
             this.close();
-            htmx.ajax('POST', '/dashboard/?edit=1', {
+            htmx.ajax('POST', '/actual-dashboard/?edit=1', {
                 values: formData,
                 target: elementToReplace,
                 swap: 'outerHTML'
@@ -126,6 +134,21 @@ class EditProductModal extends FormFieldsModal {
         else {
             form.reportValidity(); // display the validation messages
         }
+    }
+}
+class CategoryDetailsModal extends BaseModal {
+    constructor(id, df) {
+        super(id);
+        this.df = df;
+    }
+    setDetails(data) {
+        const category = JSON.parse(data);
+        const dataFields = this.df.dataFields;
+        // set data field text contents
+        dataFields.name.textContent = category.name;
+        dataFields.product_count.textContent = category.product_count.toString();
+        dataFields.description.textContent = category.description || 'No description';
+        this.open();
     }
 }
 const getAddProductModal = (() => {
@@ -154,7 +177,9 @@ const getDeleteProductModal = (() => {
         if (instance) {
             return instance;
         }
-        instance = new DeleteProductModal('delete-product-modal');
+        const df = new DataFields();
+        const ff = new FormFields();
+        instance = new DeleteProductModal('delete-product-modal', df, ff);
         return instance;
     };
 })();
@@ -164,7 +189,8 @@ const getShowDetailsModal = (() => {
         if (instance) {
             return instance;
         }
-        instance = new ShowDetailsModal('show-details-modal');
+        const df = new DataFields();
+        instance = new ShowDetailsModal('show-details-modal', df);
         return instance;
     };
 })();
@@ -174,7 +200,19 @@ const getEditProductModal = (() => {
         if (instance) {
             return instance;
         }
-        instance = new EditProductModal('edit-product-modal');
+        const ff = new FormFields();
+        instance = new EditProductModal('edit-product-modal', ff);
+        return instance;
+    };
+})();
+const getCategoryDetailsModal = (() => {
+    let instance = undefined;
+    return () => {
+        if (instance) {
+            return instance;
+        }
+        const df = new DataFields();
+        instance = new CategoryDetailsModal('category-details-modal', df);
         return instance;
     };
 })();

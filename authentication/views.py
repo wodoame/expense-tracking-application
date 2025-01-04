@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from .forms import UserCreationForm, UserAuthenticationForm
 from django.contrib import messages 
+from rest_framework import status
 # Create your views here.
 class SignUp(View):
     '''the signup view'''
@@ -42,7 +43,7 @@ class SignIn(View):
             return redirect('dashboard')
         
         form = UserAuthenticationForm()
-        return render(request, 'auth/pages/signin.html', {'form': form})
+        return render(request, 'auth/pages/signin.html', {'form': form}, status=status.HTTP_401_UNAUTHORIZED)
     
     def post(self, request):
         '''creates a new user in the db'''

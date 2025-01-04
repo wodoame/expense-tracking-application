@@ -1,0 +1,42 @@
+{% include 'core/components/pageHeading.html' with text="Dashboard" %}
+<!-- begin summary -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4" hx-get="/actual-dashboard/" hx-target="#main-content" hx-trigger="load">
+  <!-- begin card -->
+    <a href="#" class="block space-y-2 p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
+        <p class="py-1 h-4 w-32 record-skeleton"></p>
+        <p class="h-4 w-16 record-skeleton"></p>
+    </a>
+
+    <a href="#" class="block space-y-2 p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
+        <p class="py-1 h-4 w-32 record-skeleton"></p>
+        <p class="h-4 w-16 record-skeleton"></p>
+    </a>
+
+    <a href="#" class="block space-y-2 p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
+        <p class="py-1 h-4 w-32 record-skeleton"></p>
+        <p class="h-4 w-16 record-skeleton"></p>
+    </a>
+
+</div>
+        <!-- end summary  -->
+<!-- chart -->
+<div class="p-4">
+    <div class="loader"></div>
+</div>
+<!-- /chart -->
+
+        <!-- begin activity -->
+<div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
+  <!-- today  -->
+   {% include 'core/components/staticRecordSkeleton.html' %}
+
+   <!-- yesterday -->
+   {% include 'core/components/staticRecordSkeleton.html' %}
+</div>
+<!-- activity -->
+
+<div class="my-12">
+    <div>
+        <span class="loader"></span>
+     </div>
+</div>
