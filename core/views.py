@@ -89,7 +89,7 @@ class Dashboard(View):
         else: 
             errors = form.errors.get_json_data()
             print(errors)
-        return redirect(request.META.get('HTTP_REFERER'))
+        return redirect('actual-dashboard')
     
     def handle_delete_product(self, request):
         print(request.POST)

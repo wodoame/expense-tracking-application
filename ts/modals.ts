@@ -17,7 +17,14 @@ class AddProductModal extends BaseModal{
    submitForm(){
        const form = <HTMLFormElement>document.getElementById('add-product-form');
        if(form.checkValidity()){
-           form.submit();
+        document.getElementById('main-content').innerHTML = router.routes['/dashboard/']; // insert the placeholder without triggering htmx
+        this.close();
+        const formData = htmx.values(form);
+        htmx.ajax('POST', '/actual-dashboard/', {
+         values: formData,
+         target: '#main-content',
+        });
+        
        }
        else{
            form.reportValidity();
