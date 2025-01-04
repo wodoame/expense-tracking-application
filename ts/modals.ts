@@ -17,7 +17,6 @@ class AddProductModal extends BaseModal{
    submitForm(){
        const form = <HTMLFormElement>document.getElementById('add-product-form');
        if(form.checkValidity()){
-        console.log(router.currentRoute);
         document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
         this.close();
         let target = '#main-content'
