@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core', 
     'authentication',
+    'api',
     'django_components',
     # 'debug_toolbar',
 ]
