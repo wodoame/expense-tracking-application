@@ -1,24 +1,24 @@
-<div class="relative" x-data="objectSelect" x-init="submitProperty='{{submitProperty|default:'id'}}';listId='{{listId}}';self=$el;" x-effect="setup" @click.outside="open=false;selected={...selected};objects=[...original];">
+<div class="relative" x-data="selectField('{{id}}')" x-init="submitProperty='{{submitProperty|default:'id'}}';" @click.outside="close">
     <div>
       <button type="button" :class="{'outline-none !border-blue-500 transition-colors duration-100;': isFocused }" class="p-4 bg-white dark:bg-transparent border-2 dark:border-gray-100/5 border-gray-200 rounded-md flex items-center w-full">
         <div class="flex-grow">
           <input type="hidden" name="{{name}}" x-init="formId=='edit-product-form'?ff.setFormField('category', $el):null" :value="selected[submitProperty]">
           <input type="hidden" name="newCategoryName" :value="newCategory.name">
-          <input type="text" x-ref="filterInput" @input="filter" @focus="isFocused=true; open=true;" @blur="isFocused=false" class="outline-none bg-transparent text-sm font-medium w-full" :value="selected.name">
+          <input type="text" x-ref="filterInput" @input="filter" @focus="open" @blur="isFocused=false" class="outline-none bg-transparent text-sm font-medium w-full" :value="selected.name">
         </div>
         <div @click="$refs.filterInput.focus()">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="stroke-gray-400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </div>
       </button>
     </div>
-    <div x-show="open" x-cloak  class="z-50 w-full absolute my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:shadow-dark1 dark:bg-dark2 dark:shadow-md dark:border-darkborder dark:divide-gray-600">
+    <div x-show="isOpen" x-cloak  class="z-50 w-full absolute my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:shadow-dark1 dark:bg-dark2 dark:shadow-md dark:border-darkborder dark:divide-gray-600">
       <ul class="py-1 max-h-60 overflow-y-auto" role="none">
-        <template x-if="objects.length == 0">
+        <template x-if="filtered.length == 0">
           <li @click="newCategory={id:0, name:newSearch};select(newCategory)">
             <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" x-text="'Tap to use '+ newSearch"></div>
           </li>
         </template>
-        <template x-for="item in objects">
+        <template x-for="item in filtered">
           <li @click="select(item)" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
             <div class="block flex-grow" role="menuitem" x-text="item.name"></div>
             <template x-if="selected.name == item.name">
