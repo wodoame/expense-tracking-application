@@ -18,3 +18,5 @@ from calendar import Calendar
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from urllib.parse import urlparse
+from django.core.cache import cache
+from .placeholder_views import AllExpenditures

@@ -29,19 +29,4 @@
  <script src="{% static 'js/modals.js' %}"></script>
  <script src="{% static 'js/sidebar.js' %}"></script>
  <script src="{% static 'js/chart.umd.min.js' %}"></script>
- {% csrf_token %}
- {{records|json_script:'records'}}
- <script>
-     // please don't try to parse any of the below content to JSON
-     const productRecords = document.getElementById('records').textContent;
-
-     function getRecords(){
-         return productRecords;
-     }
-
-     function getCSRFToken(){
-         return document.querySelector('[name=csrfmiddlewaretoken]').value;
-     }
- </script>
-
 {% endblock %}

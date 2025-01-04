@@ -26,6 +26,8 @@ class AllExpenditures(View):
         for date in dates: 
             records.append(record(date, request))
         
+        # print(cache.get(f'records-{request.user.username}'))
+        cache.set(f'records-{request.user.username}', records) # store records in a cache
         context = {
          'records': records, 
          'categories': categories,

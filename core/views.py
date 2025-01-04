@@ -1,4 +1,5 @@
 from .views_dependencies import * 
+# ! TODO: categories will still be outdated if products are added
 class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
@@ -89,7 +90,15 @@ class Dashboard(View):
         else: 
             errors = form.errors.get_json_data()
             print(errors)
-        return redirect('actual-dashboard')
+        referer = request.META.get('HTTP_REFERER')
+        path = urlparse(referer).path
+        if path == '/all-expenditures/':
+            cache.delete(f'records-{request.user.username}') # remove records from cache
+            return redirect('/components/records/')
+        if path == '/dashboard/':
+            return redirect('actual-dashboard')
+        return redirect(referer)
+        
     
     def handle_delete_product(self, request):
         print(request.POST)
@@ -119,11 +128,15 @@ class ActivityCalendar(View):
 
 # @login_required    
 class Records(View):
-    def post(self, request):
-        # I'm sending the data through the request instead of calling the database again
-        # will be replaced with a caching system
-        records = json.loads(request.POST.get('records'))
+    def get(self, request): 
+        records = cache.get(f'records-{request.user.username}')
+        if not records:
+            records = AllExpenditures.get_context(request).get('records')
+            cache.set(f'records-{request.user.username}', records)
+             
         pageNumber = request.GET.get('page')
+        if not pageNumber:
+            pageNumber = 1
         paginator = Paginator(records, 4)
         page = paginator.page(pageNumber)
         nextPageNumber = None
@@ -133,9 +146,8 @@ class Records(View):
         context = {
             'items':items, 
             'nextPageNumber':nextPageNumber,
-            'row_count': range(5),
-            'card_count': range(5)
             }
+        context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
     
 # @login_required

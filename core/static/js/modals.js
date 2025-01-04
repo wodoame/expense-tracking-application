@@ -15,13 +15,19 @@ class AddProductModal extends BaseModal {
     submitForm() {
         const form = document.getElementById('add-product-form');
         if (form.checkValidity()) {
-            document.getElementById('main-content').innerHTML = router.routes['/dashboard/']; // insert the placeholder without triggering htmx
+            console.log(router.currentRoute);
+            document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
             this.close();
+            let target = '#main-content';
+            if (router.currentRoute == '/all-expenditures/') {
+                target = '#all-expenditures'; // put the content inside this div instead of #main-content
+            }
             const formData = htmx.values(form);
             htmx.ajax('POST', '/actual-dashboard/', {
                 values: formData,
-                target: '#main-content',
+                target: target,
             });
+            form.reset();
         }
         else {
             form.reportValidity();
