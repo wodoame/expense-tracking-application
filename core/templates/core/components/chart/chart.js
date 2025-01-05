@@ -1,6 +1,7 @@
 (async function(){
   const ctx = document.getElementById('myChart');
-  const data = await fetchJSONData('/api/categories/');  
+  let data = await fetchJSONData('/api/categories/');  
+  data = data.filter((category)=>category.product_count > 0);
   const categoryName = data.map(category => category.name);
   const categoryData = data.map(category => category.product_count);
     
