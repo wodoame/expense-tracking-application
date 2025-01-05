@@ -1,3 +1,24 @@
+class ModalManager{
+    modals:any; 
+    currentlyOpenModal: ModalInstance | null;  // track the currently opened modal
+    constructor(){
+        this.modals = {}; // a store of created modals
+        this.currentlyOpenModal = null;
+    }
+
+    createModal(id: string, modalInstance: ModalInstance){
+        this.modals[id] = modalInstance; 
+    }
+
+    getModal(id: string){
+        return this.modals[id];
+    }
+
+
+}
+
+const modalManager = new ModalManager();
+
 // link a modal with this class to control basic modal functionality
 class BaseModal{
    modal: ModalInstance;
@@ -136,8 +157,18 @@ class EditProductModal extends BaseModal{
     formFields.id.value = product.id.toString();
     formFields.description.value = product.description;
     formFields.date.value = product.date;
-    setCategory(product.category);
+    this.setCategory(product.category)
     this.open();
+  }
+
+  setCategory(category: object){
+    const field = selectFieldManager.getInstance('categories-edit-product');
+    if(category){
+        field.select(category);
+    }
+    else{
+        field.select({id:null, name:'None'})
+    }
   }
   submitForm(){
     const form = <HTMLFormElement>document.getElementById('edit-product-form');
@@ -251,3 +282,13 @@ const getCategoryDetailsModal = (()=>{
    };
 })(); 
 
+function handleCloseModal(){
+    if(localStorage.getItem('modalOpen')){
+        localStorage.removeItem('modalOpen');
+        localStorage.setItem('forwarded','true')
+        history.forward();
+    }
+    else if(localStorage.getItem('forwarded')){
+        modalManager.currentlyOpenModal.close();
+    }
+}

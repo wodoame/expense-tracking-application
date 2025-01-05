@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'core', 
     'authentication',
     'api',
+    'rest_framework',
     'django_components',
     # 'debug_toolbar',
 ]

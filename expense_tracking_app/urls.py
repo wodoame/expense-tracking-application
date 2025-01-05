@@ -24,6 +24,7 @@ handler404 = 'authentication.views.not_found_404'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('api.urls')), 
     # path('__debug__/', include('debug_toolbar.urls')),
     path('', include("django_components.urls")),
     path('', core_views.RedirectView.as_view()),

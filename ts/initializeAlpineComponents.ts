@@ -1,27 +1,3 @@
-class ModalManager{
-    modals:any; 
-    currentlyOpenModal: ModalInstance | null;  // track the currently opened modal
-    constructor(){
-        this.modals = {}; // a store of created modals
-        this.currentlyOpenModal = null;
-    }
-
-    createModal(id: string, modalInstance: ModalInstance){
-        this.modals[id] = modalInstance; 
-    }
-
-    getModal(id: string){
-        return this.modals[id];
-    }
-
-
-}
-
-const modalManager = new ModalManager();
-function handleAlpineInitialization(){
-    createModal();
-}
-
 function createModalInstance(id: string){
     return {
         isOpen: false,
@@ -57,23 +33,58 @@ function createModalInstance(id: string){
     }
 }
 
-function createModal(){
+
+function createSelectFieldInstance(id: string){
+    return {
+      isOpen:false, 
+      filtered: [], // represent filtered results
+      items: [],
+      isFocused: false, 
+      selected: {},
+      submitProperty: '', 
+      newSearch:'', 
+      newCategory: {},
+      async init(){
+        // original = items
+        // objects = filtered
+        // open = isOpen
+        selectFieldManager.setInstance(id, this);
+        this.items = [{id: null, name: 'None'}, ... await fetchJSONData('/api/categories/')];
+        this.selected = this.items[0];
+      },
+      open(){
+        this.isOpen=true;
+        this.isFocused=true;
+      }, 
+      close(){
+        this.isOpen=false;
+        this.selected = {...this.selected};
+        this.filtered = [...this.items];
+        this.isFocused = false;
+      }, 
+      filter(e:Event){
+          this.filtered = this.items.filter((obj)=> (<string>obj.name).toLowerCase().includes((<HTMLInputElement>e.currentTarget).value.toLowerCase())); 
+          if(this.filtered.length == 0){
+             this.newSearch = (<HTMLInputElement>e.currentTarget).value; 
+          }
+      }, 
+      select(selected:object){
+        this.selected = selected; 
+        this.isOpen = false; 
+        this.filtered = [...this.items]
+      },
+    }
+  }
+  
+
+function handleAlpineInitialization(){
     Alpine.data('baseModal', createModalInstance);
+    Alpine.data('selectField', createSelectFieldInstance);
 }
 
-function handleCloseModal(){
-    if(localStorage.getItem('modalOpen')){
-        localStorage.removeItem('modalOpen');
-        localStorage.setItem('forwarded','true')
-        history.forward();
-    }
-    else if(localStorage.getItem('forwarded')){
-        modalManager.currentlyOpenModal.close();
-    }
-}
-
-window.addEventListener('popstate', handleCloseModal);
 document.addEventListener('alpine:init', handleAlpineInitialization);
+window.addEventListener('popstate', handleCloseModal);
+
 window.addEventListener('beforeunload', ()=>{
     document.removeEventListener('alpine:init', handleAlpineInitialization);  
     window.removeEventListener('popstate', handleCloseModal);
