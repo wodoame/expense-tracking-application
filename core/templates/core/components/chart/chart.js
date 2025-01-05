@@ -1,9 +1,8 @@
-(function(){
+(async function(){
   const ctx = document.getElementById('myChart');
-  const categories = JSON.parse(document.getElementById('categories').textContent);
-  const categoryName = categories.map(category => category.name);
-  const categoryData = categories.map(category => category.product_count);
-  
+  const data = await fetchJSONData('/api/categories/');  
+  const categoryName = data.map(category => category.name);
+  const categoryData = data.map(category => category.product_count);
     
   new Chart(ctx, {
     type: 'bar',
@@ -23,4 +22,5 @@
       }
     }
   });
+  document.getElementById('chart-loader').classList.add('hidden');
 })()
