@@ -33,7 +33,6 @@ function createModalInstance(id: string){
     }
 }
 
-
 function createSelectFieldInstance(id: string){
     return {
       isOpen:false, 
@@ -44,14 +43,18 @@ function createSelectFieldInstance(id: string){
       submitProperty: '', 
       newSearch:'', 
       newCategory: {},
+      none: {id: null, name: 'None'}, 
       async init(){
-        // original = items
-        // objects = filtered
-        // open = isOpen
         selectFieldManager.setInstance(id, this);
-        this.items = [{id: null, name: 'None'}, ... await fetchJSONData('/api/categories/')];
-        this.selected = this.items[0];
-      },
+        categoryPublisher.subscribe(this); 
+        const data = await fetchJSONData('/api/categories/');
+        this.update(data);
+        this.selected = this.none;
+      }, 
+      update(data: any){
+        this.items = [this.none, ...data];
+        this.filtered = [...this.items];
+      }, 
       open(){
         this.isOpen=true;
         this.isFocused=true;

@@ -48,6 +48,8 @@ class AddProductModal extends BaseModal{
         htmx.ajax('POST', '/actual-dashboard/', {
          values: formData,
          target: target,
+        }).then(()=>{
+            categoryPublisher.fetchLatest();
         });
         form.reset();
        }
@@ -182,6 +184,8 @@ class EditProductModal extends BaseModal{
        values: formData,
        target: elementToReplace,
        swap: 'outerHTML'
+      }).then(()=>{
+        categoryPublisher.fetchLatest();
       });
     }
     else{

@@ -21,3 +21,23 @@ async function fetchJSONData(url) {
         console.log('Error fetching data ', e);
     }
 }
+const cache = {};
+class CategoryPublisher {
+    constructor() {
+        this.subscribers = [];
+    }
+    async fetchLatest() {
+        const data = await fetchJSONData('/api/categories/');
+        this.notifySubscribers(data);
+    }
+    subscribe(subscriber) {
+        this.subscribers.push(subscriber);
+    }
+    unsubscribe(subscriber) {
+        this.subscribers = this.subscribers.filter((item) => item != subscriber);
+    }
+    notifySubscribers(data) {
+        this.subscribers.forEach((subscriber) => { subscriber.update(data); });
+    }
+}
+const categoryPublisher = new CategoryPublisher();

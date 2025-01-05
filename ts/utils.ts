@@ -21,4 +21,27 @@ async function fetchJSONData(url: string){
          console.log('Error fetching data ', e) 
       }
 }
-     
+
+type Subscriber = { 
+  update: (data: any)=>void; 
+};
+class CategoryPublisher{
+  subscribers: Subscriber[] = [];
+  async fetchLatest(){
+      const data = await fetchJSONData('/api/categories/')
+      this.notifySubscribers(data);
+  }
+  subscribe(subscriber: Subscriber){
+      this.subscribers.push(subscriber);
+  }
+  
+  unsubscribe(subscriber: Subscriber){
+      this.subscribers = this.subscribers.filter((item)=>item != subscriber);  
+  }
+
+  notifySubscribers(data: any){
+      this.subscribers.forEach((subscriber)=>{subscriber.update(data)})
+  }
+}
+
+const categoryPublisher = new CategoryPublisher()
