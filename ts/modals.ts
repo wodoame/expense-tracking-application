@@ -49,11 +49,11 @@ class AddProductModal extends BaseModal{
          values: formData,
          target: target,
         }).then(()=>{
-            const field = selectFieldManager.getInstance('categories-add-product');
-            field.select(field.none); 
             categoryPublisher.fetchLatest();
         });
         form.reset();
+        const field = selectFieldManager.getInstance('categories-add-product');
+        field.select(field.none); 
        }
        else{
            form.reportValidity();
