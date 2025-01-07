@@ -2,6 +2,7 @@ type SelectFieldInstance = {
   select: (selected:object)=>void; 
   filter: (e: Event)=>void;
   isOpen: boolean;
+  none: object;
 };
 
 class SelectFieldManager{

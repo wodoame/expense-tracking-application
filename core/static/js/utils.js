@@ -21,7 +21,6 @@ async function fetchJSONData(url) {
         console.log('Error fetching data ', e);
     }
 }
-const cache = {};
 class CategoryPublisher {
     constructor() {
         this.subscribers = [];

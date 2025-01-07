@@ -32,7 +32,7 @@ class AddProductModal extends BaseModal {
             this.close();
             let target = '#main-content';
             if (router.currentRoute == '/all-expenditures/') {
-                target = '#all-expenditures'; // put the content inside this div instead of #main-content
+                target = '#all-expenditures'; // put the content inside #all-expenditures div instead of #main-content
             }
             const formData = htmx.values(form);
             htmx.ajax('POST', '/actual-dashboard/', {
@@ -40,6 +40,8 @@ class AddProductModal extends BaseModal {
                 target: target,
             }).then(() => {
                 categoryPublisher.fetchLatest();
+                const field = selectFieldManager.getInstance('categories-add-product');
+                field.select(field.none);
             });
             form.reset();
         }
