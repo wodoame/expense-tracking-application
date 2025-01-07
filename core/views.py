@@ -139,7 +139,7 @@ class Records(View):
         pageNumber = request.GET.get('page')
         if not pageNumber:
             pageNumber = 1
-        paginator = Paginator(records, 4)
+        paginator = Paginator(records, 7)
         page = paginator.page(pageNumber)
         nextPageNumber = None
         if page.has_next(): 
