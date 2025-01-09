@@ -26,36 +26,36 @@
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
     {% for category in categories %}
-     <div class="bg-gray-50 p-4 rounded-md border space-y-2 dark:bg-dark2 dark:border-darkborder">
+     <div x-data="{getDropdown:()=>dropdownManager.getInstance('category-{{category.id}}')}" class="bg-gray-50 p-4 rounded-md border space-y-2 dark:bg-dark2 dark:border-darkborder">
 
     <!-- header   -->
-         <div class="flex justify-between">
-              <div class="text-gray-800 font-bold dark:text-neutral-200">
+         <div class="flex justify-between relative">
+              <div class="text-gray-800 font-bold dark:text-gray-300">
               {{category.name}}
              </div>
 
-             <button data-dropdown-toggle="dropdown-{{forloop.counter0}}">
+             <button x-data @click.stop="getDropdown().open()" class="relative">
                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-             </button>
-         <div id="dropdown-{{forloop.counter0}}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-    <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-      <div>Options</div>
-    </div>
-    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
-      <li>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
-      </li>
-      <li>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
-      </li>
-      <li>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Set Budget</a>
-      </li>
-    </ul>
-<!--    <div class="py-2">-->
-<!--      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>-->
-<!--    </div>-->
-</div>
+              </button>
+                <div x-data="baseDropdown('category-{{category.id}}')" @click.outside="getDropdown().close()" :class="{'hidden': !isOpen}" class="z-10 absolute top-full right-0 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:border dark:bg-dark2 dark:border-darkborder dark:divide-darkborder">
+                 <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                   <div class="font-bold dark:text-gray-300">Options</div>
+                 </div>
+                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
+                   <li>
+                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                   </li>
+                   <li>
+                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
+                   </li>
+                   <li>
+                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Set Budget</a>
+                   </li>
+                 </ul>
+             <!--    <div class="py-2">-->
+             <!--      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>-->
+             <!--    </div>-->
+                </div>
          </div>
         <!--  / header -->
          <div class="flex items-center justify-between">

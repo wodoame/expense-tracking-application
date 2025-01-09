@@ -722,6 +722,10 @@ video {
   top: 2rem;
 }
 
+.top-full {
+  top: 100%;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -2207,6 +2211,14 @@ body:is(.dark *) {
 .dark\:divide-gray-600:is(.dark *) > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
   border-color: rgb(75 85 99 / var(--tw-divide-opacity, 1));
+}
+
+.dark\:divide-darkborder:is(.dark *) > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgb(243 244 246 / 0.05);
+}
+
+.dark\:border:is(.dark *) {
+  border-width: 1px;
 }
 
 .dark\:border-blue-500:is(.dark *) {
