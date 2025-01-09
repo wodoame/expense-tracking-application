@@ -45,7 +45,7 @@ class AddProductModal extends BaseModal{
             target = '#all-expenditures'; // put the content inside #all-expenditures div instead of #main-content
         }
         const formData = htmx.values(form);
-        htmx.ajax('POST', '/implemented-dashboard/', {
+        htmx.ajax('POST', '/implementations/dashboard/', {
          values: formData,
          target: target,
         }).then(()=>{
@@ -129,7 +129,7 @@ class DeleteProductModal extends BaseModal{
         const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
         elementToReplace.querySelector('.skeleton').classList.remove('hidden');
         this.close();
-        htmx.ajax('POST', '/implemented-dashboard/?delete=1', {
+        htmx.ajax('POST', '/implementations/dashboard/?delete=1', {
          values: formData,
          target: elementToReplace,
          swap: 'outerHTML'
@@ -182,7 +182,7 @@ class EditProductModal extends BaseModal{
       const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
       elementToReplace.querySelector('.skeleton').classList.remove('hidden');
       this.close();
-      htmx.ajax('POST', '/implemented-dashboard/?edit=1', {
+      htmx.ajax('POST', '/implementations/dashboard/?edit=1', {
        values: formData,
        target: elementToReplace,
        swap: 'outerHTML'
