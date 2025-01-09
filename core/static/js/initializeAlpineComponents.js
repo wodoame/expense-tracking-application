@@ -78,9 +78,26 @@ function createSelectFieldInstance(id) {
         },
     };
 }
+function createDropdownInstance(id) {
+    return {
+        isOpen: false,
+        init() {
+            dropdownManager.setInstance(id, this);
+            universalCloser.subscribe(this);
+        },
+        open() {
+            this.isOpen = true;
+            universalCloser.closeExcept(this);
+        },
+        close() {
+            this.isOpen = false;
+        },
+    };
+}
 function handleAlpineInitialization() {
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);
+    Alpine.data('baseDropdown', createDropdownInstance);
 }
 document.addEventListener('alpine:init', handleAlpineInitialization);
 window.addEventListener('popstate', handleCloseModal);
