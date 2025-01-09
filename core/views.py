@@ -1,4 +1,5 @@
-from .views_dependencies import * 
+from .serializers import CategorySerializerWithMetrics
+from .views_dependencies import *
 # ! TODO: categories will still be outdated if products are added
 class RedirectView(View):
     def get(self, request):
@@ -29,7 +30,7 @@ class Dashboard(View):
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
         }
-        return render(request, 'core/routes/fakeDashboard.html', context)
+        return render(request, 'core/implementations/dashboard.html', context)
     
     def post(self, request):
         if request.GET.get('edit'): 
@@ -97,7 +98,7 @@ class Dashboard(View):
             Records.invalidate_cache(request) # remove records from cache
             return redirect('/components/records/')
         if path == '/dashboard/':
-            return redirect('actual-dashboard')
+            return redirect('implemented-dashboard')
         return redirect(referer)
         
     
@@ -159,17 +160,6 @@ class Records(View):
 class Settings(View): 
     def get(self, request):
         return render(request, 'core/pages/settings.html')
-# @login_required
-class CategoriesPage(View): 
-    def get(self, request):
-        user = request.user
-        categories = CategorySerializer(user.categories.all(), many=True).data
-        productsWithNoCategory = Product.objects.filter(category=None)
-        context = {
-            'categories': categories + [{'name': 'Uncategorized', 'product_count': productsWithNoCategory.count()}], 
-        }
-        return render(request, 'core/pages/categories.html', context)
-    
 
 # @login_required
 class Test(View):
@@ -188,10 +178,20 @@ class Routes(View):
             return JsonResponse(
                 {
                   '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html', getRecordSkeletonContext()),
-                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext())
+                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
+                  '/categories/': render_to_string('core/placeholders/categoriesPageSkeleton.html', getCategoriesSkeletonContext())
                 }
+
+
             )
         return render(request, 'core/components/blank.html', context)
-        
-    
-        
+
+
+class Categories(View):
+    def get(self, request):
+        user = request.user
+        categories = CategorySerializerWithMetrics(user.categories.all(), many=True).data
+        context = {
+            'categories': categories
+        }
+        return render(request, 'core/implementations/categories.html', context)

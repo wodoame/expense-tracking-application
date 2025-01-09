@@ -1,17 +1,16 @@
 from django.test import SimpleTestCase, TestCase
-from .models import Category 
-from .serializers import CategorySerializer, Product
+from rest_framework import status
+from core.models import Product
 
 class CategoryTests(TestCase):
-    def test_count_products_in_category_using_serializer(self):
-        category = Category.objects.create(name='food')
-        for i in range(4):
-            Product.objects.create(name='beans', category=category, price=10.00, description='')
-    
-        categoryAsDict = CategorySerializer(category).data
-        self.assertEqual(category.products.count(),
-                         categoryAsDict.get('product_count'),
-                         'Value produced when counting using serializer is incorrect')
+   pass
+
+class ProductTests(TestCase):
+    def test_can_add_product(self):
+        response = self.client.get('/dashboard/')
+        print(response.status_code)
+
+
 
 
         

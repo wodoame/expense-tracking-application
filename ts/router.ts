@@ -29,6 +29,9 @@ class Routes{
     expenditures(){
         this.router.navigate('/all-expenditures/');
     }
+    categories(){
+         this.router.navigate('/categories/');
+    }
 }
 
 const router = new Router();
