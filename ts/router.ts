@@ -12,6 +12,10 @@ class Router{
         history.pushState({}, '', route); 
         this.currentRoute = route;
         htmx.swap('#main-content', this.routes[route], {swapStyle: 'innerHTML', transition:true});
+        window.scrollTo({
+            top: 0, 
+            behavior: 'smooth'
+        });
         getSidebar().hide();
     }
     
