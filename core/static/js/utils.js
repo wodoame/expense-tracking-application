@@ -39,4 +39,21 @@ class CategoryPublisher {
         this.subscribers.forEach((subscriber) => { subscriber.update(data); });
     }
 }
+class UniversalCloser {
+    constructor() {
+        this.instances = [];
+    }
+    closeExcept(instance) {
+        this.instances.forEach((element) => {
+            if (element != instance) {
+                element.close();
+            }
+        });
+    }
+    subscribe(instance) {
+        this.instances.push(instance);
+    }
+}
+;
 const categoryPublisher = new CategoryPublisher();
+const universalCloser = new UniversalCloser();
