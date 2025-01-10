@@ -48,17 +48,18 @@ type Closable = {
     close: ()=>void;
 };
 class UniversalCloser{
-    instances: Closable[] = [];
-    closeExcept(instance: Closable){
-        this.instances.forEach((element)=>{
-             if(element != instance){
-                element.close();
+    instances: {[key:string]: Closable} = {};
+    closeExcept(id: string){
+        const instancesList = Object.values(this.instances);
+        instancesList.forEach((instance)=>{
+             if(instance != this.instances[id]){
+                instance.close(); 
              }
         }); 
     }
 
-    subscribe(instance:Closable){
-        this.instances.push(instance);
+    subscribe(id:string, instance:Closable){
+        this.instances[id] = instance;
     }
 };
 

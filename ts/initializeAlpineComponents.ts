@@ -84,11 +84,11 @@ function createDropdownInstance(id: string){
      isOpen:false, 
      init(){
        dropdownManager.setInstance(id, this);
-       universalCloser.subscribe(this); 
+       universalCloser.subscribe(id, this); 
      }, 
      open(){
         this.isOpen = true;
-        universalCloser.closeExcept(this);
+        universalCloser.closeExcept(id);
      }, 
      close(){
       this.isOpen = false;

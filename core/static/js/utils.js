@@ -41,17 +41,18 @@ class CategoryPublisher {
 }
 class UniversalCloser {
     constructor() {
-        this.instances = [];
+        this.instances = {};
     }
-    closeExcept(instance) {
-        this.instances.forEach((element) => {
-            if (element != instance) {
-                element.close();
+    closeExcept(id) {
+        const instancesList = Object.values(this.instances);
+        instancesList.forEach((instance) => {
+            if (instance != this.instances[id]) {
+                instance.close();
             }
         });
     }
-    subscribe(instance) {
-        this.instances.push(instance);
+    subscribe(id, instance) {
+        this.instances[id] = instance;
     }
 }
 ;
