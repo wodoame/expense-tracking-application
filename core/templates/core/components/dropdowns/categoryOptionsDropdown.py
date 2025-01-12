@@ -5,4 +5,5 @@ class CategoryOptionsDropdown(Component):
     template_name = 'categoryOptionsDropdown.html'
     
     def get_context_data(self, *args, **kwargs):
+        print(kwargs)
         return kwargs
