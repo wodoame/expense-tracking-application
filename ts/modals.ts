@@ -1,3 +1,24 @@
+class ModalManager{
+    modals:any; 
+    currentlyOpenModal: ModalInstance | null;  // track the currently opened modal
+    constructor(){
+        this.modals = {}; // a store of created modals
+        this.currentlyOpenModal = null;
+    }
+
+    createModal(id: string, modalInstance: ModalInstance){
+        this.modals[id] = modalInstance; 
+    }
+
+    getModal(id: string){
+        return this.modals[id];
+    }
+
+
+}
+
+const modalManager = new ModalManager();
+
 // link a modal with this class to control basic modal functionality
 class BaseModal{
    modal: ModalInstance;
@@ -17,7 +38,22 @@ class AddProductModal extends BaseModal{
    submitForm(){
        const form = <HTMLFormElement>document.getElementById('add-product-form');
        if(form.checkValidity()){
-           form.submit();
+        document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
+        this.close();
+        let target = '#main-content'
+        if(router.currentRoute == '/all-expenditures/'){
+            target = '#all-expenditures'; // put the content inside #all-expenditures div instead of #main-content
+        }
+        const formData = htmx.values(form);
+        htmx.ajax('POST', '/implementations/dashboard/', {
+         values: formData,
+         target: target,
+        }).then(()=>{
+            categoryPublisher.fetchLatest();
+        });
+        form.reset();
+        const field = selectFieldManager.getInstance('categories-add-product');
+        field.select(field.none); 
        }
        else{
            form.reportValidity();
@@ -93,7 +129,7 @@ class DeleteProductModal extends BaseModal{
         const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
         elementToReplace.querySelector('.skeleton').classList.remove('hidden');
         this.close();
-        htmx.ajax('POST', '/actual-dashboard/?delete=1', {
+        htmx.ajax('POST', '/implementations/dashboard/?delete=1', {
          values: formData,
          target: elementToReplace,
          swap: 'outerHTML'
@@ -125,8 +161,18 @@ class EditProductModal extends BaseModal{
     formFields.id.value = product.id.toString();
     formFields.description.value = product.description;
     formFields.date.value = product.date;
-    setCategory(product.category);
+    this.setCategory(product.category)
     this.open();
+  }
+
+  setCategory(category: object){
+    const field = selectFieldManager.getInstance('categories-edit-product');
+    if(category){
+        field.select(category);
+    }
+    else{
+        field.select({id:null, name:'None'});
+    }
   }
   submitForm(){
     const form = <HTMLFormElement>document.getElementById('edit-product-form');
@@ -136,10 +182,12 @@ class EditProductModal extends BaseModal{
       const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
       elementToReplace.querySelector('.skeleton').classList.remove('hidden');
       this.close();
-      htmx.ajax('POST', '/actual-dashboard/?edit=1', {
+      htmx.ajax('POST', '/implementations/dashboard/?edit=1', {
        values: formData,
        target: elementToReplace,
        swap: 'outerHTML'
+      }).then(()=>{
+        categoryPublisher.fetchLatest();
       });
     }
     else{
@@ -240,3 +288,13 @@ const getCategoryDetailsModal = (()=>{
    };
 })(); 
 
+function handleCloseModal(){
+    if(localStorage.getItem('modalOpen')){
+        localStorage.removeItem('modalOpen');
+        localStorage.setItem('forwarded','true')
+        history.forward();
+    }
+    else if(localStorage.getItem('forwarded')){
+        modalManager.currentlyOpenModal.close();
+    }
+}

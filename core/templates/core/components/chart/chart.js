@@ -1,16 +1,16 @@
-(function(){
+(async function(){
   const ctx = document.getElementById('myChart');
-  const categories = JSON.parse(document.getElementById('categories').textContent);
-  const categoryName = categories.map(category => category.name);
-  const categoryData = categories.map(category => category.product_count);
-  
+  let data = await fetchJSONData('/api/categories/?metrics=1');  
+  data = data.filter((category)=>category.metrics.total_amount_spent > 0);
+  const categoryName = data.map(category => category.name);
+  const categoryData = data.map(category => category.metrics.total_amount_spent);
     
   new Chart(ctx, {
     type: 'bar',
     data: {
       labels: categoryName ,
       datasets: [{
-        label: 'Amount Spent',
+        label: 'Amount Spent (GHS)',
         data: categoryData,
         borderWidth: 1
       }]
@@ -23,4 +23,5 @@
       }
     }
   });
+  document.getElementById('chart-loader').classList.add('hidden');
 })()

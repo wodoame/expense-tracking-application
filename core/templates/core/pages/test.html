@@ -1,5 +1,6 @@
 {% extends 'core/pages/layout.html' %}
 {% load static %}
+{% load custom_tags %}
 {% block main %}
 <style>
      .loader2 {
@@ -50,6 +51,8 @@
 }
 </style>
    <main id="main-content" class="p-4">
-       {% include 'core/components/staticRecordSkeleton.html' %}
+      {% experimental %}
+          {% include 'core/components/staticRecordSkeleton.html' %}
+      {% endexperimental %}
    </main>
 {% endblock %}

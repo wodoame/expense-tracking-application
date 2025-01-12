@@ -11,7 +11,7 @@
 
          <div class="col-span-2">
            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category</label>
-           {% include 'core/components/objectSelect.html' with name='category' listId='categories' only  %}
+           {% component 'selectField' id='categories-edit-product' name='category' / %}
         </div>
          
          <div class="col-span-1">

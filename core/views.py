@@ -1,4 +1,6 @@
-from .views_dependencies import * 
+from .serializers import CategorySerializerWithMetrics
+from .views_dependencies import *
+# ! TODO: categories will still be outdated if products are added
 class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
@@ -28,7 +30,7 @@ class Dashboard(View):
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
         }
-        return render(request, 'core/routes/fakeDashboard.html', context)
+        return render(request, 'core/implementations/dashboard.html', context)
     
     def post(self, request):
         if request.GET.get('edit'): 
@@ -67,6 +69,7 @@ class Dashboard(View):
                 context = {
                     'items':items
                 }
+                Records.invalidate_cache(request)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
@@ -89,7 +92,15 @@ class Dashboard(View):
         else: 
             errors = form.errors.get_json_data()
             print(errors)
-        return redirect(request.META.get('HTTP_REFERER'))
+        referer = request.META.get('HTTP_REFERER')
+        path = urlparse(referer).path
+        if path == '/all-expenditures/':
+            Records.invalidate_cache(request) # remove records from cache
+            return redirect('/components/records/')
+        if path == '/dashboard/':
+            return redirect('implemented-dashboard')
+        return redirect(referer)
+        
     
     def handle_delete_product(self, request):
         print(request.POST)
@@ -102,12 +113,13 @@ class Dashboard(View):
             context = {
                 'items':items
             }
+            Records.invalidate_cache(request) 
             if not items[0].get('products'):
                 return render(request, 'core/components/toastWrapper/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
             return render(request, 'core/components/paginateExpenditures.html', context) 
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
-        return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'core/components/toastWrapper/toastWrapper.html')
 # @login_required    
 class ActivityCalendar(View):
     def get(self, request): 
@@ -119,12 +131,16 @@ class ActivityCalendar(View):
 
 # @login_required    
 class Records(View):
-    def post(self, request):
-        # I'm sending the data through the request instead of calling the database again
-        # will be replaced with a caching system
-        records = json.loads(request.POST.get('records'))
+    def get(self, request): 
+        records = cache.get(f'records-{request.user.username}')
+        if not records:
+            records = AllExpenditures.get_context(request).get('records')
+            cache.set(f'records-{request.user.username}', records)
+             
         pageNumber = request.GET.get('page')
-        paginator = Paginator(records, 4)
+        if not pageNumber:
+            pageNumber = 1
+        paginator = Paginator(records, 7)
         page = paginator.page(pageNumber)
         nextPageNumber = None
         if page.has_next(): 
@@ -133,26 +149,17 @@ class Records(View):
         context = {
             'items':items, 
             'nextPageNumber':nextPageNumber,
-            'row_count': range(5),
-            'card_count': range(5)
             }
+        context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
+    @staticmethod
+    def invalidate_cache(request):
+        cache.delete(f'records-{request.user.username}')
     
 # @login_required
 class Settings(View): 
     def get(self, request):
         return render(request, 'core/pages/settings.html')
-# @login_required
-class CategoriesPage(View): 
-    def get(self, request):
-        user = request.user
-        categories = CategorySerializer(user.categories.all(), many=True).data
-        productsWithNoCategory = Product.objects.filter(category=None)
-        context = {
-            'categories': categories + [{'name': 'Uncategorized', 'product_count': productsWithNoCategory.count()}], 
-        }
-        return render(request, 'core/pages/categories.html', context)
-    
 
 # @login_required
 class Test(View):
@@ -171,10 +178,20 @@ class Routes(View):
             return JsonResponse(
                 {
                   '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html', getRecordSkeletonContext()),
-                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext())
+                  '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
+                  '/categories/': render_to_string('core/placeholders/categoriesPageSkeleton.html', getCategoriesSkeletonContext())
                 }
+
+
             )
         return render(request, 'core/components/blank.html', context)
-        
-    
-        
+
+
+class Categories(View):
+    def get(self, request):
+        user = request.user
+        categories = CategorySerializerWithMetrics(user.categories.all(), many=True).data
+        context = {
+            'categories': categories
+        }
+        return render(request, 'core/implementations/categories.html', context)
