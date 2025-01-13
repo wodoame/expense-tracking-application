@@ -7,4 +7,5 @@ etavenv/
 staticfiles/
 error.log
 trial.py
+.vscode/
 .idea/
