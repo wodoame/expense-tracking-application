@@ -78,30 +78,18 @@ function createSelectFieldInstance(id) {
         },
     };
 }
-function createDropdownInstance(id) {
-    return {
-        isOpen: false,
-        init() {
-            dropdownManager.setInstance(id, this);
-            universalCloser.subscribe(id, this);
-        },
-        open() {
-            this.isOpen = true;
-            universalCloser.closeExcept(id);
-        },
-        close() {
-            this.isOpen = false;
-        },
-    };
-}
 function handleAlpineInitialization() {
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);
-    Alpine.data('baseDropdown', createDropdownInstance);
+}
+function initializeFlowbite() {
+    window.initFlowbite();
 }
 document.addEventListener('alpine:init', handleAlpineInitialization);
+document.addEventListener('htmx:afterSwap', initializeFlowbite);
 window.addEventListener('popstate', handleCloseModal);
 window.addEventListener('beforeunload', () => {
     document.removeEventListener('alpine:init', handleAlpineInitialization);
     window.removeEventListener('popstate', handleCloseModal);
+    document.removeEventListener('htmx:afterSwap', initializeFlowbite);
 });

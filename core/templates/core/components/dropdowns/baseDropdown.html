@@ -1,4 +1,4 @@
-<div x-data="baseDropdown('{{id}}')" @click.outside="getDropdown().close()" :class="{'hidden': !isOpen}" class="z-10 absolute top-full right-0 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:border dark:bg-dark2 dark:border-darkborder dark:divide-darkborder">
+<div id="{{id}}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:border dark:bg-dark2 dark:border-darkborder dark:divide-darkborder">
     <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
       <div class="font-bold dark:text-gray-300">{% slot "title" %}Options{% endslot %}</div>
     </div>

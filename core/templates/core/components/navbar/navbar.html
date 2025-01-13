@@ -31,14 +31,14 @@
           </a> -->
         </div>
         <div class="flex items-center">
-            <div  class="ms-3">
-              <div x-data="{getDropdown:()=>dropdownManager.getInstance('profile-dropdown')}">
-                <button @click.stop="getDropdown().open()" class="flex text-sm bg-gray-800 rounded-full dark:focus:ring-gray-600" aria-expanded="false">
+            <div class="ms-3">
+              <!-- <div> -->
+                <button data-dropdown-toggle="profile-dropdown" data-dropdown-placement="bottom-end" class="flex text-sm bg-gray-800 rounded-full dark:focus:ring-gray-600" aria-expanded="false">
                   <span class="sr-only">Open user menu</span>
                   <img class="w-8 h-8 rounded-full" src="{% static 'imgs/github_profile.jpeg' %}" alt="user photo">
                 </button>
-              </div>
-              <div x-data="baseDropdown('profile-dropdown')" @click.outside="close" :class="{'hidden': !isOpen}"  class="z-50 absolute hidden right-2 my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:border dark:bg-dark2 dark:border-darkborder dark:shadow-md dark:divide-darkborder">
+              <!-- </div> -->
+              <div id="profile-dropdown" class="z-50 hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:border dark:bg-dark2 dark:border-darkborder dark:shadow-md dark:divide-darkborder">
                 <div class="px-4 py-3" role="none">
                   <p class="text-sm text-gray-900 dark:text-white" role="none">
                     {{user.username}}

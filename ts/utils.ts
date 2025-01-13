@@ -44,24 +44,4 @@ class CategoryPublisher{
   }
 }
 
-type Closable = {
-    close: ()=>void;
-};
-class UniversalCloser{
-    instances: {[key:string]: Closable} = {};
-    closeExcept(id: string){
-        const instancesList = Object.values(this.instances);
-        instancesList.forEach((instance)=>{
-             if(instance != this.instances[id]){
-                instance.close(); 
-             }
-        }); 
-    }
-
-    subscribe(id:string, instance:Closable){
-        this.instances[id] = instance;
-    }
-};
-
 const categoryPublisher = new CategoryPublisher();
-const universalCloser = new UniversalCloser(); 

@@ -5,8 +5,8 @@
          <div class="text-xl font-bold">
            {{date|timesince}}
          </div>
-         <div class="relative"  x-data="{getDropdown:()=>dropdownManager.getInstance('record-{{count}}')}">
-          <button x-data @click.stop="getDropdown().open()">
+         <div>
+          <button data-dropdown-toggle="record-{{count}}" data-dropdown-placement="bottom-end">
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
           </button>
           {% component 'recordOptionsDropdown' id='record-{{count}}' / %}
