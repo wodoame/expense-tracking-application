@@ -30,7 +30,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
     {% for category in categories %}
-     <div x-data="{getDropdown:()=>dropdownManager.getInstance('category-{{category.id}}')}" class="bg-gray-50 p-4 rounded-md border space-y-2 dark:bg-dark2 dark:border-darkborder">
+     <div x-data="{id:$id('category')}" class="bg-gray-50 p-4 rounded-md border space-y-2 dark:bg-dark2 dark:border-darkborder">
 
     <!-- header   -->
          <div class="flex justify-between relative">
@@ -38,10 +38,10 @@
               {{category.name}}
              </div>
 
-             <button data-dropdown-toggle="category-{{category.id}}" data-dropdown-placement="bottom-end">
+             <button :data-dropdown-toggle="id" data-dropdown-placement="bottom-end">
                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
               </button>
-              {% component 'categoryOptionsDropdown' id='category-{{category.id}}' / %}
+              {% component 'categoryOptionsDropdown' / %}
          </div>
         <!--  / header -->
          <div class="flex items-center justify-between">

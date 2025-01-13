@@ -89,12 +89,12 @@ function initializeFlowbite(){
   window.initFlowbite()
 }
 
+document.addEventListener('htmx:afterSettle', initializeFlowbite);
 document.addEventListener('alpine:init', handleAlpineInitialization);
-document.addEventListener('htmx:afterSwap', initializeFlowbite); 
 window.addEventListener('popstate', handleCloseModal);
 
 window.addEventListener('beforeunload', ()=>{
     document.removeEventListener('alpine:init', handleAlpineInitialization);  
     window.removeEventListener('popstate', handleCloseModal);
-    document.removeEventListener('htmx:afterSwap', initializeFlowbite); 
+    document.addEventListener('htmx:afterSettle', initializeFlowbite);
 })

@@ -31,10 +31,10 @@
         <!-- begin activity -->
 <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
   <!-- today  -->
-   {% include 'core/components/records.html' with products=today date=dateToday total=todayTotal count='0' only %}
+   {% include 'core/components/records.html' with products=today date=dateToday total=todayTotal only %}
    
    <!-- yesterday -->
-   {% include 'core/components/records.html' with products=yesterday date=dateYesterday total=yesterdayTotal count='1' only %}
+   {% include 'core/components/records.html' with products=yesterday date=dateYesterday total=yesterdayTotal only %}
 
 </div> 
 <!-- activity -->
