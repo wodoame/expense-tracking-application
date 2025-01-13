@@ -1,22 +1,15 @@
-<!DOCTYPE html>
+{% extends "core/pages/base.html" %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/output.css'%}">
-    <link rel="icon" href="{% static 'imgs/logo-100x100.png' %}" type="image/x-icon">
-    <title>
-        {% block title %}{% endblock title %}
-    </title>
-</head>
-<body class="h-screen w-full bg-gradient-to-r from-yellow-50 to-blue-200">
-    {% block content %}
-    {% endblock content %}
+{% block body %}
+    {% component 'toastWrapper' / %}
+    {% component 'themeToggler' / %}
+    <body class="h-screen w-full bg-gradient-to-r from-yellow-50 to-blue-200">
+        {% block content %}
+        {% endblock content %}
 
-    {% block scripts %}
+        <script src="{% static 'js/flowbitejs.min.js' %}"></script>
         <script src="{% static 'js/themeToggler.js' %}"></script>
-        <script src="{% static 'js/alpine.min.js' %}" defer ></script>
-    {% endblock scripts %}
-</body>
+        <script src="{% static 'main.js' %}"></script>
+    </body>
+{% endblock body %}
 </html>

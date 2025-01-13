@@ -14,13 +14,20 @@
         }
         document.documentElement.classList.toggle('dark', localStorage.getItem('dark') == 'true');
     </script>
-    <title>Personal Expense Tracking Application</title>
+    <title>
+        {% block title %}
+            Personal Expense Tracking Application
+        {% endblock title %}
+    </title>
     <link rel="shortcut icon" href="{% static 'imgs/logo-100x100.png' %}" type="image/x-icon">
 </head>
-<body class="dark:bg-[#0F172A]">
-    {% block content %}
-    {% endblock %}
+{% block body %}
+    <body class="dark:bg-[#0F172A]">
+        {% block content %}
+        {% endblock %}
 
-    <script src="{% static 'js/flowbitejs.min.js' %}"></script>
-</body>
+       
+    </body>
+{% endblock body %}
+
 </html>

@@ -6,7 +6,7 @@
 
 
 {% block content %}
-    {% component 'toastWrapper' / %}
+    {% comment %} {% component 'toastWrapper' / %} {% endcomment %}
     
     <div class="p-4">
         <img class="h-10" src="{% static 'imgs/logo-100x100.png' %}" alt="xpense_logo">
@@ -41,9 +41,10 @@
     
 {% endblock content %}
 
-{% block scripts %}
+{% comment %} {% block scripts %}
     <script src="{% static 'main.js' %}"></script>
     <script src="{% static 'js/flowbitejs.min.js' %}"></script>
+    
 
-{% endblock scripts %}
+{% endblock scripts %} {% endcomment %}
 
