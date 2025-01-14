@@ -88,6 +88,7 @@ class Dashboard(View):
             product.price = price
             product.user = request.user
             form.save()
+            Records.invalidate_cache(request) # remove records from cache
             messages.success(request, 'Product added successfully')
         else: 
             errors = form.errors.get_json_data()
@@ -95,7 +96,6 @@ class Dashboard(View):
         referer = request.META.get('HTTP_REFERER')
         path = urlparse(referer).path
         if path == '/all-expenditures/':
-            Records.invalidate_cache(request) # remove records from cache
             return redirect('/components/records/')
         if path == '/dashboard/':
             return redirect('implemented-dashboard')
