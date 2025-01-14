@@ -2,7 +2,7 @@
   const ctx = document.getElementById('myChart');
   let data = await fetchJSONData('/api/categories/?metrics=1');  
   data.sort((a, b) => b.metrics.total_amount_spent - a.metrics.total_amount_spent);
-  data = data.slice(0, 6);
+  data = data.slice(0, 5);
   data = data.filter((category)=>category.metrics.total_amount_spent > 0);
   const categoryName = data.map(category => category.name);
   const categoryData = data.map(category => category.metrics.total_amount_spent);
