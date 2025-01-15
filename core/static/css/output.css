@@ -722,10 +722,6 @@ video {
   top: 2rem;
 }
 
-.top-full {
-  top: 100%;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -1029,16 +1025,12 @@ video {
   width: var(--sidebar-width);
 }
 
-.w-\[120\%\] {
-  width: 120%;
+.w-\[140\%\] {
+  width: 140%;
 }
 
 .w-full {
   width: 100%;
-}
-
-.w-\[140\%\] {
-  width: 140%;
 }
 
 .min-w-full {
