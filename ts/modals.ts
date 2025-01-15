@@ -155,7 +155,7 @@ class EditProductModal extends BaseModal{
         formFields.category.value = product.category.id.toString();
     }
     if(priceParts.length == 2){
-        formFields.pesewas.value = priceParts[1];
+        formFields.pesewas.value = priceParts[1].length == 2? priceParts[1]: priceParts[1] + '0';
     }
     else{
         formFields.pesewas.value = '00';
