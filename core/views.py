@@ -1,6 +1,6 @@
 from .serializers import CategorySerializerWithMetrics
 from .views_dependencies import *
-# ! TODO: categories will still be outdated if products are added
+
 class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
@@ -49,6 +49,12 @@ class Dashboard(View):
             return postDict
         return request.POST
     
+    def format_price(self, cedis, pesewas):
+        if len(pesewas) == 1:
+            pesewas = '0' + pesewas
+        price = float(cedis + '.' + pesewas)
+        return price 
+    
         
     def handle_edit_product(self, request):
         productId = request.POST.get('id')
@@ -57,7 +63,7 @@ class Dashboard(View):
             form = AddProductForm(self.check_category(request), instance=product)
             cedis = request.POST.get('cedis')
             pesewas = request.POST.get('pesewas')
-            price = float(cedis + '.' + pesewas)
+            price = self.format_price(cedis, pesewas)
             if form.is_valid():
                 product = form.save(commit=False)
                 product.price = price
@@ -82,7 +88,7 @@ class Dashboard(View):
         form = AddProductForm(self.check_category(request))
         cedis = request.POST.get('cedis')
         pesewas = request.POST.get('pesewas')
-        price = float(cedis + '.' + pesewas)
+        price = self.format_price(cedis, pesewas)
         if form.is_valid():
             product = form.save(commit=False)
             product.price = price
