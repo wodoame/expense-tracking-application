@@ -62,8 +62,56 @@ class AddProductModal extends BaseModal{
 }
 
 class AddCategoryModal extends BaseModal{
+    submitForm(){
+        const form = <HTMLFormElement>document.getElementById('add-category-form');
+        if(form.checkValidity()){
+         document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
+         this.close();
+         const formData = htmx.values(form);
+         htmx.ajax('POST', '/implementations/categories/', {
+          values: formData,
+          target: '#main-content',
+         }).then(()=>{
+             categoryPublisher.fetchLatest();
+         });
+         form.reset();
+        }
+        else{
+            form.reportValidity();
+        }
+    }
 }
 
+
+class DeleteCategoryModal extends BaseModal{
+    df: DataFields;
+    ff: FormFields;
+    constructor(id: string, df: DataFields, ff: FormFields){
+        super(id);
+        this.df = df;
+        this.ff = ff;
+    }
+    setDetails(data: string){
+        const category: Category = JSON.parse(data);
+        const dataFields = this.df.dataFields; 
+        const formFields = this.ff.formFields;
+        // set data field text contents
+        dataFields.name.textContent = category.name;
+        // set form field values
+        formFields.id.value = category.id.toString(); 
+        this.open();   
+    }
+    submitForm(){
+        const form = <HTMLFormElement>document.getElementById('delete-category-form');
+        document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // show loading skeletons
+        const formData = htmx.values(form);
+        this.close();
+        htmx.ajax('POST', '/implementations/categories/?delete=1', {
+         values: formData,
+         target: '#main-content',
+        });
+    }
+}
 class DataFields{
      // data fields 
      dataFields: {[key: string]: HTMLElement} = {};
@@ -287,6 +335,19 @@ const getCategoryDetailsModal = (()=>{
        }
        const df = new DataFields(); 
        instance = new CategoryDetailsModal('category-details-modal', df);
+       return instance;
+   };
+})();
+ 
+const getDeleteCategoryModal = (()=>{
+   let instance = undefined; 
+   return ()=>{
+       if(instance){
+           return instance; 
+       }
+       const df = new DataFields();
+       const ff = new FormFields(); 
+       instance = new DeleteCategoryModal('delete-category-modal', df, ff);
        return instance;
    };
 })(); 

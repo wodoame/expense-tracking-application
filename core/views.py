@@ -105,11 +105,11 @@ class Dashboard(View):
             return redirect('/components/records/')
         if path == '/dashboard/':
             return redirect('implemented-dashboard')
-        return redirect(referer)
+        if path == '/categories/':
+            return redirect('implemented-categories')
         
     
     def handle_delete_product(self, request):
-        print(request.POST)
         productId = request.POST.get('id')
         try:
             Product.objects.get(id=productId).delete()
@@ -197,7 +197,41 @@ class Categories(View):
     def get(self, request):
         user = request.user
         categories = CategorySerializerWithMetrics(user.categories.all(), many=True).data
+        categories.sort(key=lambda x:x['metrics']['total_amount_spent'], reverse=True)
         context = {
             'categories': categories
         }
         return render(request, 'core/implementations/categories.html', context)
+    
+    def post(self, request):
+        if request.GET.get('edit'):
+            return self.handle_edit_category(request)
+        if request.GET.get('delete'):
+            return self.handle_delete_category(request)
+        return self.handle_add_category(request)
+       
+    def handle_add_category(self, request): 
+        user = request.user
+        form = AddCategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.user = user
+            category.save()
+            messages.success(request, 'Category added successfully')
+        else: 
+            print(form.errors.get_json_data())
+            messages.error(request, 'Could not add category')
+        return redirect('implemented-categories')
+    
+    def handle_edit_category(self, request): 
+        pass
+    
+    def handle_delete_category(self, request): 
+        categoryId = request.POST.get('id')
+        try:
+            Category.objects.get(id=categoryId).delete()
+            messages.success(request, 'Category deleted successfully')
+            Records.invalidate_cache(request) # some products may still be associated with the deleted category so the cache must be cleared
+        except Product.DoesNotExist:
+            messages.error(request, 'Category already deleted')
+        return redirect('implemented-categories')
