@@ -3,7 +3,7 @@
   {% fill 'body' %}
   <form method="POST" x-data="{modal: getDeleteCategoryModal(), df:getDeleteCategoryModal().df, ff:getDeleteCategoryModal().ff}" id="delete-category-form">
     {% csrf_token %}
-    <div class="p-6 text-sm">
+    <div class="p-6 px-4 text-sm">
         Delete category <span class="font-bold dark:text-gray-300" x-init="df.setDataField('name', $el)"></span> ?
     </div>
     <input type="hidden" name="id" x-init="ff.setFormField('id', $el)">
