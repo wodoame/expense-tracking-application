@@ -1041,10 +1041,6 @@ video {
   max-width: 26rem;
 }
 
-.max-w-sm {
-  max-width: 24rem;
-}
-
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -2525,6 +2521,10 @@ body:is(.dark *) {
 
   .md\:me-24 {
     margin-inline-end: 6rem;
+  }
+
+  .md\:max-w-sm {
+    max-width: 24rem;
   }
 
   .md\:grid-cols-2 {
