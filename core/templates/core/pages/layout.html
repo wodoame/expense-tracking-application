@@ -10,13 +10,15 @@
             <!-- main content goes here -->
         {% endblock %}
     </div>
-     
+     <!-- product modals -->
     {% component 'addProductModal' id='add-product-modal' / %}
-    {% component 'addCategoryModal' id='add-category-modal' / %}
-    {% component 'deleteCategoryModal' id='delete-category-modal' / %}
+    {% component 'editProductModal' id="edit-product-modal" / %}
     {% component 'deleteProductModal' id='delete-product-modal' / %}
     {% component 'showDetailsModal' id="show-details-modal" / %}
-    {% component 'editProductModal' id="edit-product-modal" / %}
+    <!-- category modals -->
+    {% component 'addCategoryModal' id='add-category-modal' / %}
+    {% component 'editCategoryModal' id='edit-category-modal' / %}
+    {% component 'deleteCategoryModal' id='delete-category-modal' / %}
     {% component 'categoryDetailsModal' id="category-details-modal" / %}
 
 {% component 'toastWrapper' / %}

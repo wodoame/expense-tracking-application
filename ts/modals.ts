@@ -20,6 +20,7 @@ class ModalManager{
 const modalManager = new ModalManager();
 
 // link a modal with this class to control basic modal functionality
+// The modal classes here are basically proxy classes for controlling the actual modal instance created using Alpine.js
 class BaseModal{
    modal: ModalInstance;
    constructor(id: string){
@@ -79,6 +80,32 @@ class AddCategoryModal extends BaseModal{
         else{
             form.reportValidity();
         }
+    }
+}
+
+class EditCategoryModal extends BaseModal{
+    ff: FormFields;
+    constructor(id: string, ff: FormFields){
+        super(id);
+        this.ff = ff;
+    }
+    setDetails(data: string){
+        const category: Category = JSON.parse(data);
+        const formFields = this.ff.formFields;
+        formFields.name.value = category.name; 
+        formFields.description.value = category.description?category.description:''; 
+        formFields.id.value = category.id.toString(); 
+        this.open();   
+    }
+    submitForm(){
+        const form = <HTMLFormElement>document.getElementById('edit-category-form');
+        document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // show loading skeletons
+        const formData = htmx.values(form);
+        this.close();
+        htmx.ajax('POST', '/implementations/categories/?edit=1', {
+         values: formData,
+         target: '#main-content',
+        });
     }
 }
 
@@ -265,7 +292,7 @@ class CategoryDetailsModal extends BaseModal{
     }
 }
 
-
+// product modals 
 const getAddProductModal = (()=>{
    let instance = undefined; // just a reference to the modal if it has been called already 
    return ()=>{
@@ -327,6 +354,7 @@ const getEditProductModal = (()=>{
    };
 })();
 
+// category modals
 const getCategoryDetailsModal = (()=>{
    let instance = undefined; 
    return ()=>{
@@ -350,8 +378,23 @@ const getDeleteCategoryModal = (()=>{
        instance = new DeleteCategoryModal('delete-category-modal', df, ff);
        return instance;
    };
+})();
+
+const getEditCategoryModal = (()=>{
+   let instance = undefined; 
+   return ()=>{
+       if(instance){
+           return instance; 
+       }
+       const ff = new FormFields(); 
+       instance = new EditCategoryModal('edit-category-modal', ff);
+       return instance;
+   };
 })(); 
 
+
+
+// Other stuff
 function handleCloseModal(){
     if(localStorage.getItem('modalOpen')){
         localStorage.removeItem('modalOpen');

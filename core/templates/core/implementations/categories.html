@@ -33,7 +33,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
     {% for category in categories %}
-     <div x-data="{id:$id('category'), data:$el.dataset.info, modal:getDeleteCategoryModal()}" data-info='{{category|json_string}}' class="bg-gray-50 p-4 rounded-md border space-y-2 dark:bg-dark2 dark:border-darkborder">
+     <div x-data="{id:$id('category'), data:$el.dataset.info}" data-info='{{category|json_string}}' class="bg-gray-50 p-4 rounded-md border space-y-2 dark:bg-dark2 dark:border-darkborder">
 
     <!-- header   -->
          <div class="flex justify-between relative">
