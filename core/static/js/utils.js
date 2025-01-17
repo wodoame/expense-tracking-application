@@ -40,3 +40,16 @@ class CategoryPublisher {
     }
 }
 const categoryPublisher = new CategoryPublisher();
+const getSidebar = (() => {
+    let instance = undefined;
+    return () => {
+        if (instance) {
+            return instance;
+        }
+        instance = window['FlowbiteInstances']._instances.Drawer['separator-sidebar'];
+        return instance;
+    };
+})();
+function getDropdown(id) {
+    return window['FlowbiteInstances']._instances.Dropdown[id];
+}

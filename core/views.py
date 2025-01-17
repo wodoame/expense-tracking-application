@@ -218,13 +218,25 @@ class Categories(View):
             category.user = user
             category.save()
             messages.success(request, 'Category added successfully')
+            Records.invalidate_cache(request)
         else: 
             print(form.errors.get_json_data())
             messages.error(request, 'Could not add category')
         return redirect('implemented-categories')
     
     def handle_edit_category(self, request): 
-        pass
+        categoryId = request.POST.get('id')
+        category = Category.objects.get(id=categoryId)
+        form = AddCategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.save()
+            messages.success(request, 'Category edited successfully')
+            Records.invalidate_cache(request)
+        else: 
+            print(form.errors.get_json_data())
+            messages.error(request, 'Could not add category')
+        return redirect('implemented-categories')
     
     def handle_delete_category(self, request): 
         categoryId = request.POST.get('id')

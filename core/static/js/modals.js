@@ -86,13 +86,21 @@ class EditCategoryModal extends BaseModal {
     }
     submitForm() {
         const form = document.getElementById('edit-category-form');
-        document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // show loading skeletons
-        const formData = htmx.values(form);
-        this.close();
-        htmx.ajax('POST', '/implementations/categories/?edit=1', {
-            values: formData,
-            target: '#main-content',
-        });
+        if (form.checkValidity()) {
+            document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
+            this.close();
+            const formData = htmx.values(form);
+            htmx.ajax('POST', '/implementations/categories/?edit=1', {
+                values: formData,
+                target: '#main-content',
+            }).then(() => {
+                categoryPublisher.fetchLatest();
+            });
+            form.reset();
+        }
+        else {
+            form.reportValidity();
+        }
     }
 }
 class DeleteCategoryModal extends BaseModal {
@@ -119,6 +127,8 @@ class DeleteCategoryModal extends BaseModal {
         htmx.ajax('POST', '/implementations/categories/?delete=1', {
             values: formData,
             target: '#main-content',
+        }).then(() => {
+            categoryPublisher.fetchLatest();
         });
     }
 }

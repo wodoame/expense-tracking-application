@@ -1,11 +1,9 @@
 {% load custom_tags %}
 {% component 'baseDropdown' %}
  {% fill 'items' %}
-  {% experimental %}
   <li>
     <a @click="getEditCategoryModal().setDetails(data)" class="cursor-pointer block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
   </li>
-  {% endexperimental %}
   <li>
     <a @click="getDeleteCategoryModal().setDetails(data)" class="cursor-pointer block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
   </li>
