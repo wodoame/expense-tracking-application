@@ -8,7 +8,6 @@ class RedirectView(View):
 @login_required
 class Dashboard(View):
     def get(self, request):
-        # asyncio.run(asyncio.sleep(3))
         user = request.user
         products = ProductSerializer(user.products.all(), many=True).data
         dateToday = datetime.today().date()
@@ -23,9 +22,7 @@ class Dashboard(View):
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
             'today': today, 
-            'totalSpentThisWeek': stats[0],
-            'totalSpentLastWeek': stats[1],
-            'highestWeeklySpending': stats[2],
+            'stats': stats,
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,
@@ -107,6 +104,7 @@ class Dashboard(View):
             return redirect('implemented-dashboard')
         if path == '/categories/':
             return redirect('implemented-categories')
+        return redirect(referer)
         
     
     def handle_delete_product(self, request):
@@ -185,7 +183,8 @@ class Routes(View):
                 {
                   '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html', getRecordSkeletonContext()),
                   '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
-                  '/categories/': render_to_string('core/placeholders/categoriesPageSkeleton.html', getCategoriesSkeletonContext())
+                  '/categories/': render_to_string('core/placeholders/categoriesPageSkeleton.html', getCategoriesSkeletonContext()),
+                  '/statSummarySkeleton/': render_to_string('core/components/StatSummarySkeleton.html')
                 }
 
 
@@ -247,3 +246,19 @@ class Categories(View):
         except Product.DoesNotExist:
             messages.error(request, 'Category already deleted')
         return redirect('implemented-categories')
+    
+class StatSummary(View):
+    def get(self, request):
+        stats = None
+        user = request.user
+        products = ProductSerializer(user.products.all(), many=True).data
+        if request.GET.get('type') == 'weekly':
+            stats = Context(WeeklyStats(products, request.user)).apply()
+        if request.GET.get('type') == 'monthly':
+            stats = Context(MonthlyStats(products, request.user)).apply() 
+        context = {
+            'stats':stats
+        }
+        return render(request, 'core/components/statSummary.html', context)
+        
+        

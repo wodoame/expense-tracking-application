@@ -1,25 +1,6 @@
 {% include 'core/components/pageHeading.html' with text="Dashboard" %}
-<!-- begin summary -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4" hx-get="/implementations/dashboard/" hx-target="#main-content" hx-trigger="load">
-  <!-- begin card -->
-    <a href="#" class="block space-y-2 p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
-        <p class="py-1 h-4 w-32 record-skeleton"></p>
-        <p class="h-4 w-16 record-skeleton"></p>
-    </a>
 
-    <a href="#" class="block space-y-2 p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
-        <p class="py-1 h-4 w-32 record-skeleton"></p>
-        <p class="h-4 w-16 record-skeleton"></p>
-    </a>
-
-    <a href="#" class="block space-y-2 p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
-        <p class="py-1 h-4 w-32 record-skeleton"></p>
-        <p class="h-4 w-16 record-skeleton"></p>
-    </a>
-
-</div>
-        <!-- end summary  -->
-
+{% include 'core/components/statSummarySkeleton.html' %}
         <!-- begin activity -->
 <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
   <!-- today  -->

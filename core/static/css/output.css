@@ -2063,6 +2063,39 @@ body:is(.dark *) {
   background-color: rgb(107 114 128 / var(--tw-bg-opacity, 1));
 }
 
+.option {
+  cursor: pointer;
+  border-radius: 9999px;
+  border-width: 1px;
+  padding: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.option:is(.dark *) {
+  border-color: rgb(243 244 246 / 0.05);
+}
+
+.option:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+}
+
+.option:hover:is(.dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1));
+}
+
+.option.selected {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+}
+
+.option.selected:is(.dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1));
+}
+
 .placeholder\:pl-3::-moz-placeholder {
   padding-left: 0.75rem;
 }
