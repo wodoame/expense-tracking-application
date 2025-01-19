@@ -3,8 +3,8 @@
 
 <!-- options -->
 <ul class="flex gap-4 items-center mb-4 text-sm text-gray-900 dark:text-neutral-200" x-data="{selected:'weekly'}">
-   <li class="option" :class="{'selected':selected == 'weekly'}" @click="selected='weekly';getStatSummary('weekly')">Weekly</li>
-   <li class="option":class="{'selected':selected == 'monthly'}" @click="selected='monthly';getStatSummary('monthly')">Monthly</li>
+   <li class="option" :class="{'selected':selected == 'weekly'}" @click="selected='weekly';statSummary.fetch('weekly')">Weekly</li>
+   <li class="option":class="{'selected':selected == 'monthly'}" @click="selected='monthly';statSummary.fetch('monthly')">Monthly</li>
    {% experimental %}
    <li class="option">Yearly</li>
    {% endexperimental %}
