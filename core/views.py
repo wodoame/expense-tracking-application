@@ -184,10 +184,8 @@ class Routes(View):
                   '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html', getRecordSkeletonContext()),
                   '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
                   '/categories/': render_to_string('core/placeholders/categoriesPageSkeleton.html', getCategoriesSkeletonContext()),
-                  '/statSummarySkeleton/': render_to_string('core/components/StatSummarySkeleton.html')
+                  '/statSummarySkeleton/': render_to_string('core/components/statSummarySkeleton.html')
                 }
-
-
             )
         return render(request, 'core/components/blank.html', context)
 
