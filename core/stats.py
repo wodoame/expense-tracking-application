@@ -42,7 +42,14 @@ class MonthlyStats:
         totalSpentLastMonth = dc.get_total_spent_in_month(year, month, self.products)
         highestMonthlySpending = max(totalSpentThisMonth, totalSpentLastMonth)
         date = datetime(year, month, 1)
-        while date.date() >= self.user.date_joined.date():
+        dateJoined = self.user.date_joined
+        endDate = None # I'm setting the end date to the month before the user joined so that we can still find items bought in the month they joined
+        if dateJoined.month == 1: 
+            endDate = datetime(dateJoined.year -1, 12, 1)
+        else: 
+            endDate = datetime(dateJoined.year, dateJoined.month -1, 1)
+
+        while date.date() > endDate.date():
             if date.month == 1: 
                 date = datetime(date.year - 1, 12, 1)
             else:
