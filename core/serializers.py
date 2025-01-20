@@ -4,13 +4,13 @@ import pandas as pd
 class CategorySerializer(serializers.ModelSerializer):
     class Meta: 
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'description']
         
 class CategorySerializerWithMetrics(serializers.ModelSerializer):
     metrics = serializers.SerializerMethodField()
     class Meta: 
         model = Category
-        fields = ['id', 'name', 'metrics']
+        fields = ['id', 'name', 'description', 'metrics']
         
     def get_metrics(self, obj):
         products = ProductPriceSerializer(obj.products.all(), many=True).data

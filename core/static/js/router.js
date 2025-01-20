@@ -26,6 +26,7 @@ class Routes {
     // To navigate to a route it's as easy as doing: routes.routeName()
     dashboard() {
         this.router.navigate('/dashboard/');
+        statSummary.currentType = 'weekly'; // set the stat type to weekly for now
     }
     expenditures() {
         this.router.navigate('/all-expenditures/');

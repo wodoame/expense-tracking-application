@@ -5,7 +5,9 @@ from rest_framework import status
 from core.models import Product
 from authentication.models import User
 from django.shortcuts import redirect
-
+import core.datechecker as dc 
+from datetime import datetime
+from .serializers import ProductSerializer
 class CategoryTests(SimpleTestCase):
    pass
 
@@ -61,6 +63,16 @@ class ProductTests(TestCase):
         self.assertFalse(response.status_code == status.HTTP_404_NOT_FOUND, 'The URL specified is incorrect')
         self.assertEqual(Product.objects.count(), 1, 'Product could not be added')
 
+class StatisticsTests(TestCase):
+    def test_month_stats(self):
+        dateToday = datetime.today().date()            
+        Product.objects.create(name='bread', price=12)
+        Product.objects.create(name='rice', price=12) 
+        products = ProductSerializer(Product.objects.all(), many=True).data
+        totalSpentThisMonth = dc.get_total_spent_in_month(dateToday.year, dateToday.month, products)
+        self.assertEqual(totalSpentThisMonth, 24)
+        
+        
 
 
 

@@ -1,10 +1,4 @@
 {% include 'core/components/pageHeading.html' with text="Categories"%}
-<!--toolbar-->
-<div class="flex items-center mb-4">
-     <button x-data @click="getAddCategoryModal().open()">
-              <svg xmlns="http://www.w3.org/2000/svg"  class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-     </button>
-</div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm" hx-get="/implementations/categories/" hx-target="#main-content" hx-trigger="load">
     {% for i in card_count %}

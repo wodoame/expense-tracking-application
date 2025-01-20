@@ -1,19 +1,16 @@
-<div x-data="baseDropdown('category-{{id}}')" @click.outside="getDropdown().close()" :class="{'hidden': !isOpen}" class="z-10 absolute top-full right-0 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:border dark:bg-dark2 dark:border-darkborder dark:divide-darkborder">
-    <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-      <div class="font-bold dark:text-gray-300">Options</div>
-    </div>
-    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
-      <li>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
-      </li>
-      <li>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
-      </li>
-      <li>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Set Budget</a>
-      </li>
-    </ul>
-<!--    <div class="py-2">-->
-<!--      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>-->
-<!--    </div>-->
-</div>
+{% load custom_tags %}
+{% component 'baseDropdown' %}
+ {% fill 'items' %}
+  <li>
+    <a @click="getEditCategoryModal().setDetails(data)" class="cursor-pointer block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+  </li>
+  <li>
+    <a @click="getDeleteCategoryModal().setDetails(data)" class="cursor-pointer block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
+  </li>
+  {% experimental %}
+    <li>
+      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Set Budget</a>
+    </li>
+  {% endexperimental %}
+ {% endfill %}
+{% endcomponent %}
