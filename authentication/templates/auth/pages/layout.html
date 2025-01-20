@@ -6,10 +6,11 @@
     <body class="dark:bg-[#0F172A] h-screen w-full bg-gradient-to-r from-yellow-50 to-blue-200">
         {% block content %}
         {% endblock content %}
-
-        <script src="{% static 'js/flowbitejs.min.js' %}"></script>
+        
         <script src="{% static 'js/themeToggler.js' %}"></script>
         <script src="{% static 'main.js' %}"></script>
+        <script src="{% static 'js/alpine.min.js' %}"></script>
+        <script src="{% static 'js/flowbitejs.min.js' %}"></script>
     </body>
 {% endblock body %}
 </html>
