@@ -20,6 +20,12 @@ type ModalInstance = {
     isOpen: boolean; 
 }
 
+type DropdownInstance = {
+    open: ()=>void; 
+    close: ()=>void; 
+    isOpen: boolean;
+};
+
 type DrawerInstance = {
     hide:()=>void;
     show:()=>void;

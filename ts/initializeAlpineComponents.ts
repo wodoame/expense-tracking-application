@@ -78,17 +78,23 @@ function createSelectFieldInstance(id: string){
       },
     }
   }
-  
+
 
 function handleAlpineInitialization(){
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);
 }
 
+function initializeFlowbite(){
+  window.initFlowbite()
+}
+
+document.addEventListener('htmx:afterSettle', initializeFlowbite);
 document.addEventListener('alpine:init', handleAlpineInitialization);
 window.addEventListener('popstate', handleCloseModal);
 
 window.addEventListener('beforeunload', ()=>{
     document.removeEventListener('alpine:init', handleAlpineInitialization);  
     window.removeEventListener('popstate', handleCloseModal);
+    document.addEventListener('htmx:afterSettle', initializeFlowbite);
 })

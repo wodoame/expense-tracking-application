@@ -34,6 +34,15 @@ def get_total_spent_in_week(week, products):
             total += product.get('price')
     return total
 
+def get_total_spent_in_month(year, month, products):
+    total = 0
+    for product in products:
+        productDate = datefromisoformat(product.get('date')).date()
+        if (productDate.year, productDate.month) == (year, month):
+            total += product.get('price')
+    return total
+        
+
 def get_calendar_data(year, month):
     firstDateOfMonth = datetime(year, month, 1)
     firstDayOfMonth = firstDateOfMonth.weekday()

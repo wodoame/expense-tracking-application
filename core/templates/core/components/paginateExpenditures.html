@@ -1,5 +1,5 @@
 {% for item in items %}
-  {% include 'core/components/records.html' with products=item.products date=item.date total=item.total  %}
+  {% include 'core/components/records.html' with products=item.products date=item.date total=item.total count=forloop.counter0  %}
 {% endfor %}
 
 {% if nextPageNumber %}

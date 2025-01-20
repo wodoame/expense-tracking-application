@@ -4,7 +4,7 @@
         <div class="flex-grow">
           <input type="hidden" name="{{name}}" x-init="formId=='edit-product-form'?ff.setFormField('category', $el):null" :value="selected[submitProperty]">
           <input type="hidden" name="newCategoryName" :value="newCategory.name">
-          <input type="text" x-ref="filterInput" @input="filter" @focus="open" @blur="isFocused=false" class="outline-none bg-transparent text-sm font-medium w-full" :value="selected.name">
+          <input type="text" x-ref="filterInput" maxlength="25" @input="filter" @focus="open" @blur="isFocused=false" class="outline-none bg-transparent text-sm font-medium w-full" :value="selected.name">
         </div>
         <div @click="$refs.filterInput.focus()">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="stroke-gray-400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
