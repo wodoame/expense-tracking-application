@@ -1,7 +1,7 @@
 """
 URL configuration for expense_tracking_app project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+The `urlpatterns` list implementations URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
 Examples:
 Function views
@@ -24,22 +24,20 @@ handler404 = 'authentication.views.not_found_404'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
+    path('implementations/', include('core.urls')),
+    path('components/', include('core.component_urls')),
     # path('__debug__/', include('debug_toolbar.urls')),
     path('', include("django_components.urls")),
     path('', core_views.RedirectView.as_view()),
     path('dashboard/', placeholder_views.Dashboard.as_view(), name='dashboard'),
-    path('actual-dashboard/', core_views.Dashboard.as_view(), name='actual-dashboard'),
     path('all-expenditures/', placeholder_views.AllExpenditures.as_view(), name='all-expenditures'),
-    # path('actual-all-expenditures/', core_views.AllExpenditures.as_view(), name='actual-all-expenditures'),
+    path('categories/', placeholder_views.Categories.as_view(), name='categories'),
     path('components/activityCalendar/', core_views.ActivityCalendar.as_view()),
-    path('components/records/', core_views.Records.as_view()),
-    path('settings/', core_views.Settings.as_view()),   
-    path('categories/', core_views.CategoriesPage.as_view()),
+    path('settings/', core_views.Settings.as_view()),
     path('signup/', auth_views.SignUp.as_view(), name='signup'),
     path('signin/', auth_views.SignIn.as_view(), name='signin'),
     path('logout/', auth_views.Logout.as_view(), name='logout'),
-    # path('complete-signup/', auth_views.CompleteSignUp.as_view(), name='complete-signup'),
-    # path('components/signupContinued/', auth_views.SignUpContinued.as_view()),
     path('test/', core_views.Test.as_view()),
     path('routes/', core_views.Routes.as_view()),
 ]

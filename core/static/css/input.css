@@ -132,3 +132,13 @@ body{
 .record-skeleton{
   @apply bg-gray-300 dark:bg-gray-500 animate-pulse rounded;
 }
+
+.option{
+  @apply border dark:border-darkborder px-4 p-2 rounded-full cursor-pointer;
+}
+.option:hover{
+  @apply bg-gray-50 dark:bg-dark2
+}
+.option.selected{
+  @apply bg-gray-50 dark:bg-dark2;
+}

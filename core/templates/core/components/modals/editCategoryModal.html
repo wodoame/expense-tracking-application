@@ -1,0 +1,25 @@
+{% component 'baseModal' %}
+    {% fill 'title' %}Edit Category{% endfill %}
+    {% fill 'body' %}
+    <form class="p-4 md:p-5" x-data="{modal:getEditCategoryModal(), ff:getEditCategoryModal().ff}" id="edit-category-form">
+        {% csrf_token %}
+         <div class="grid gap-4 mb-4 grid-cols-2">
+             <div class="col-span-2">
+                 <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
+                 <input type="text" x-init="ff.setFormField('name', $el)" name="name" maxlength="25" id="name" class="input" placeholder="Type category name" required>
+             </div>
+
+             <div class="col-span-2">
+                 <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category Description</label>
+                 <textarea id="description" x-init="ff.setFormField('description', $el)" maxlength="255" name="description" rows="4" class="input resize-none" placeholder="Add description ..."></textarea>
+             </div>
+         </div>
+         <input type="hidden" name="id" x-init="ff.setFormField('id', $el)">
+         <!-- showFormLoader('add-product-form') -->
+         <button type="button" @click="modal.submitForm()" class="text-white inline-flex w-full items-center rounded-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold text-sm px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
+            Edit
+        </button>
+     </form>  
+    {% endfill %}
+{% endcomponent %}

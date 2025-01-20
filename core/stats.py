@@ -20,7 +20,42 @@ class WeeklyStats:
             totalSpent = dc.get_total_spent_in_week(week, self.products)
             highestWeeklySpending = max(highestWeeklySpending, totalSpent)
             
-        return [totalSpentThisWeek, totalSpentLastWeek, highestWeeklySpending]
+        return [{'text': 'Total spent this week', 'data':totalSpentThisWeek},
+                {'text': 'Total spent last week', 'data':totalSpentLastWeek},
+                {'text': 'Highest weekly spending', 'data':highestWeeklySpending}
+                ]
+
+class MonthlyStats:
+    def __init__(self, products, user):
+        self.products = products 
+        self.user = user
+    
+    def calculate(self):
+        dateToday = datetime.today().date()
+        year = dateToday.year
+        month = dateToday.month
+        totalSpentThisMonth = dc.get_total_spent_in_month(year, month, self.products)
+        # set month to 12 if current month is January
+        if month == 1:
+            year -= 1
+            month = 12
+        totalSpentLastMonth = dc.get_total_spent_in_month(year, month, self.products)
+        highestMonthlySpending = max(totalSpentThisMonth, totalSpentLastMonth)
+        date = datetime(year, month, 1)
+        while date.date() >= self.user.date_joined.date():
+            if date.month == 1: 
+                date = datetime(date.year - 1, 12, 1)
+            else:
+                date = datetime(date.year, date.month -1, 1)
+            totalSpent = dc.get_total_spent_in_month(date.year, date.month, self.products)
+            highestMonthlySpending = max(totalSpent, highestMonthlySpending)
+        return [{'text': 'Total spent this month', 'data':totalSpentThisMonth},
+                {'text': 'Total spent last month', 'data':totalSpentLastMonth},
+                {'text': 'Highest monthly spending', 'data':highestMonthlySpending}
+              ]
+  
+        
+        
         
 class Context:
     def __init__(self, strategy):

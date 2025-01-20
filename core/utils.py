@@ -27,3 +27,8 @@ def getRecordSkeletonContext():
         'card_count': range(5)
     }
 
+def getCategoriesSkeletonContext():
+    return {
+        'card_count': range(5)
+    }
+

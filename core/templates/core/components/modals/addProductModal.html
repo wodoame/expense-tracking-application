@@ -6,12 +6,12 @@
          <div class="grid gap-4 mb-4 grid-cols-2">
              <div class="col-span-2">
                  <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
-                 <input type="text" name="name" maxlength="128" id="name" class="input" placeholder="Type product name" required>
+                 <input type="text" name="name" maxlength="25" id="name" class="input" placeholder="Type product name" required>
              </div>
    
              <div class="col-span-2">
                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category</label>
-               {% include 'core/components/objectSelect.html' with name='category' listId='categories' only  %}
+               {% component 'selectField' id='categories-add-product' name='category' / %}
             </div>
              
              <div class="col-span-1">
