@@ -1,6 +1,7 @@
 (async function(){
   const ctx = document.getElementById('myChart');
   let data = await fetchJSONData('/api/categories/?metrics=1');  
+  if(data.length >= 4){
   data.sort((a, b) => b.metrics.total_amount_spent - a.metrics.total_amount_spent);
   data = data.slice(0, 5);
   data = data.filter((category)=>category.metrics.total_amount_spent > 0);
@@ -34,4 +35,8 @@
     }
   });
   document.getElementById('chart-loader').classList.add('hidden');
+}
+else{
+  document.getElementById('chart-container').classList.add('hidden');
+}
 })()
