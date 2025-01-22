@@ -140,18 +140,20 @@ class Records(View):
         if not records:
             records = AllExpenditures.get_context(request).get('records')
             cache.set(f'records-{request.user.username}', records)
-             
-        pageNumber = request.GET.get('page')
-        if not pageNumber:
-            pageNumber = 1
-        paginator = Paginator(records, 7)
-        page = paginator.page(pageNumber)
+        
         nextPageNumber = None
-        if page.has_next(): 
-            nextPageNumber = page.next_page_number()
-        items = page.object_list
+        # No pagination required so I commented it out. Maybe it'll be useful another time (I don't know)
+        # pageNumber = request.GET.get('page')
+        # if not pageNumber:
+        #     pageNumber = 1
+        # paginator = Paginator(records, 7)
+        # page = paginator.page(pageNumber)
+        # if page.has_next(): 
+        #     nextPageNumber = page.next_page_number()
+        # items = page.object_list
+        
         context = {
-            'items':items, 
+            'items':records, 
             'nextPageNumber':nextPageNumber,
             }
         context.update(getRecordSkeletonContext())
