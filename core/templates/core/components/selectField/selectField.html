@@ -11,7 +11,7 @@
         </div>
       </button>
     </div>
-    <div x-show="isOpen" x-cloak  class="z-50 w-full absolute my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:shadow-dark1 dark:bg-dark2 dark:shadow-md dark:border-darkborder dark:divide-gray-600">
+    <div x-show="isOpen" x-cloak  class="z-50 w-full absolute my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:shadow-dark1 dark:bg-dark2 dark:shadow-md dark:border-darkborder dark:border dark:divide-darkborder">
       <ul class="py-1 max-h-60 overflow-y-auto" role="none">
         <template x-if="filtered.length == 0">
           <li @click="newCategory={id:0, name:newSearch};select(newCategory)">
@@ -22,7 +22,7 @@
           <li @click="select(item)" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
             <div class="block flex-grow" role="menuitem" x-text="item.name"></div>
             <template x-if="selected.name == item.name">
-              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" class="stroke-teal-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" class="stroke-teal-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             </template>
           </li>
         </template>
