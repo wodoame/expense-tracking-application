@@ -5,7 +5,6 @@ class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
 
-@login_required
 class Dashboard(View):
     def get(self, request):
         user = request.user
