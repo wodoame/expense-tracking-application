@@ -24,11 +24,20 @@ class CategorySerializerWithMetrics(serializers.ModelSerializer):
             metrics['product_count'] = int(df.get('name').count())
             metrics['total_amount_spent'] = float(df.get('price').sum())
         return metrics    
+    
 class ProductSerializer(serializers.ModelSerializer): 
     category = CategorySerializer() 
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
     class Meta: 
         model = Product
         fields = '__all__'
+    
+    def get_name(self, product):
+        return product.get_name()
+    
+    def get_description(self, product):
+        return product.get_description()
 
 class ProductPriceSerializer(serializers.ModelSerializer):
     class Meta: 

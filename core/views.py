@@ -169,6 +169,8 @@ class Settings(View):
 # @login_required
 class Test(View):
     def get(self, request): 
+        product = request.user.products.first() 
+        print(product.get_name())
         context = {'row_count': range(5)}
         return render(request, 'core/pages/test.html', context)
     
