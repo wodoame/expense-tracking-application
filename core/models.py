@@ -27,8 +27,10 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         # Encrypt sensitive fields before saving
-        self.name = self.encryption_helper.encrypt(self.name)
-        self.description = self.encryption_helper.encrypt(self.description)
+        if not self.encryption_helper.is_encrypted(self.name):
+            self.name = self.encryption_helper.encrypt(self.name)
+        if not self.encryption_helper.is_encrypted(self.description): 
+            self.description = self.encryption_helper.encrypt(self.description)
         super().save(*args, **kwargs)
 
     def get_name(self):

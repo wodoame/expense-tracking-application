@@ -35,3 +35,6 @@ class EncryptionHelper:
             return decrypted_data.decode('utf-8')
         except InvalidToken:
             return encrypted_data.decode('utf-8') # return the data that was passed in as it is already decrypted (assumption for our purposes)
+    
+    def is_encrypted(self, data):
+        return data != self.decrypt(data)  # If data is encrypted, it will be different from the decrypted data otherwise the decrypted data will be the same as the input data
