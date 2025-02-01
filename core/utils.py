@@ -32,3 +32,6 @@ def getCategoriesSkeletonContext():
         'card_count': range(5)
     }
 
+def encryptAllProducts():
+    for product in Product.objects.all(): 
+        product.save() # saving indirectly encrypts the products
