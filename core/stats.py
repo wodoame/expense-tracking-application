@@ -15,7 +15,7 @@ class WeeklyStats:
         highestWeeklySpending = max(totalSpentThisWeek, totalSpentLastWeek)
         week = lastWeek
 
-        while week[0] >= self.user.date_joined.date(): 
+        while week[1] >= self.user.date_joined.date(): 
             week = (week[0] - timedelta(days=7), week[1] - timedelta(days=7))
             totalSpent = dc.get_total_spent_in_week(week, self.products)
             highestWeeklySpending = max(highestWeeklySpending, totalSpent)
