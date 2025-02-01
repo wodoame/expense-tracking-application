@@ -39,6 +39,8 @@ class MonthlyStats:
         if month == 1:
             year -= 1
             month = 12
+        else: 
+            month -= 1 
         totalSpentLastMonth = dc.get_total_spent_in_month(year, month, self.products)
         highestMonthlySpending = max(totalSpentThisMonth, totalSpentLastMonth)
         date = datetime(year, month, 1)
