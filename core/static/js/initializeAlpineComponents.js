@@ -83,6 +83,7 @@ function handleAlpineInitialization() {
     Alpine.data('selectField', createSelectFieldInstance);
 }
 function initializeFlowbite() {
+    getSidebar().hide(); // close the sidebar before flowbite reinitializes to prevent unexpected behaviours
     window.initFlowbite();
 }
 document.addEventListener('htmx:afterSettle', initializeFlowbite);

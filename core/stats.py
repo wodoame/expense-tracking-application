@@ -15,7 +15,7 @@ class WeeklyStats:
         highestWeeklySpending = max(totalSpentThisWeek, totalSpentLastWeek)
         week = lastWeek
 
-        while week[0] >= self.user.date_joined.date(): 
+        while week[1] >= self.user.date_joined.date(): 
             week = (week[0] - timedelta(days=7), week[1] - timedelta(days=7))
             totalSpent = dc.get_total_spent_in_week(week, self.products)
             highestWeeklySpending = max(highestWeeklySpending, totalSpent)
@@ -39,10 +39,19 @@ class MonthlyStats:
         if month == 1:
             year -= 1
             month = 12
+        else: 
+            month -= 1 
         totalSpentLastMonth = dc.get_total_spent_in_month(year, month, self.products)
         highestMonthlySpending = max(totalSpentThisMonth, totalSpentLastMonth)
         date = datetime(year, month, 1)
-        while date.date() >= self.user.date_joined.date():
+        dateJoined = self.user.date_joined
+        endDate = None # I'm setting the end date to the month before the user joined so that we can still find items bought in the month they joined
+        if dateJoined.month == 1: 
+            endDate = datetime(dateJoined.year -1, 12, 1)
+        else: 
+            endDate = datetime(dateJoined.year, dateJoined.month -1, 1)
+
+        while date.date() > endDate.date():
             if date.month == 1: 
                 date = datetime(date.year - 1, 12, 1)
             else:

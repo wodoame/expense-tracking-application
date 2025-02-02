@@ -1,5 +1,6 @@
 <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 items-start"
   hx-get="/components/records/?page={{nextPageNumber|default:1}}"
+  hx-vals="js:{...getAdditionalParams()}"
   hx-trigger="revealed"
   hx-swap="outerHTML"
 >

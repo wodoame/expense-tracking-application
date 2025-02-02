@@ -30,6 +30,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
+ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
 
 ALLOWED_HOSTS = ['*']
 

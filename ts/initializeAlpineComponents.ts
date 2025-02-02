@@ -86,6 +86,7 @@ function handleAlpineInitialization(){
 }
 
 function initializeFlowbite(){
+  getSidebar().hide(); // close the sidebar before flowbite reinitializes to prevent unexpected behaviours
   window.initFlowbite()
 }
 

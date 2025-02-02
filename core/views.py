@@ -5,7 +5,6 @@ class RedirectView(View):
     def get(self, request):
         return redirect('dashboard')
 
-@login_required
 class Dashboard(View):
     def get(self, request):
         user = request.user
@@ -98,13 +97,16 @@ class Dashboard(View):
             print(errors)
         referer = request.META.get('HTTP_REFERER')
         path = urlparse(referer).path
+        print('the path is', path)
         if path == '/all-expenditures/':
             return redirect('/components/records/')
         if path == '/dashboard/':
             return redirect('implemented-dashboard')
         if path == '/categories/':
             return redirect('implemented-categories')
-        return redirect(referer)
+        if '/categories/' in path: 
+            return render(request, 'core/placeholders/seeProductsSkeleton.html', getRecordSkeletonContext())
+        return render(request, 'core/pages/blank.html')
         
     
     def handle_delete_product(self, request):
@@ -136,22 +138,35 @@ class ActivityCalendar(View):
 # @login_required    
 class Records(View):
     def get(self, request): 
-        records = cache.get(f'records-{request.user.username}')
-        if not records:
-            records = AllExpenditures.get_context(request).get('records')
-            cache.set(f'records-{request.user.username}', records)
-             
-        pageNumber = request.GET.get('page')
-        if not pageNumber:
-            pageNumber = 1
-        paginator = Paginator(records, 7)
-        page = paginator.page(pageNumber)
+        records = []
+        if request.GET.get('oneCategory'):
+            user = request.user 
+            categoryName = unquote(request.GET.get('categoryName'))
+            products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
+            dates = dc.collectDates(products)
+            dates.sort(reverse=True)
+            records = []
+            for date in dates:
+                records.append(record2(date, products)) 
+        else:
+            records = cache.get(f'records-{request.user.username}')
+            if not records:
+                records = AllExpenditures.get_context(request).get('records')
+                cache.set(f'records-{request.user.username}', records)
+        
         nextPageNumber = None
-        if page.has_next(): 
-            nextPageNumber = page.next_page_number()
-        items = page.object_list
+        # No pagination required so I commented it out. Maybe it'll be useful another time (I don't know)
+        # pageNumber = request.GET.get('page')
+        # if not pageNumber:
+        #     pageNumber = 1
+        # paginator = Paginator(records, 7)
+        # page = paginator.page(pageNumber)
+        # if page.has_next(): 
+        #     nextPageNumber = page.next_page_number()
+        # items = page.object_list
+        
         context = {
-            'items':items, 
+            'items':records, 
             'nextPageNumber':nextPageNumber,
             }
         context.update(getRecordSkeletonContext())
@@ -168,7 +183,7 @@ class Settings(View):
 # @login_required
 class Test(View):
     def get(self, request): 
-        context = {'row_count': range(5)}
+        context = {} 
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
@@ -184,7 +199,11 @@ class Routes(View):
                   '/dashboard/': render_to_string('core/placeholders/dashboardSkeleton.html', getRecordSkeletonContext()),
                   '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
                   '/categories/': render_to_string('core/placeholders/categoriesPageSkeleton.html', getCategoriesSkeletonContext()),
-                  '/statSummarySkeleton/': render_to_string('core/components/statSummarySkeleton.html')
+                  '/statSummarySkeleton/': render_to_string('core/components/statSummarySkeleton.html'), 
+                  '/categories/category-name/': render_to_string(
+                      'core/placeholders/seeProductsSkeleton.html',
+                      getRecordSkeletonContext()
+                      )
                 }
             )
         return render(request, 'core/components/blank.html', context)
