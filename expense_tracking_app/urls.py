@@ -33,6 +33,7 @@ urlpatterns = [
     path('dashboard/', placeholder_views.Dashboard.as_view(), name='dashboard'),
     path('all-expenditures/', placeholder_views.AllExpenditures.as_view(), name='all-expenditures'),
     path('categories/', placeholder_views.Categories.as_view(), name='categories'),
+    path('categories/<str:categoryName>/', placeholder_views.SeeProducts.as_view(), name='see-products'),
     path('components/activityCalendar/', core_views.ActivityCalendar.as_view()),
     path('settings/', core_views.Settings.as_view()),
     path('signup/', auth_views.SignUp.as_view(), name='signup'),

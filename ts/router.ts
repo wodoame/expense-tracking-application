@@ -8,9 +8,9 @@ class Router{
         const data = await response.json();
         this.routes = data;
     }
-    navigate(route: string){
-        history.pushState({}, '', route); 
-        this.currentRoute = route;
+    navigate(route: string, forcedRoute?:string){
+        history.pushState({}, '', forcedRoute?forcedRoute:route); 
+        this.currentRoute = forcedRoute?forcedRoute:route;
         htmx.swap('#main-content', this.routes[route], {swapStyle: 'innerHTML', transition:true});
         window.scrollTo({
             top: 0, 
@@ -36,6 +36,10 @@ class Routes{
     }
     categories(){
          this.router.navigate('/categories/');
+    }
+    category(categoryName:string){
+       this.router.navigate('/categories/category-name/', `/categories/${categoryName}/`);
+       document.getElementById('pageHeading').textContent = categoryName;
     }
 }
 

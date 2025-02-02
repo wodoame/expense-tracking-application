@@ -53,6 +53,20 @@ const getSidebar = (() => {
 function getDropdown(id) {
     return window['FlowbiteInstances']._instances.Dropdown[id];
 }
+function getCategoryName() {
+    return window.location.pathname.split('/').filter(segment => segment !== '').pop();
+}
+function getAdditionalParams() {
+    const pattern = /^\/categories\/[^\/]+\/$/;
+    if (pattern.test(router.currentRoute)) {
+        const categoryName = getCategoryName();
+        return {
+            categoryName: categoryName,
+            oneCategory: 1,
+        };
+    }
+    return {};
+}
 class StatSummary {
     constructor() {
         this.currentType = 'weekly';

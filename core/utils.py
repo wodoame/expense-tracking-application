@@ -1,6 +1,6 @@
 from .models import Product
 from .serializers import ProductSerializer
-from .datechecker import get_total
+from .datechecker import get_total, datefromisoformat
 import asyncio 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required as lr 
@@ -16,6 +16,22 @@ def record(date, request):
     
     # asyncio.run(asyncio.sleep(2))
     return result
+
+# reduces access to the database by filtering through an already serialized result
+def record2(date, products:list[dict]):
+    filteredProducts = []
+    for product in products:
+        if datefromisoformat(product.get('date')).date() == date:
+            filteredProducts.append(product)
+        
+    result = {
+        'date': date, 
+        'products': filteredProducts, 
+        'total':get_total(filteredProducts)
+    }
+    
+    return result
+    
 
 def login_required(cls):
     cls = method_decorator(lr(login_url='signin'), name='dispatch')(cls)

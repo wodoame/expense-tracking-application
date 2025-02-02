@@ -29,9 +29,16 @@ class AddProductModal extends BaseModal {
     submitForm() {
         const form = document.getElementById('add-product-form');
         if (form.checkValidity()) {
-            document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
-            this.close();
             let target = '#main-content';
+            const pattern = /^\/categories\/[^\/]+\/$/;
+            if (pattern.test(router.currentRoute)) {
+                document.getElementById('main-content').innerHTML = router.routes['/categories/category-name/']; // insert the placeholder without triggering htmx
+                document.getElementById('pageHeading').innerHTML = getCategoryName();
+            }
+            else {
+                document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
+            }
+            this.close();
             if (router.currentRoute == '/all-expenditures/') {
                 target = '#all-expenditures'; // put the content inside #all-expenditures div instead of #main-content
             }

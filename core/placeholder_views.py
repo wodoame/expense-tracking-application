@@ -21,7 +21,7 @@ class AllExpenditures(View):
         
         # group the products by date
         for date in dates: 
-            records.append(record(date, request))
+            records.append(record(date, request)) # * Possible optimization: reduce database hits (try to use records2 function)
         
         # print(cache.get(f'records-{request.user.username}'))
         cache.set(f'records-{request.user.username}', records) # store records in a cache
@@ -35,3 +35,20 @@ class Categories(View):
     def get(self, request):
         context = getCategoriesSkeletonContext()
         return render(request, 'core/pages/categories.html', context)
+
+@login_required
+class SeeProducts(View):
+    def get(self, request, categoryName):
+        user = request.user 
+        try: 
+            user.categories.get(name=categoryName)
+            context = getRecordSkeletonContext() 
+            context.update(
+                {
+                    'pageHeading':categoryName, 
+                }
+            )
+            return render(request, 'core/pages/see-products.html', context)
+        except Category.DoesNotExist:
+            return render(request, 'auth/pages/404.html')
+       
