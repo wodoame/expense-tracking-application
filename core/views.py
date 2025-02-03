@@ -66,8 +66,16 @@ class Dashboard(View):
                 product.user = request.user
                 form.save() 
                 messages.success(request, 'Product edited successfully')
-                date = dc.datefromisoformat(request.POST.get('date')).date() 
-                items = [record(date, request)]
+                date = dc.datefromisoformat(request.POST.get('date')).date()
+                referer = request.META.get('HTTP_REFERER')
+                path = urlparse(referer).path
+                if re.match(r'^/categories/[^/]+/$', path):
+                    segments = path.split('/')
+                    categoryName = list(filter(lambda x: x != '', segments)).pop()
+                    products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date=date), many=True).data
+                    items = [record2(date, products)] 
+                else: 
+                    items = [record(date, request)]
                 context = {
                     'items':items, 
                     'showToast':True,
@@ -108,7 +116,7 @@ class Dashboard(View):
         if re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
            categoryName = list(filter(lambda x: x != '', segments)).pop()
-           return redirect(f'/components/records/?oneCategory=1&categoryName={categoryName}')
+           return redirect(f'/components/records/?addProduct=1?&oneCategory=1&categoryName={categoryName}')
         return render(request, 'core/pages/blank.html')
         
     
@@ -118,7 +126,15 @@ class Dashboard(View):
             Product.objects.get(id=productId).delete()
             messages.success(request, 'Product deleted successfully')
             date = dc.datefromisoformat(request.POST.get('date')).date() 
-            items = [record(date, request)]
+            referer = request.META.get('HTTP_REFERER')
+            path = urlparse(referer).path
+            if re.match(r'^/categories/[^/]+/$', path):
+                segments = path.split('/')
+                categoryName = list(filter(lambda x: x != '', segments)).pop()
+                products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date=date), many=True).data
+                items = [record2(date, products)] 
+            else:
+                items = [record(date, request)]
             context = {
                 'items':items,
                 'showToast':True,
@@ -173,6 +189,7 @@ class Records(View):
         context = {
             'items':records, 
             'nextPageNumber':nextPageNumber,
+            'seeProductsPage': request.GET.get('addProduct')
             }
         context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)

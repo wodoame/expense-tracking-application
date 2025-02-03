@@ -23,7 +23,6 @@ def record2(date, products:list[dict]):
     for product in products:
         if datefromisoformat(product.get('date')).date() == date:
             filteredProducts.append(product)
-        
     result = {
         'date': date, 
         'products': filteredProducts, 
