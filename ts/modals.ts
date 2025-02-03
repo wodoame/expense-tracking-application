@@ -42,8 +42,8 @@ class AddProductModal extends BaseModal{
         let target = '#main-content'
         const pattern = /^\/categories\/[^\/]+\/$/;
         if(pattern.test(router.currentRoute)){
-            document.getElementById('main-content').innerHTML = router.routes['/categories/category-name/']; // insert the placeholder without triggering htmx
-            document.getElementById('pageHeading').innerHTML = getCategoryName();
+            document.getElementById('see-products').outerHTML = router.routes['seeProductsSkeleton']; // insert the placeholder without triggering htmx
+            target = '#see-products';
         }
         else{
             document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx

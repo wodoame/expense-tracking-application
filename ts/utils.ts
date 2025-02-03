@@ -63,7 +63,7 @@ const getSidebar = (()=>{
  }
 
  function getCategoryName(){
-     return window.location.pathname.split('/').filter(segment => segment !== '').pop();
+     return decodeURIComponent(window.location.pathname.split('/').filter(segment => segment !== '').pop());
  }
  function getAdditionalParams(){
     const pattern = /^\/categories\/[^\/]+\/$/;

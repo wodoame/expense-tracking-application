@@ -75,6 +75,9 @@
       {% include 'core/components/recordSkeleton.html'   %}
  </div>
 
- <!-- allow messages to appear  -->
- {% component 'toastWrapper' / %}
+ 
+ {% if showToast %}
+  {% component 'toastWrapper' / %}
+ {% endif %}
+ 
          

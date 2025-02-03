@@ -69,7 +69,8 @@ class Dashboard(View):
                 date = dc.datefromisoformat(request.POST.get('date')).date() 
                 items = [record(date, request)]
                 context = {
-                    'items':items
+                    'items':items, 
+                    'showToast':True,
                 }
                 Records.invalidate_cache(request)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
@@ -104,8 +105,10 @@ class Dashboard(View):
             return redirect('implemented-dashboard')
         if path == '/categories/':
             return redirect('implemented-categories')
-        if '/categories/' in path: 
-            return render(request, 'core/placeholders/seeProductsSkeleton.html', getRecordSkeletonContext())
+        if re.match(r'^/categories/[^/]+/$', path):
+           segments = path.split('/')
+           categoryName = list(filter(lambda x: x != '', segments)).pop()
+           return redirect(f'/components/records/?oneCategory=1&categoryName={categoryName}')
         return render(request, 'core/pages/blank.html')
         
     
@@ -117,7 +120,8 @@ class Dashboard(View):
             date = dc.datefromisoformat(request.POST.get('date')).date() 
             items = [record(date, request)]
             context = {
-                'items':items
+                'items':items,
+                'showToast':True,
             }
             Records.invalidate_cache(request) 
             if not items[0].get('products'):
@@ -141,7 +145,8 @@ class Records(View):
         records = []
         if request.GET.get('oneCategory'):
             user = request.user 
-            categoryName = unquote(request.GET.get('categoryName'))
+            categoryName = request.GET.get('categoryName')
+            print(request.GET)
             products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
             dates = dc.collectDates(products)
             dates.sort(reverse=True)
@@ -200,10 +205,8 @@ class Routes(View):
                   '/all-expenditures/': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
                   '/categories/': render_to_string('core/placeholders/categoriesPageSkeleton.html', getCategoriesSkeletonContext()),
                   '/statSummarySkeleton/': render_to_string('core/components/statSummarySkeleton.html'), 
-                  '/categories/category-name/': render_to_string(
-                      'core/placeholders/seeProductsSkeleton.html',
-                      getRecordSkeletonContext()
-                      )
+                  '/categories/category-name/': render_to_string('core/placeholders/seeProductsSkeleton.html',getRecordSkeletonContext()),
+                  'seeProductsSkeleton': render_to_string('core/placeholders/seeProductsSkeleton2.html',getRecordSkeletonContext()),
                 }
             )
         return render(request, 'core/components/blank.html', context)
