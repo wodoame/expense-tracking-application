@@ -90,12 +90,19 @@ function initializeFlowbite(){
   window.initFlowbite()
 }
 
+function restoreHistory(e:PopStateEvent){
+  if(e.state){
+    document.getElementById('main-content').innerHTML = e.state.html;
+  }
+};
 document.addEventListener('htmx:afterSettle', initializeFlowbite);
 document.addEventListener('alpine:init', handleAlpineInitialization);
 window.addEventListener('popstate', handleCloseModal);
+window.addEventListener('popstate', restoreHistory);
 
 window.addEventListener('beforeunload', ()=>{
     document.removeEventListener('alpine:init', handleAlpineInitialization);  
     window.removeEventListener('popstate', handleCloseModal);
+    window.removeEventListener('popstate', restoreHistory);
     document.addEventListener('htmx:afterSettle', initializeFlowbite);
 })

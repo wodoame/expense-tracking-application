@@ -9,7 +9,8 @@ class Router {
         this.routes = data;
     }
     navigate(route, forcedRoute) {
-        history.pushState({}, '', forcedRoute ? forcedRoute : route);
+        history.replaceState({ html: document.getElementById('main-content').innerHTML }, ''); // store html for the current page
+        history.pushState(null, '', forcedRoute ? forcedRoute : route); // push url for the next page
         this.currentRoute = forcedRoute ? forcedRoute : route;
         htmx.swap('#main-content', this.routes[route], { swapStyle: 'innerHTML', transition: true });
         window.scrollTo({

@@ -86,11 +86,19 @@ function initializeFlowbite() {
     getSidebar().hide(); // close the sidebar before flowbite reinitializes to prevent unexpected behaviours
     window.initFlowbite();
 }
+function restoreHistory(e) {
+    if (e.state) {
+        document.getElementById('main-content').innerHTML = e.state.html;
+    }
+}
+;
 document.addEventListener('htmx:afterSettle', initializeFlowbite);
 document.addEventListener('alpine:init', handleAlpineInitialization);
 window.addEventListener('popstate', handleCloseModal);
+window.addEventListener('popstate', restoreHistory);
 window.addEventListener('beforeunload', () => {
     document.removeEventListener('alpine:init', handleAlpineInitialization);
     window.removeEventListener('popstate', handleCloseModal);
+    window.removeEventListener('popstate', restoreHistory);
     document.addEventListener('htmx:afterSettle', initializeFlowbite);
 });
