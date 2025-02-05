@@ -22,7 +22,10 @@
       responsive:false,
       scales: {
         y: {
-          beginAtZero: true
+          beginAtZero: true, 
+          ticks:{
+            autoSkip:true
+          }
         }, 
         x: {
           ticks: {
