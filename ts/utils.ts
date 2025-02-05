@@ -93,3 +93,41 @@ const getSidebar = (()=>{
  }
 
  const statSummary = new StatSummary();
+
+ type EventHandler = ()=>void; 
+
+ type EventMap = {
+    [key:string]:EventHandler[]
+ };
+
+ class EventEmitter {
+    events:EventMap; 
+    constructor() {
+        this.events = {};
+    }
+
+    // Add an event listener
+    addEventListener(event:string, callback:EventHandler) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+    }
+
+    // Remove an event listener
+    removeEventListener(event:string, callback:EventHandler) {
+        if (this.events[event]) {
+            this.events[event] = this.events[event].filter((cb) => cb !== callback);
+        }
+    }
+
+    // Trigger an event
+    emit(event:string) {
+        if (this.events[event]) {
+            this.events[event].forEach((callback) => callback());
+        }
+    }
+}
+
+const globalEventEmitter = new EventEmitter();
+globalEventEmitter.addEventListener('popstate', generateGraph);

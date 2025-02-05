@@ -84,3 +84,29 @@ class StatSummary {
     }
 }
 const statSummary = new StatSummary();
+class EventEmitter {
+    constructor() {
+        this.events = {};
+    }
+    // Add an event listener
+    addEventListener(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+    }
+    // Remove an event listener
+    removeEventListener(event, callback) {
+        if (this.events[event]) {
+            this.events[event] = this.events[event].filter((cb) => cb !== callback);
+        }
+    }
+    // Trigger an event
+    emit(event) {
+        if (this.events[event]) {
+            this.events[event].forEach((callback) => callback());
+        }
+    }
+}
+const globalEventEmitter = new EventEmitter();
+globalEventEmitter.addEventListener('popstate', generateGraph);

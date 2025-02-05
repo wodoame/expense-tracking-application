@@ -93,7 +93,11 @@ function initializeFlowbite(){
 function restoreHistory(e:PopStateEvent){
   if(e.state){
     document.getElementById('main-content').innerHTML = e.state.html;
+    if(window.location.pathname == '/dashboard/'){
+      globalEventEmitter.emit('popstate');
+    }
   }
+  initializeFlowbite();
 };
 document.addEventListener('htmx:afterSettle', initializeFlowbite);
 document.addEventListener('alpine:init', handleAlpineInitialization);

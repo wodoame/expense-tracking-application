@@ -1,4 +1,5 @@
-(async function(){
+async function generateGraph(){
+  document.getElementById('chart-loader').classList.remove('hidden');
   const ctx = document.getElementById('myChart');
   let data = await fetchJSONData('/api/categories/?metrics=1');  
   if(data.length >= 4){
@@ -42,4 +43,4 @@
 else{
   document.getElementById('chart-container').classList.add('hidden');
 }
-})()
+}

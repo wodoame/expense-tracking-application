@@ -2,4 +2,5 @@
 declare const Alpine: any;
 declare const htmx: any;
 declare const getCSRFToken: any;
-declare function initFlowbite(): any; 
+declare function initFlowbite(): any;
+declare function generateGraph(): any;
