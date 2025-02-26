@@ -8,13 +8,18 @@ class RedirectView(View):
 class Dashboard(View):
     def get(self, request):
         user = request.user
-        products = ProductSerializer(user.products.all(), many=True).data
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
+        products = ProductSerializer(user.products.filter(date__date__gte=dateYesterday), many=True).data
         statContext = Context(WeeklyStats(products, request.user))
         stats = statContext.apply() 
-        today = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateToday]
-        yesterday = [product for product in products if dc.datefromisoformat(product.get('date')).date() == dateYesterday]
+        today = []
+        yesterday = []
+        for product in products:
+            if dc.datefromisoformat(product.get('date')).date() == dateToday:
+                today.append(product)
+            else:
+                yesterday.append(product)
         todayTotal = dc.get_total(today)
         yesterdayTotal = dc.get_total(yesterday)
         context = {
