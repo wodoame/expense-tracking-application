@@ -83,6 +83,7 @@ class Dashboard(View):
                     'showToast':True,
                 }
                 Records.invalidate_cache(request)
+                emitter.emit('products_updated', request)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
@@ -102,6 +103,7 @@ class Dashboard(View):
             product.user = request.user
             form.save()
             Records.invalidate_cache(request) # remove records from cache
+            emitter.emit('products_updated', request)
             messages.success(request, 'Product added successfully')
         else: 
             errors = form.errors.get_json_data()
@@ -142,6 +144,7 @@ class Dashboard(View):
                 'showToast':True,
             }
             Records.invalidate_cache(request) 
+            emitter.emit('products_updated', request)
             if not items[0].get('products'):
                 return render(request, 'core/components/toastWrapper/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
             return render(request, 'core/components/paginateExpenditures.html', context) 
@@ -292,9 +295,15 @@ class StatSummary(View):
         user = request.user
         products = ProductSerializer(user.products.all(), many=True).data
         if request.GET.get('type') == 'weekly':
-            stats = Context(WeeklyStats(products, request.user)).apply()
+            stats = cache.get(f'weekly-stats-{user.username}')
+            if not stats:
+                stats = Context(WeeklyStats(products, user)).apply()
+                cache.set(f'weekly-stats-{user.username}', stats)
         if request.GET.get('type') == 'monthly':
-            stats = Context(MonthlyStats(products, request.user)).apply() 
+            stats = cache.get(f'monthly-stats-{user.username}')
+            if not stats:
+                stats = Context(MonthlyStats(products, user)).apply()
+                cache.set(f'monthly-stats-{user.username}', stats)  
         context = {
             'stats':stats
         }
