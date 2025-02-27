@@ -298,15 +298,16 @@ class StatSummary(View):
     def get(self, request):
         stats = None
         user = request.user
-        products = ProductSerializer(user.products.all(), many=True).data
         if request.GET.get('type') == 'weekly':
             stats = cache.get(f'weekly-stats-{user.username}')
             if not stats:
+                products = ProductSerializer(user.products.all(), many=True).data
                 stats = Context(WeeklyStats(products, user)).apply()
                 cache.set(f'weekly-stats-{user.username}', stats)
         if request.GET.get('type') == 'monthly':
             stats = cache.get(f'monthly-stats-{user.username}')
             if not stats:
+                products = ProductSerializer(user.products.all(), many=True).data
                 stats = Context(MonthlyStats(products, user)).apply()
                 cache.set(f'monthly-stats-{user.username}', stats)  
         context = {
