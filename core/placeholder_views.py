@@ -21,7 +21,8 @@ class AllExpenditures(View):
         
         # group the products by date
         for date in dates: 
-            records.append(record(date, request)) # * Possible optimization: reduce database hits (try to use records2 function)
+            # records.append(record(date, request)) # * Possible optimization: reduce database hits (try to use records2 function)
+            records.append(record2(date, products)) # optimization: reduce database hits
         
         # print(cache.get(f'records-{request.user.username}'))
         cache.set(f'records-{request.user.username}', records) # store records in a cache
