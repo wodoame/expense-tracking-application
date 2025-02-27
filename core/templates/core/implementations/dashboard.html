@@ -12,11 +12,13 @@
 
 {% include 'core/components/statSummary.html' %}
 
+{% experimental %}
 <!-- chart -->
 <div>
     {% component 'chart' / %}
 </div>
 <!-- /chart -->
+{% endexperimental %}
         
         <!-- begin activity -->
 <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
