@@ -1,4 +1,5 @@
 {% load custom_tags %}
+{% load cache %}
 {% include 'core/components/pageHeading.html' with text="Dashboard" %}
 
 <!-- options -->
@@ -30,11 +31,12 @@
 
 </div> 
 <!-- activity -->
- 
+
 <div class="my-12" hx-get="/components/activityCalendar/" hx-trigger="load">
     <div>
         <span class="loader"></span>
-     </div> 
+    </div> 
 </div>
+
 {% component 'toastWrapper' / %}
 <script>generateGraph()</script>

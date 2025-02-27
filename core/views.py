@@ -151,14 +151,19 @@ class Dashboard(View):
         except Product.DoesNotExist:
             messages.error(request, 'Product already deleted')
         return render(request, 'core/components/toastWrapper/toastWrapper.html')
-# @login_required    
+
 class ActivityCalendar(View):
     def get(self, request): 
+        response = cache.get(f'activity-calendar-{request.user.username}')
+        if response:
+            return response
         monthsData = dc.get_activity_in_last_year(request)
         context = {
             'monthsData': monthsData, 
         }
-        return render(request, 'core/components/activityCalendar.html', context)
+        response = render(request, 'core/components/activityCalendar.html', context)
+        cache.set(f'activity-calendar-{request.user.username}', response)
+        return response
 
 # @login_required    
 class Records(View):
