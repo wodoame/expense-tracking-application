@@ -146,6 +146,14 @@ else:
         }
     }
 
+if not DEBUG: 
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',  
+            'LOCATION': os.getenv('REDIS_LOCATION'),
+            'TIMEOUT': 60 * 60 * 24, # 1 hour
+        }
+    }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
