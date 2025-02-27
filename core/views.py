@@ -11,8 +11,6 @@ class Dashboard(View):
         dateToday = datetime.today().date()
         dateYesterday = dateToday - timedelta(days=1)
         products = ProductSerializer(user.products.filter(date__date__gte=dateYesterday), many=True).data
-        statContext = Context(WeeklyStats(products, request.user))
-        stats = statContext.apply() 
         today = []
         yesterday = []
         for product in products:
@@ -26,7 +24,6 @@ class Dashboard(View):
             'dateToday':dateToday, 
             'dateYesterday':dateYesterday, 
             'today': today, 
-            'stats': stats,
             'yesterday':yesterday,
             'todayTotal':todayTotal,
             'yesterdayTotal':yesterdayTotal,

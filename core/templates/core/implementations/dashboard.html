@@ -10,15 +10,15 @@
    {% endexperimental %}
 </ul>
 
-{% include 'core/components/statSummary.html' %}
+{% include 'core/components/statSummarySkeleton2.html' %}
 
-{% experimental %}
+{% comment %}
 <!-- chart -->
 <div>
     {% component 'chart' / %}
 </div>
 <!-- /chart -->
-{% endexperimental %}
+{% endcomment %}
         
         <!-- begin activity -->
 <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
