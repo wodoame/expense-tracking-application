@@ -115,7 +115,7 @@ body{
     @apply text-lg font-bold dark:text-white;
 }
 
-.add-product-form label{
+.add-product-form label, .add-category-form label{
     @apply font-bold;
 }
 
