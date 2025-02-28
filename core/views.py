@@ -82,7 +82,6 @@ class Dashboard(View):
                     'items':items, 
                     'showToast':True,
                 }
-                Records.invalidate_cache(request)
                 emitter.emit('products_updated', request)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
@@ -102,7 +101,6 @@ class Dashboard(View):
             product.price = price
             product.user = request.user
             form.save()
-            Records.invalidate_cache(request) # remove records from cache
             emitter.emit('products_updated', request)
             messages.success(request, 'Product added successfully')
         else: 
@@ -143,7 +141,6 @@ class Dashboard(View):
                 'items':items,
                 'showToast':True,
             }
-            Records.invalidate_cache(request) 
             emitter.emit('products_updated', request)
             if not items[0].get('products'):
                 return render(request, 'core/components/toastWrapper/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
@@ -203,9 +200,6 @@ class Records(View):
             }
         context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
-    @staticmethod
-    def invalidate_cache(request):
-        cache.delete(f'records-{request.user.username}')
     
 # @login_required
 class Settings(View): 
@@ -264,7 +258,7 @@ class Categories(View):
             category.user = user
             category.save()
             messages.success(request, 'Category added successfully')
-            Records.invalidate_cache(request)
+            emitter.emit('products_updated', request)
         else: 
             print(form.errors.get_json_data())
             messages.error(request, 'Could not add category')
@@ -278,7 +272,7 @@ class Categories(View):
             category = form.save(commit=False)
             category.save()
             messages.success(request, 'Category edited successfully')
-            Records.invalidate_cache(request)
+            emitter.emit('products_updated', request)
         else: 
             print(form.errors.get_json_data())
             messages.error(request, 'Could not add category')
@@ -289,7 +283,7 @@ class Categories(View):
         try:
             Category.objects.get(id=categoryId).delete()
             messages.success(request, 'Category deleted successfully')
-            Records.invalidate_cache(request) # some products may still be associated with the deleted category so the cache must be cleared
+            emitter.emit('products_updated', request) # some products may still be associated with the deleted category so the cache must be cleared
         except Product.DoesNotExist:
             messages.error(request, 'Category already deleted')
         return redirect('implemented-categories')

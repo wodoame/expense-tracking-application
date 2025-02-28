@@ -85,6 +85,10 @@ class EventEmitter:
 def deleteQuickStatsFromCache(request):
     cache.delete(f'weekly-stats-{request.user.username}')
     cache.delete(f'monthly-stats-{request.user.username}')
+    
+def deleteExpenditureRecordsFromCache(request):
+    cache.delete(f'records-{request.user.username}')
 
 emitter = EventEmitter() # global event emitter
 emitter.on('products_updated', deleteQuickStatsFromCache)
+emitter.on('products_updated', deleteExpenditureRecordsFromCache)
