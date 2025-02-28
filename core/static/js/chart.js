@@ -1,4 +1,5 @@
 async function generateGraph(){
+  return; 
   document.getElementById('chart-loader').classList.remove('hidden');
   const ctx = document.getElementById('myChart');
   let data = await fetchJSONData('/api/categories/?metrics=1');  
