@@ -1,4 +1,4 @@
-{% for item in items %}
+{% for item in items reversed %}
   {% include 'core/components/records.html' with products=item.products date=item.date total=item.total count=forloop.counter0  %}
 {% endfor %}
 

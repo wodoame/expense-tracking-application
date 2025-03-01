@@ -5,6 +5,7 @@ import asyncio
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required as lr 
 from django.core.cache import cache
+import pandas as pd
 
 def record(date, request):
     user = request.user
@@ -31,6 +32,14 @@ def record2(date, products:list[dict]):
     }
     
     return result
+
+# This version uses pandas
+def groupByDate(products):
+    df = pd.DataFrame(products)
+    df['date_for_grouping'] = (pd.to_datetime(df['date']).dt.date).apply(lambda x: x.isoformat())
+    grouped = df.groupby('date_for_grouping')
+    records = [{'date': date , 'products': group.to_dict('records'), 'total': float(group['price'].sum())} for date, group in grouped]
+    return records
     
 
 def login_required(cls):

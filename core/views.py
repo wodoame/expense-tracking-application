@@ -171,11 +171,7 @@ class Records(View):
             categoryName = request.GET.get('categoryName')
             print(request.GET)
             products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
-            dates = dc.collectDates(products)
-            dates.sort(reverse=True)
-            records = []
-            for date in dates:
-                records.append(record2(date, products)) 
+            records = groupByDate(products)
         else:
             records = cache.get(f'records-{request.user.username}')
             if not records:
@@ -209,7 +205,16 @@ class Settings(View):
 # @login_required
 class Test(View):
     def get(self, request): 
-        context = {} 
+        context = {}
+        print('started ...done')
+        user = request.user 
+        products = ProductSerializer(user.products.all(), many=True).data
+        print('converted products ...done')
+        df = pd.DataFrame(products)
+        df['date_for_grouping'] = (pd.to_datetime(df['date']).dt.date).apply(lambda x: x.isoformat())
+        grouped = df.groupby('date_for_grouping')
+        records = [{'date': date , 'products': group.to_dict('records'), 'total': float(group['price'].sum())} for date, group in grouped]
+        print(records)
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
