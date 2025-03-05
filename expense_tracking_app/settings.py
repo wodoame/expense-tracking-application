@@ -151,7 +151,7 @@ if not DEBUG:
         'default': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',  
             'LOCATION': os.getenv('REDIS_LOCATION'),
-            'TIMEOUT': 60 * 60 * 24, # 1 hour
+            'TIMEOUT': 60 * 60 * 24, # 24 hour
         }
     }
 # Password validation
