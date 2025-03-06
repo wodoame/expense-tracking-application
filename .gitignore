@@ -8,3 +8,4 @@ staticfiles/
 error.log
 trial.py
 .idea/
+indexdir/
