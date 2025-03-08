@@ -1,4 +1,4 @@
-<aside x-data="baseModal('{{id}}')" @click="handleClickOutside" id="{{id}}" :class="{'move': isOpen}" class="fixed flex justify-center items-end bottom-0 left-0 z-[60] h-screen md:items-center w-full transition-transform translate-y-full" aria-label="Sidebar">
+<aside x-data="baseModal('{{id}}')" @click="handleClickOutside" data-placement="{{placement|default:'center'}}" data-animation="{{animation|default:'translate'}}" id="{{id}}" :class="{'show': isOpen}" class="modal fixed flex justify-center items-end bottom-0 left-0 z-[60] h-screen w-full" aria-label="Sidebar">
     <div class="px-2 w-full md:max-w-sm max-h-full">
         <!-- Modal content -->
         <div class="relative bg-white dark:bg-dark2 rounded-xl shadow rounded-b-none md:rounded-md">
@@ -19,11 +19,13 @@
             {% slot "body" %}
             {% endslot %}
              
+             {# 
              <div class="absolute top-0 invisible w-full h-full flex items-center justify-center" id="{{id}}-form-loader"> 
                 <div>
                     <span class="loader"></span>
                 </div>
              </div>
+             #}
         </div>
     </div>
 </aside>

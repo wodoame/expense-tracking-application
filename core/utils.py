@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required as lr 
 from django.core.cache import cache
 import pandas as pd
+from .models import Settings
 
 def record(date, request):
     user = request.user
@@ -90,6 +91,10 @@ class EventEmitter:
             self.off(event_name, wrapper)
         self.on(event_name, wrapper)
         
+def getSettings(user):
+    settings, created = Settings.objects.get_or_create(user=user)
+    return settings
+        
 
 def deleteQuickStatsFromCache(request):
     cache.delete(f'weekly-stats-{request.user.username}')
@@ -97,7 +102,7 @@ def deleteQuickStatsFromCache(request):
     
 def deleteExpenditureRecordsFromCache(request):
     cache.delete(f'records-{request.user.username}')
-
+    
 emitter = EventEmitter() # global event emitter
 emitter.on('products_updated', deleteQuickStatsFromCache)
 emitter.on('products_updated', deleteExpenditureRecordsFromCache)

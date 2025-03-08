@@ -78,7 +78,7 @@ body{
     /* .input{
         @apply bg-gray-100 focus:outline-indigo-500 text-gray-900 text-sm rounded-md block w-full font-medium p-4 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white;
     } */
-
+     /* input styles */
     .input{
       @apply w-full p-4 placeholder:text-gray-500 bg-white dark:bg-transparent dark:focus:border-blue-500 dark:text-gray-400  dark:border-gray-100/5 border-2 text-sm font-medium rounded-md border-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-100;
     }
@@ -87,10 +87,41 @@ body{
 
 [x-cloak] { display: none !important; }
 
-.move{
-    @apply transform-none;
+/* styles for modals */
+.modal[data-placement='center']{
+   @apply md:items-center;
 }
 
+.modal[data-placement='top']{
+   @apply items-start;
+}
+
+/* modal animations */
+.modal[data-animation='translate']{
+   @apply transition-transform translate-y-full;
+}
+
+.modal[data-animation='translate'].show{
+   @apply transform-none;
+}
+
+.modal[data-animation='none']{
+   @apply invisible;
+}
+
+.modal[data-animation='none'].show{
+  @apply visible;
+}
+
+
+
+
+#search-modal{
+  @apply top-4;
+}
+
+
+/* navbar */
 #navbar{
   @apply w-full;
 }

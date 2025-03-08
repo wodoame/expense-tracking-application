@@ -83,6 +83,7 @@ class Dashboard(View):
                     'showToast':True,
                 }
                 emitter.emit('products_updated', request)
+                indexEventEmitter.emit('product_updated', ProductSerializer(product).data)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
@@ -102,6 +103,7 @@ class Dashboard(View):
             product.user = request.user
             form.save()
             emitter.emit('products_updated', request)
+            indexEventEmitter.emit('product_updated', ProductSerializer(product).data)
             messages.success(request, 'Product added successfully')
         else: 
             errors = form.errors.get_json_data()
@@ -125,7 +127,9 @@ class Dashboard(View):
     def handle_delete_product(self, request):
         productId = request.POST.get('id')
         try:
-            Product.objects.get(id=productId).delete()
+            product = Product.objects.get(id=productId)
+            indexEventEmitter.emit('product_updated', ProductSerializer(product).data, method='delete')
+            product.delete()
             messages.success(request, 'Product deleted successfully')
             date = dc.datefromisoformat(request.POST.get('date')).date() 
             referer = request.META.get('HTTP_REFERER')
@@ -206,15 +210,6 @@ class Settings(View):
 class Test(View):
     def get(self, request): 
         context = {}
-        print('started ...done')
-        user = request.user 
-        products = ProductSerializer(user.products.all(), many=True).data
-        print('converted products ...done')
-        df = pd.DataFrame(products)
-        df['date_for_grouping'] = (pd.to_datetime(df['date']).dt.date).apply(lambda x: x.isoformat())
-        grouped = df.groupby('date_for_grouping')
-        records = [{'date': date , 'products': group.to_dict('records'), 'total': float(group['price'].sum())} for date, group in grouped]
-        print(records)
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 

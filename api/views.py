@@ -9,6 +9,8 @@ from whoosh.fields import Schema, TEXT, ID, STORED
 from whoosh.qparser import MultifieldParser, OrGroup, FuzzyTermPlugin, QueryParser
 import os
 from .utils import * 
+from core.user_settings_schemas import SearchSchema
+from core.utils import getSettings
 
 class Categories(APIView):
     def get(self, request):
@@ -25,8 +27,7 @@ class Search(APIView):
     def get(self, request: Request):
         query = request.query_params.get('query').strip()
         user = request.user
-        products = ProductSerializer(user.products.all(), many=True).data
-        data = self.search_products(query, products, user.id)
+        data = self.search_products(query, user)
         return Response(data)
     
     def search_categories(self, query: str) -> dict:
@@ -40,23 +41,34 @@ class Search(APIView):
         }
         return data
     
-    def search_products(self, query:str, products, user_id) -> dict:
-        # Define the schema
-        schema = Schema(id=STORED, doc_id=ID(unique=True), user_id=ID,  name=TEXT(stored=True), description=TEXT(stored=True))
-
+    def search_products(self, query:str, user) -> dict:
+        schema_id_file = 'product_schema_id.txt'
+        if not os.path.exists(schema_id_file):
+            setSchemaId(schema_id_file, -1)
+        
+        product_schema_id, created = KeyValuePair.objects.get_or_create(key='product_schema_id', defaults={'value':'0'})
+        # Recreate index if schema ids stored in the file and database don't match
+        if int(getSchemaId(schema_id_file)) != int(product_schema_id.value):
+            recreate_index('products_index', schema_id_file, getCurrentProductSchema(), product_schema_id.value)
+            
+        schema = getCurrentProductSchema()
         # Create or open the index
-        index_dir = 'indexdir'
-        if not index.exists_in(index_dir, indexname='products'):
+        index_dir = 'products_index'
+        if not index.exists_in(index_dir):
             os.makedirs(index_dir, exist_ok=True)
-            ix = index.create_in(index_dir, schema, indexname='products')
+            ix = index.create_in(index_dir, schema)
         else:
-            ix = index.open_dir(index_dir, indexname='products')
+            ix = index.open_dir(index_dir)
 
         # Add documents to the index
         writer = ix.writer()
-        for product in products:
-            writer.update_document(id=product.get('id'), doc_id=str(product.get('id')), user_id=str(product.get('user')), name=product.get('name'), description=product.get('description'))
-        writer.commit()
+        if not isIndexed(ix, user.id):
+            print('user not index, index products')
+            products = ProductSerializer(user.products.all(), many=True).data
+            for product in products:
+                writer.add_document(id=product.get('id'), doc_id=str(product.get('id')), user_id=str(product.get('user')), name=product.get('name'), description=product.get('description'))
+            writer.commit()
+
         with ix.searcher() as searcher:
             qp = MultifieldParser(['name', 'description'], ix.schema, group=OrGroup)
             
@@ -66,7 +78,7 @@ class Search(APIView):
                 q = qp.parse(f'{query}~') # edit distance is 1
             else:
                 q = qp.parse(f'{query}')
-            q = q & QueryParser('user_id', ix.schema).parse(str(user_id))
+            q = q & QueryParser('user_id', ix.schema).parse(str(user.id))
             print(q)
             results = searcher.search(q)
             data = {
@@ -79,13 +91,8 @@ class Search(APIView):
         
 class RecreateIndexes(APIView):
     def get(self, request):
-        lines = read_flag()
-        newlines = []
-        indexname, value = lines[0].split(':')
-        if int(value) == 1:
-            pass
-        
-        newlines.append(f'{indexname}:0') # set value to zero
-        
-            
-        return Response({'message': 'index recreated'})
+        product_schema_id, created = KeyValuePair.objects.get_or_create(key='product_schema_id', defaults={'value': '0'})
+        if not created:
+            product_schema_id.value = str(int(product_schema_id.value) + 1)
+            product_schema_id.save()
+        return Response({'message': 'success'})

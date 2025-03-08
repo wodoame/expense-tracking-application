@@ -40,3 +40,19 @@ class Product(models.Model):
     def get_description(self):
         # Decrypt the description when needed
         return self.encryption_helper.decrypt(self.description)
+    
+class Settings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')
+    search = models.JSONField(default=dict)
+    
+    def __str__(self):
+        return self.user.username + ' settings'
+    
+class KeyValuePair(models.Model):
+    key = models.TextField(unique=True)
+    value = models.TextField()
+    
+    def __str__(self):
+        return self.key
+    
+    

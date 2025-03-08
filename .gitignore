@@ -8,4 +8,5 @@ staticfiles/
 error.log
 trial.py
 .idea/
-indexdir/
+products_index/
+product_schema_id.txt
