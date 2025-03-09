@@ -36,6 +36,7 @@ urlpatterns = [
     path('categories/<str:categoryName>/', placeholder_views.SeeProducts.as_view(), name='see-products'),
     path('components/activityCalendar/', core_views.ActivityCalendar.as_view()),
     path('settings/', core_views.Settings.as_view()),
+    path('search/', core_views.Search.as_view()),
     path('signup/', auth_views.SignUp.as_view(), name='signup'),
     path('signin/', auth_views.SignIn.as_view(), name='signin'),
     path('logout/', auth_views.Logout.as_view(), name='logout'),

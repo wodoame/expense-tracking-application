@@ -1,0 +1,35 @@
+<div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder rounded-md border" x-data="searchPage(getSearchModal())">
+    <h3 class="mb-4 font-bold">Products</h3>
+    <template x-if="loading">
+         <ul class="space-y-4">
+             <li class="flex gap-2">
+                  <div class="placeholder w-16 h-4"></div>
+                  <div class="placeholder w-32 h-4"></div>
+             </li>
+             <li class="flex gap-2">
+                  <div class="placeholder w-16 h-4"></div>
+                  <div class="placeholder w-32 h-4"></div>
+             </li>
+             <li class="flex gap-2">
+                  <div class="placeholder w-16 h-4"></div>
+                  <div class="placeholder w-32 h-4"></div>
+             </li>
+         </ul>
+     </template>
+     
+     <template x-if="!loading && searchResults.length != 0  ">
+        <ul class="space-y-4">
+            <template x-for="result in searchResults" :key="result.id">
+                <li class="flex gap-2 items-center">
+                        <p x-text="result.name" class="font-bold text-sm"></p>
+                        <span> - </span>
+                        <p x-text="result.description != ''? result.description: 'No description' " class="text-sm text-gray-500 font-medium dark:text-gray-400"></p>
+                </li>
+            </template>
+        </ul>
+     </template>
+
+     <template x-if="!loading && searchResults.length == 0">
+        <p>No results found</p>
+     </template>
+</div>
