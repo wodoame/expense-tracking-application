@@ -79,6 +79,25 @@ function createSelectFieldInstance(id: string){
     }
   }
 
+function searchPage(modal: SearchModal){
+  return {
+    // query: '',
+    searchResults: [],
+    loading: false,
+    modal: modal, 
+    init(){
+      const query = this.modal.query;
+      this.search(query);
+    },
+    async search(query:string){
+        this.loading = true;
+        const data = await fetchJSONData('/api/search/?query=' + query)
+        this.searchResults = data.results;
+        this.loading = false; 
+    },
+  }
+};
+
 
 function handleAlpineInitialization(){
     Alpine.data('baseModal', createModalInstance);

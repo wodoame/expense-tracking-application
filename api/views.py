@@ -84,7 +84,7 @@ class Search(APIView):
             data = {
                 'query': query, 
                 'type': 'Products',
-                'total': len(results),
+                'total': results.has_exact_length(),
                 'results': [dict(result) for result in results]
             }
             return data

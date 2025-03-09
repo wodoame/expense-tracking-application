@@ -309,6 +309,48 @@ class CategoryDetailsModal extends BaseModal{
     }
 }
 
+class SearchModal extends BaseModal{
+    ff: FormFields;
+    query:string | undefined; 
+    constructor(id:string, ff: FormFields){
+        super(id);
+        this.ff = ff;
+    }
+
+    async submitForm(){
+        const form = <HTMLFormElement>document.getElementById('search-form');
+        if(form.checkValidity()){
+            this.close(); 
+            this.query = this.ff.formFields.query.value; 
+            router.navigate('/search/');
+            // const formData = htmx.values(form);
+            // const target = '#main-content';
+            // this.close();
+            // htmx.ajax('POST', '/implementations/dashboard/?search=1', {
+            //  values: formData,
+            //  target: target,
+            // });
+            // form.reset();
+        }
+        else{
+            form.reportValidity();
+        }
+    }
+}
+
+// search modal 
+const getSearchModal = (()=>{
+    let instance = undefined; 
+    return ()=>{
+        if(instance){
+            return instance; 
+        }
+        const ff = new FormFields();
+        instance = new SearchModal('search-modal', ff);
+        return instance;
+    };
+})();
+
 // product modals 
 const getAddProductModal = (()=>{
    let instance = undefined; // just a reference to the modal if it has been called already 

@@ -228,6 +228,7 @@ class Routes(View):
                   '/statSummarySkeleton/': render_to_string('core/components/statSummarySkeleton.html'), 
                   '/categories/category-name/': render_to_string('core/placeholders/seeProductsSkeleton.html',getRecordSkeletonContext()),
                   'seeProductsSkeleton': render_to_string('core/placeholders/seeProductsSkeleton2.html',getRecordSkeletonContext()),
+                  '/search/': render_to_string('core/implementations/search-results.html'),
                 }
             )
         return render(request, 'core/components/blank.html', context)
@@ -308,5 +309,8 @@ class StatSummary(View):
             'stats':stats
         }
         return render(request, 'core/components/statSummary.html', context)
-        
+
+class Search(View):
+    def get(self, request):
+        return render(request, 'core/pages/search-results.html')
         
