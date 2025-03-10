@@ -69,6 +69,18 @@ vi .env
 
 #add the following line to the .env file
 DJANGO_SECRET_KEY=your_secret_key_here
+ENCRYPTION_KEY=KfqlGQW_Y5OthQf2aSY0a6ujeOlRXB8USrlMPfzV8J4= #this key is a default value to encrypt data
+
+
+```
+
+Or generate an encryption key using the following procedure
+
+```python
+    from cryptography.fernet import Fernet
+    key = Fernet.generate_key()
+    print(key) #print to acces the key and save in the .env
+
 ```
 
 Save and exit the file.
