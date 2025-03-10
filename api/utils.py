@@ -31,7 +31,16 @@ def updateIndex(product, method='update'):
     if isIndexed(ix, product.get('user')):
         writer = ix.writer()
         if method == 'update':
-            writer.update_document(id=product.get('id'), doc_id=str(product.get('id')), user_id=str(product.get('user')), name=product.get('name'), description=product.get('description'), date=product.get('date'))
+            writer.update_document(
+                id=product.get('id'),
+                doc_id=str(product.get('id')),
+                user_id=str(product.get('user')),
+                name=product.get('name'),
+                description=product.get('description'),
+                date=product.get('date'),
+                category=product.get('category'), 
+                price=product.get('price')
+                )
     
         if method == 'delete':
             writer.delete_by_term('doc_id', str(product.get('id')))
@@ -49,7 +58,14 @@ def getCurrentProductSchema():
     # Define the schema
     # NOTE: if you change the schema visit /api/recreate-indexes/ 
     # This helps to clear the current index and use the new schema for creating a new index
-    schema = Schema(id=STORED, doc_id=ID(unique=True), user_id=ID,  name=TEXT(stored=True), description=TEXT(stored=True), date=STORED)
+    schema = Schema(
+        id=STORED, doc_id=ID(unique=True),
+        user_id=ID,  name=TEXT(stored=True),
+        description=TEXT(stored=True),
+        date=STORED,
+        category=STORED,
+        price=STORED
+        )
     return schema
 
 indexEventEmitter = EventEmitter()

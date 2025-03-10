@@ -6,7 +6,7 @@ import core.datechecker as dc
 from django.core.paginator import Paginator 
 from django.db.models import Count
 from .forms import *
-from .serializers import ProductSerializer, CategorySerializer
+from .serializers import * 
 from django.contrib import messages 
 import json
 import pandas as pd
@@ -23,3 +23,4 @@ from .placeholder_views import AllExpenditures
 import re
 from .user_settings_schemas import * 
 from api.utils import indexEventEmitter
+from api.views import Search as APISearch

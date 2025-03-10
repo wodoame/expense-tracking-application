@@ -1,25 +1,6 @@
 {% load custom_filters %}
 {% load custom_tags %}
 <div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder rounded-md border relative record" x-data="{id: $id('record')}">
-    <h3 class="p-2  tracking-tight border-b dark:border-dark2 text-gray-900 dark:text-gray-300">
-       <div class="flex items-center justify-between">
-         <div class="text-xl font-bold">
-           {{date|timesince}}
-         </div>
-         {% experimental %}
-         <div>
-          <button :data-dropdown-toggle="id" data-dropdown-placement="bottom-end">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-          </button>
-          {% component 'recordOptionsDropdown' / %}
-         </div>
-         {% endexperimental %}
-      </div>   
-      <div class="text-sm text-gray-500 dark:text-gray-400 font-medium my-2">
-         {{ date | dateOnly}}
-      </div>
-    </h3>
-   
     <div class="flex flex-col">
         <div class="-m-1.5 overflow-x-auto">
           <div class="p-1.5 min-w-full inline-block align-middle">
@@ -37,11 +18,13 @@
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Name</th>
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Price</th>
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Category</th>
-                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Time Since</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
+                    <!-- <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th> -->
                   </tr>
                 </thead>
                 <tbody class="divide-y dark:divide-gray-100/5">
-                  {% for product in products reversed %}
+                  {% for result in results %}
                   <tr x-data="{data: $el.dataset.info}" @click="getShowDetailsModal().setDetails(data)" id="product-{{product.id}}" data-info='{{product|json_string}}'>
                     <!-- checkbox  -->
                     <!-- <td class="w-4 p-4">
@@ -51,13 +34,14 @@
                       </div>
                   </td> -->
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
-                       {{product.name}}
-                       <div class="text-gray-500 text-sm">
-                        {{product.date|timeOnly}}
-                       </div>
+                       {{result.name}}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">GHS {{product.price|floatformat:2}}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{product.category.name|default:'None'}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">GHS {{result.price|floatformat:2}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.category.name|default:'None'}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.date_timesince}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.date}}</td>
+                    {# 
+                    
                     <td>
                         <div class="price ps-6 flex gap-5">
                            <button @click.stop="getEditProductModal().setDetails(data)">
@@ -71,9 +55,10 @@
                         </div>
                     </td>
                   </tr>
+                    #}
                   {% endfor %}
-          
                 </tbody>
+                {# 
                 <tfoot>
                   <tr>
                     <!-- <td></td> -->
@@ -81,18 +66,13 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-bold dark:text-neutral-200">GHS {{total|floatformat:2}}</td>
                   </tr>
                 </tfoot>
+                #}
               </table>
             </div>
           </div>
         </div>
       </div>
-
-      {% include 'core/components/recordSkeleton.html'   %}
  </div>
 
- 
- {% if showToast %}
-  {% component 'toastWrapper' / %}
- {% endif %}
  
          

@@ -78,25 +78,6 @@ function createSelectFieldInstance(id) {
         },
     };
 }
-function searchPage(modal) {
-    return {
-        // query: '',
-        searchResults: [],
-        loading: false,
-        modal: modal,
-        init() {
-            const query = this.modal.query;
-            this.search(query);
-        },
-        async search(query) {
-            this.loading = true;
-            const data = await fetchJSONData('/api/search/?query=' + query);
-            this.searchResults = data.results;
-            this.loading = false;
-        },
-    };
-}
-;
 function handleAlpineInitialization() {
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);

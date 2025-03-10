@@ -42,7 +42,8 @@ class Search(APIView):
         }
         return data
     
-    def search_products(self, query:str, user) -> dict:
+    @staticmethod
+    def search_products(query:str, user) -> dict:
         schema_id_file = 'product_schema_id.txt'
         if not os.path.exists(schema_id_file):
             setSchemaId(schema_id_file, -1)
@@ -73,7 +74,10 @@ class Search(APIView):
                     user_id=str(product.get('user')),
                     name=product.get('name'),
                     description=product.get('description'),
-                    date=product.get('date'))
+                    date=product.get('date'),
+                    category=product.get('category'), 
+                    price=product.get('price')
+                    ) 
             writer.commit()
 
         with ix.searcher() as searcher:
@@ -98,6 +102,8 @@ class Search(APIView):
                     'name': result.get('name'),
                     'description': result.get('description'),
                     'date': dateOnly(result.get('date')),
+                    'price': result.get('price'),
+                    'category': result.get('category'),
                     'date_timesince': timesince(datefromisoformat(result.get('date')).date())
                  }
                 for result in results]

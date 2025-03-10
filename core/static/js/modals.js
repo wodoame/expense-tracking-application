@@ -289,16 +289,14 @@ class SearchModal extends BaseModal {
         const form = document.getElementById('search-form');
         if (form.checkValidity()) {
             this.close();
-            this.query = this.ff.formFields.query.value;
             router.navigate('/search/');
-            // const formData = htmx.values(form);
-            // const target = '#main-content';
-            // this.close();
-            // htmx.ajax('POST', '/implementations/dashboard/?search=1', {
-            //  values: formData,
-            //  target: target,
-            // });
-            // form.reset();
+            const formData = htmx.values(form);
+            const target = '#main-content';
+            htmx.ajax('GET', '/components/search/', {
+                values: formData,
+                target: target,
+            });
+            form.reset();
         }
         else {
             form.reportValidity();

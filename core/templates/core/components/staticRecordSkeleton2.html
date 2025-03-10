@@ -1,0 +1,81 @@
+  <!-- skeleton -->
+  <div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder border rounded-md skeleton">
+    <h3 class="p-2 text-xl font-bold tracking-tight border-b dark:border-dark2 text-gray-900 dark:text-gray-300">
+        <div class="h-4 w-32 record-skeleton"></div>
+      <div class="text-sm text-gray-500 dark:text-gray-400 font-medium my-2">
+         <div class="h-4 w-28 record-skeleton"></div>
+      </div>
+    </h3>
+
+    <div class="flex flex-col">
+        <div class="-m-1.5 overflow-x-auto">
+          <div class="p-1.5 min-w-full inline-block align-middle">
+            <div class="overflow-hidden">
+              <table class="min-w-full divide-y dark:divide-gray-100/5">
+                <thead>
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Name</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Price</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Category</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Time Since</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
+                    <!-- <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th> -->
+                  </tr>
+                </thead>
+                <tbody class="divide-y dark:divide-gray-100/5">
+                  {% for i in row_count %}
+                  <tr>
+                    <td class="px-6 py-4">
+                      <div class="h-4 w-32 record-skeleton"></div>
+                       <div class="py-1">
+                        <div class="h-4 w-16 record-skeleton"></div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="h-4 w-12 record-skeleton"></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
+                      <div class="h-4 w-32 record-skeleton"></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
+                      <div class="h-4 w-32 record-skeleton"></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
+                      <div class="h-4 w-32 record-skeleton"></div>
+                    </td>
+                    {# 
+                    
+                    <td>
+                      <div class="price ps-6 flex gap-5">
+                        <button>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="fill-teal-600" width="21" height="21" viewBox="0 0 24 24"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
+                        </button>
+
+                        <button>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="fill-pink-600" width="21" height="21" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                          <!-- <svg xmlns="http://www.w3.org/2000/svg" class="fill-pink-600" width="21" height="21" viewBox="0 0 24 24"><path d="M6 7H5v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7H6zm10.618-3L15 2H9L7.382 4H3v2h18V4z"></path></svg> -->
+                        </button>
+                      </div>
+                    </td>
+                    #}
+                  </tr>
+                  {% endfor %}
+
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-800 dark:text-neutral-200">
+                      <div class="h-4 w-32 record-skeleton"></div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="h-4 w-28 record-skeleton"></div>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+ </div>
+ <!--  -->

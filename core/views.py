@@ -1,4 +1,3 @@
-from .serializers import CategorySerializerWithMetrics
 from .views_dependencies import *
 
 class RedirectView(View):
@@ -228,7 +227,7 @@ class Routes(View):
                   '/statSummarySkeleton/': render_to_string('core/components/statSummarySkeleton.html'), 
                   '/categories/category-name/': render_to_string('core/placeholders/seeProductsSkeleton.html',getRecordSkeletonContext()),
                   'seeProductsSkeleton': render_to_string('core/placeholders/seeProductsSkeleton2.html',getRecordSkeletonContext()),
-                  '/search/': render_to_string('core/implementations/search-results.html'),
+                  '/search/': render_to_string('core/components/staticRecordSkeleton2.html', getRecordSkeletonContext()),
                 }
             )
         return render(request, 'core/components/blank.html', context)
@@ -309,8 +308,18 @@ class StatSummary(View):
             'stats':stats
         }
         return render(request, 'core/components/statSummary.html', context)
-
 class Search(View):
     def get(self, request):
         return render(request, 'core/pages/search-results.html')
+        
+class SearchResults(View):
+    def get(self, request):
+        print(request.GET)
+        query = request.GET.get('query').strip()
+        user = request.user 
+        data = APISearch.search_products(query, user)
+        context = {
+            'results': data.get('results')
+        }
+        return render(request, 'core/components/searchResults.html', context)
         
