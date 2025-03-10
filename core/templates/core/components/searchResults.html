@@ -1,7 +1,19 @@
 {% load custom_filters %}
 {% load custom_tags %}
 <div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder rounded-md border relative record" x-data="{id: $id('record')}">
-    <div class="flex flex-col">
+   
+  <h3 class="p-2  tracking-tight border-b dark:border-darkborder text-gray-900 dark:text-gray-300">
+    <div class="flex items-center gap-4">
+      <div class="text-xl font-bold">
+        Expenses
+      </div>
+      <div class="text-sm text-gray-500 dark:text-gray-400 font-medium my-2">
+         {{results|length}} results
+      </div>
+   </div>   
+ </h3>
+  
+  <div class="flex flex-col">
         <div class="-m-1.5 overflow-x-auto">
           <div class="p-1.5 min-w-full inline-block align-middle">
             <div class="overflow-hidden">
@@ -18,7 +30,7 @@
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Name</th>
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Price</th>
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Category</th>
-                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Time Since</th>
+                    <!-- <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Time Since</th> -->
                     <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
                     <!-- <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th> -->
                   </tr>
@@ -35,10 +47,13 @@
                   </td> -->
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
                        {{result.name}}
+                       <div class="text-gray-500 text-sm">
+                        {{result.date_timesince}}
+                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">GHS {{result.price|floatformat:2}}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.category.name|default:'None'}}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.date_timesince}}</td>
+                    <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.date_timesince}}</td> -->
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.date}}</td>
                     {# 
                     
