@@ -11,7 +11,8 @@ import os
 from .utils import * 
 from core.user_settings_schemas import SearchSchema
 from core.utils import getSettings
-
+from core.templatetags.custom_filters import dateOnly, timesince
+from core.datechecker import datefromisoformat
 class Categories(APIView):
     def get(self, request):
         user = request.user 
@@ -66,7 +67,13 @@ class Search(APIView):
             print('user not index, index products')
             products = ProductSerializer(user.products.all(), many=True).data
             for product in products:
-                writer.add_document(id=product.get('id'), doc_id=str(product.get('id')), user_id=str(product.get('user')), name=product.get('name'), description=product.get('description'))
+                writer.add_document(
+                    id=product.get('id'),
+                    doc_id=str(product.get('id')),
+                    user_id=str(product.get('user')),
+                    name=product.get('name'),
+                    description=product.get('description'),
+                    date=product.get('date'))
             writer.commit()
 
         with ix.searcher() as searcher:
@@ -85,7 +92,15 @@ class Search(APIView):
                 'query': query, 
                 'type': 'Products',
                 'total': results.has_exact_length(),
-                'results': [dict(result) for result in results]
+                'results': [
+                 {
+                    'id': result.get('id'),
+                    'name': result.get('name'),
+                    'description': result.get('description'),
+                    'date': dateOnly(result.get('date')),
+                    'date_timesince': timesince(datefromisoformat(result.get('date')).date())
+                 }
+                for result in results]
             }
             return data
         
