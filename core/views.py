@@ -176,7 +176,7 @@ class Records(View):
             products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
             records = groupByDate(products)
         else:
-            records = cache.get(f'records-{request.user.username}')
+            records = cache.get(f'records-{request.user.username}') # ! BUG: if user has no product stored in the cache, the records will be None which will cause bug
             if not records:
                 records = AllExpenditures.get_context(request).get('records')
                 cache.set(f'records-{request.user.username}', records)
