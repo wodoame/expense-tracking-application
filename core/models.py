@@ -2,6 +2,7 @@ from django.db import models
 from authentication.models import User
 from .encryption import EncryptionHelper
 from django.conf import settings 
+from django.utils import timezone
 
 class Category(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories', null=True)
@@ -16,7 +17,7 @@ class Product(models.Model):
     name = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='products', null=True, blank=True)
     price = models.FloatField()
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now)
     description = models.TextField(blank=True)
     
     def __str__(self):
