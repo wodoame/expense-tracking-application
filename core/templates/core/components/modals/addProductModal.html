@@ -1,5 +1,5 @@
 {% component 'baseModal' %}
-    {% fill "title"  %}Add Product{% endfill %}
+    {% fill "title"  %}Add Expense{% endfill %}
     {% fill "body"  %}
     <form class="p-4 md:p-5 add-product-form" x-data="{formId: 'add-product-form'}" action="/actual-dashboard/" method="POST" id="add-product-form">
         {% csrf_token %}
@@ -25,7 +25,7 @@
               
              
              <div class="col-span-2">
-                 <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product Description</label>
+                 <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Description</label>
                  <textarea id="description" maxlength="255" name="description" rows="4" class="input resize-none" placeholder="Write product description here"></textarea>                    
              </div>
          </div>
@@ -33,7 +33,7 @@
          <!-- showFormLoader('add-product-form') -->
          <button type="button" @click="getAddProductModal().submitForm()" class="text-white inline-flex w-full items-center rounded-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold text-sm px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
              <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-             Add new product
+             Add
          </button>
      </form>   
     {% endfill %}

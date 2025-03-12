@@ -1,5 +1,5 @@
 {% component 'baseModal' %}
-{% fill 'title'  %}Edit Product{% endfill %}
+{% fill 'title'  %}Edit Expense{% endfill %}
 {% fill 'body'  %}
 <form class="p-4 md:p-5 add-product-form" x-data="{modal: getEditProductModal(), ff:getEditProductModal().ff, df:getEditProductModal().df, formId: 'edit-product-form'}" method="POST" id="edit-product-form">
     {% csrf_token %}
@@ -25,7 +25,7 @@
           
          
          <div class="col-span-2">
-             <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product Description</label>
+             <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Description</label>
              <textarea id="description" maxlength="255" name="description" x-init="ff.setFormField('description', $el)" rows="4" class="input resize-none" placeholder="Write product description here"></textarea>                    
          </div>
      </div>
