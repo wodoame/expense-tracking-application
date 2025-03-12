@@ -12,14 +12,27 @@ class AllExpenditures(View):
         return render(request, 'core/pages/allExpenditures.html', context)
     
     @staticmethod
-    def get_context(request):
+    def get_context(request, cachedData:list | None, paginator: dc.DateRangePaginator, page):
+        if cachedData is None:
+            cachedData = []
         user = request.user
-        products = ProductSerializer(user.products.all(), many=True).data
+        context = {}
+        if page == paginator.get_total_pages(): 
+            nextPageNumber = None
+        else:
+            nextPageNumber = page + 1
+        dateRange = paginator.get_page_range(page)
+        products = ProductSerializer(user.products.filter(date__date__range=(dateRange[1], dateRange[0])), many=True).data
         records = groupByDate(products)
-        # print(cache.get(f'records-{request.user.username}'))
-        cache.set(f'records-{request.user.username}', records) # store records in a cache
+        cachedData.append({
+            'page': page, 
+            'nextPageNumber': nextPageNumber, 
+            'records': records
+        })
+        cache.set(f'records-{request.user.username}', cachedData) # store this page in the cache
         context = {
-         'records': records, 
+        'records': records, 
+        'nextPageNumber':nextPageNumber
         }
         return context
 

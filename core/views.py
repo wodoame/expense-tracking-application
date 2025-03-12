@@ -169,29 +169,36 @@ class ActivityCalendar(View):
 class Records(View):
     def get(self, request): 
         records = []
+        data = {}
+        nextPageNumber = None
+        user = request.user 
         if request.GET.get('oneCategory'):
-            user = request.user 
             categoryName = request.GET.get('categoryName')
             print(request.GET)
             products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
             records = groupByDate(products)
         else:
-            records = cache.get(f'records-{request.user.username}') # ! BUG: if user has no product stored in the cache, the records will be None which will cause bug
-            if not records:
-                records = AllExpenditures.get_context(request).get('records')
-                cache.set(f'records-{request.user.username}', records)
-        
-        nextPageNumber = None
-        # No pagination required so I commented it out. Maybe it'll be useful another time (I don't know)
-        # pageNumber = request.GET.get('page')
-        # if not pageNumber:
-        #     pageNumber = 1
-        # paginator = Paginator(records, 7)
-        # page = paginator.page(pageNumber)
-        # if page.has_next(): 
-        #     nextPageNumber = page.next_page_number()
-        # items = page.object_list
-        
+            previousData: list[dict] = cache.get(f'records-{request.user.username}') # ! BUG: if user has no product stored in the cache, the data will be None which will cause bug
+            numberOfDays = 7
+            paginator = dc.DateRangePaginator(user.date_joined.date(), datetime.today().date(), numberOfDays, reverse=True)
+            if previousData is None or (previousData is not None and int(request.GET.get('page')) > len(previousData)):
+                page = int(request.GET.get('page'))
+                data = AllExpenditures.get_context(request, previousData, paginator, page)
+                records = data.get('records')
+                nextPageNumber = data.get('nextPageNumber')
+            else: 
+                print('cached upto page', len(previousData))
+                html = ''
+                for item in previousData:
+                    html += render_to_string('core/components/paginateExpenditures.html', {'items': item.get('records')})
+                if len(previousData) < paginator.get_total_pages(): # len(previousData) is  the number of pages cached so far
+                    nextPageNumber = len(previousData) + 1
+                    print(nextPageNumber)
+                    extraContext = getRecordSkeletonContext()
+                    extraContext.update({'nextPageNumber':nextPageNumber})
+                    html += render_to_string('core/components/paginator.html', extraContext)
+                return HttpResponse(html)
+    
         context = {
             'items':records, 
             'nextPageNumber':nextPageNumber,
@@ -205,10 +212,11 @@ class Settings(View):
     def get(self, request):
         return render(request, 'core/pages/settings.html')
 
-# @login_required
+
 class Test(View):
     def get(self, request): 
         context = {}
+        cache.clear()
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 

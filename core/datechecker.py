@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from .models import Product
+from typing import Tuple, Union
 from .serializers import ProductSerializer
 import pandas as pd
 
@@ -125,7 +126,96 @@ def get_activity_in_last_year(request):
         })
         month -= 1
     return activity
+
+
+class DateRangePaginator:
+    """
+    A pagination class that returns date ranges based on page number.
+    
+    The paginator divides the period between start_date and end_date into chunks
+    of a specified size, and returns the appropriate chunk for a given page number.
+    
+    In reverse mode, pagination starts from the end_date and moves backward.
+    """
+    
+    def __init__(self, start_date: Union[datetime, str], end_date: Union[datetime, str], dates_per_page: int, reverse: bool = False):
+        """
+        Initialize the paginator with a date range and number of dates per page.
         
+        Args:
+            start_date: The starting date of the entire range (datetime object or string in format 'YYYY-MM-DD')
+            end_date: The ending date of the entire range (datetime object or string in format 'YYYY-MM-DD')
+            dates_per_page: Number of dates to include in each page range
+            reverse: If True, pagination starts from end_date and moves backward
+        """
+        # Convert string dates to datetime objects if necessary
+        if isinstance(start_date, str):
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        if isinstance(end_date, str):
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            
+        # Validate inputs
+        if end_date < start_date:
+            raise ValueError("end_date must be greater than or equal to start_date")
+        if dates_per_page <= 0:
+            raise ValueError("dates_per_page must be a positive integer")
+            
+        self.start_date = start_date
+        self.end_date = end_date
+        self.dates_per_page = dates_per_page
+        self.reverse = reverse
+        
+        # Calculate total days and number of pages
+        self.total_days = (end_date - start_date).days + 1
+        self.total_pages = (self.total_days + dates_per_page - 1) // dates_per_page
+        
+    def get_page_range(self, page_number: int) -> Tuple[datetime, datetime]:
+        """
+        Get the date range for a specific page number.
+        
+        In normal mode (reverse=False):
+            Page 1 returns (start_date, start_date + dates_per_page - 1)
+            Page 2 returns (start_date + dates_per_page, start_date + 2*dates_per_page - 1)
+        
+        In reverse mode (reverse=True):
+            Page 1 returns (end_date, end_date - dates_per_page + 1)
+            Page 2 returns (end_date - dates_per_page, end_date - 2*dates_per_page + 1)
+        
+        Args:
+            page_number: The page number (1-indexed)
+            
+        Returns:
+            In normal mode: A tuple containing (page_start_date, page_end_date)
+            In reverse mode: A tuple containing (page_end_date, page_start_date)
+            
+        Raises:
+            ValueError: If the page number is invalid
+        """
+        if not 1 <= page_number <= self.total_pages:
+            raise ValueError(f"Invalid page number. Must be between 1 and {self.total_pages}")
+        
+        if not self.reverse:
+            # Normal mode (start to end)
+            days_offset = (page_number - 1) * self.dates_per_page
+            page_start_date = self.start_date + timedelta(days=days_offset)
+            page_end_date = min(
+                self.start_date + timedelta(days=days_offset + self.dates_per_page - 1),
+                self.end_date
+            )
+            return (page_start_date, page_end_date)
+        else:
+            # Reverse mode (end to start)
+            days_offset = (page_number - 1) * self.dates_per_page
+            page_end_date = self.end_date - timedelta(days=days_offset)
+            page_start_date = max(
+                self.end_date - timedelta(days=days_offset + self.dates_per_page - 1),
+                self.start_date
+            )
+            return (page_end_date, page_start_date)
+    
+    def get_total_pages(self) -> int:
+        """Return the total number of pages."""
+        return self.total_pages
         
         
     

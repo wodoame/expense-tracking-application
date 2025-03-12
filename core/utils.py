@@ -37,6 +37,8 @@ def record2(date, products:list[dict]):
 # This version uses pandas
 def groupByDate(products):
     df = pd.DataFrame(products)
+    if df.empty:
+        return []
     df['date_for_grouping'] = (pd.to_datetime(df['date']).dt.date).apply(lambda x: x.isoformat())
     grouped = df.groupby('date_for_grouping')
     records = [{'date': date , 'products': group.to_dict('records'), 'total': float(group['price'].sum())} for date, group in grouped]
