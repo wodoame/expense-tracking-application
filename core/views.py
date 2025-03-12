@@ -111,7 +111,7 @@ class Dashboard(View):
         path = urlparse(referer).path
         print('the path is', path)
         if path == '/all-expenditures/':
-            return redirect('/components/records/')
+            return redirect('/components/records/?page=1&addProduct=1')
         if path == '/dashboard/':
             return redirect('implemented-dashboard')
         if path == '/categories/':
@@ -197,6 +197,8 @@ class Records(View):
                     extraContext = getRecordSkeletonContext()
                     extraContext.update({'nextPageNumber':nextPageNumber})
                     html += render_to_string('core/components/paginator.html', extraContext)
+                if request.GET.get('addProduct'): # if page reloads due to adding a products display a message
+                    html += render_to_string('core/components/toastWrapper.html')
                 return HttpResponse(html)
     
         context = {
