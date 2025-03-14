@@ -99,6 +99,7 @@ function createDatePicker(id) {
             }
         },
         init() {
+            datePickerManager.setInstance(id, this);
             const { Calendar } = window['VanillaCalendarPro'];
             this.field = document.getElementById(id);
             this.calendar = new Calendar(this.field, this.options);
@@ -110,6 +111,13 @@ function createDatePicker(id) {
             this.field.value = dateString;
             document.getElementById(id + '-value').value = today.toISOString().split('T')[0];
         },
+        setDate(date) {
+            const selectedDate = new Date(date);
+            this.field.value = selectedDate.toDateString();
+            const isoDateString = selectedDate.toISOString().split('T')[0];
+            document.getElementById(id + '-value').value = isoDateString;
+            this.calendar.update();
+        }
     };
 }
 function handleAlpineInitialization() {

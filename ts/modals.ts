@@ -257,6 +257,7 @@ class EditProductModal extends BaseModal{
     formFields.description.value = product.description;
     formFields.date.value = product.date;
     this.setCategory(product.category)
+    datePickerManager.getInstance('edit-product-date').setDate(product.date); 
     this.open();
   }
 

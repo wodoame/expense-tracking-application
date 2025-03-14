@@ -2096,23 +2096,6 @@ body:is(.dark *) {
   background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1));
 }
 
-/* calendar */
-
-/* I'll find a better way to write the dark mode styles for the calendar using the documentation but for now let me just improvise */
-
-[data-vc-theme=dark].vc {
-  /* --tw-bg-opacity: 1;
-  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
-  color: #fff; */
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1)) !important
-}
-
-[data-vc-theme=dark] .vc-date__btn {
-  background-color: transparent !important;
-  color: #94a3b8;
-}
-
 .placeholder\:pl-3::-moz-placeholder {
   padding-left: 0.75rem;
 }
@@ -2649,3 +2632,4 @@ body:is(.dark *) {
 .\[\&\>div\]\:rounded-sm>div {
   border-radius: 0.125rem;
 }
+
