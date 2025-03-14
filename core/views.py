@@ -79,7 +79,7 @@ class Dashboard(View):
                 if re.match(r'^/categories/[^/]+/$', path):
                     segments = path.split('/')
                     categoryName = list(filter(lambda x: x != '', segments)).pop()
-                    products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date=date), many=True).data
+                    products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date__in=dates), many=True).data
                     items = [record2(date, products) for date in dates] 
                 else: 
                     items = [record(date, request) for date in dates]
