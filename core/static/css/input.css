@@ -147,7 +147,7 @@ body{
 }
 
 .add-product-form, .edit-product-form{
-  @apply overflow-y-auto max-h-[calc(100vh-6rem)];
+  @apply overflow-y-auto max-h-[70vh] md:max-h-[calc(100vh-6rem)];
 }
 
 .add-product-form label, .add-category-form label, .edit-product-form label{
