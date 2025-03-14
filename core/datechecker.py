@@ -113,7 +113,7 @@ def get_activity_in_last_year(request):
     products = ProductSerializer(user.products.all(), many=True).data
     df = pd.DataFrame(products)
     if not df.empty:
-        df['date'] = pd.to_datetime(df['date'])
+        df['date'] = pd.to_datetime(df['date'], format='ISO8601')
     for i in range(12):
         if month == 0: 
             month = 12

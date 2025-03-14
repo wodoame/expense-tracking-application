@@ -39,6 +39,13 @@ def dateOnly(value, arg=None):
     return value.strftime('%A, %b %d, %Y')
 
 @register.filter
+def dateString(value, arg=None):
+    if isinstance(value, str): 
+        parsedDatetime = datetime.fromisoformat(value)
+        return parsedDatetime.date().strftime('%Y-%m-%d')
+    return value.strftime('%Y-%m-%d')
+
+@register.filter
 def json_string(value):
     result = json.dumps(value)
     return result

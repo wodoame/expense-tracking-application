@@ -146,7 +146,11 @@ body{
     @apply text-lg font-bold dark:text-white;
 }
 
-.add-product-form label, .add-category-form label{
+.add-product-form, .edit-product-form{
+  @apply overflow-y-auto max-h-[calc(100vh-6rem)];
+}
+
+.add-product-form label, .add-category-form label, .edit-product-form label{
     @apply font-bold;
 }
 

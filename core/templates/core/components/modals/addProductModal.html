@@ -6,13 +6,18 @@
          <div class="grid gap-4 mb-4 grid-cols-2">
              <div class="col-span-2">
                  <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
-                 <input type="text" name="name" maxlength="25" id="name" class="input" placeholder="Type product name" required>
+                 <input type="text" name="name" maxlength="25" id="name" class="input" placeholder="Type expense name" required>
              </div>
-   
+             
+             <div class="col-span-2">
+                <label for="add-product-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Date</label>
+                {% component 'dateSelectField' id='add-product-date' name='date' / %}
+             </div>
              <div class="col-span-2">
                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category</label>
                {% component 'selectField' id='categories-add-product' name='category' / %}
             </div>
+
              
              <div class="col-span-1">
                  <label for="cedis" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Cedis</label>
@@ -26,7 +31,7 @@
              
              <div class="col-span-2">
                  <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Description</label>
-                 <textarea id="description" maxlength="255" name="description" rows="4" class="input resize-none" placeholder="Write product description here"></textarea>                    
+                 <textarea id="description" maxlength="255" name="description" rows="4" class="input resize-none" placeholder="Write expense description here"></textarea>                    
              </div>
          </div>
         

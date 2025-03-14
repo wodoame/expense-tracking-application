@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="en" data-theme="light">  <!-- data-theme sets the theme for the calendar -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{% static 'js/htmx.min.js' %}"></script>
     
     <link rel="stylesheet" href="{% static 'css/output.css'%}">
+    <link rel="stylesheet" href="{% static 'css/vanilla-calendar-pro/index.css'%}">
     <script>
         if(localStorage.getItem('dark') == undefined){
             const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -20,7 +21,9 @@
 <body class="dark:bg-[#0F172A]">
     {% block content %}
     {% endblock %}
-    <script src="{% static 'js/flowbitejs.min.js' %}"></script>
+    <script src="{% static 'js/flowbitejs.min.js' %}"></script>    
+    <script src="{% static 'js/vanilla-calendar-pro/index.min.js' %}"></script>    
+    <script src="{% static 'js/vanilla-calendar-pro/utils.min.js' %}"></script>    
     <script src="{% static 'js/alpine.min.js' %}"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ class AddProductForm(forms.ModelForm):
     class Meta: 
         model = Product
         fields = '__all__'
-        exclude = ['price', 'user']
+        exclude = ['price', 'user', 'date']
         
 class AddCategoryForm(forms.ModelForm):
     class Meta: 

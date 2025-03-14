@@ -1,6 +1,6 @@
 {% load custom_filters %}
 {% load custom_tags %}
-<div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder rounded-md border relative record" x-data="{id: $id('record')}">
+<div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder rounded-md border relative record" {% if edited %}hx-swap-oob="true"{% endif %} id="d-{{date|dateString}}" x-data="{id: $id('record')}">
     <h3 class="p-2  tracking-tight border-b dark:border-darkborder text-gray-900 dark:text-gray-300">
        <div class="flex items-center justify-between">
          <div class="text-xl font-bold">
@@ -89,10 +89,3 @@
 
       {% include 'core/components/recordSkeleton.html'   %}
  </div>
-
- 
- {% if showToast %}
-  {% component 'toastWrapper' / %}
- {% endif %}
- 
-         

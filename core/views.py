@@ -54,6 +54,7 @@ class Dashboard(View):
     
         
     def handle_edit_product(self, request):
+        print(request.POST)
         productId = request.POST.get('id')
         try:
             product = Product.objects.get(id=productId)
@@ -61,25 +62,31 @@ class Dashboard(View):
             cedis = request.POST.get('cedis')
             pesewas = request.POST.get('pesewas')
             price = self.format_price(cedis, pesewas)
+            parsedDate = datetime.strptime(request.POST.get('new-date'), '%Y-%m-%d')
+            date = dc.datefromisoformat(request.POST.get('date')).date()
+            dates = [date]
             if form.is_valid():
                 product = form.save(commit=False)
                 product.price = price
                 product.user = request.user
+                if parsedDate.date() != product.date.date():
+                    product.date = timezone.make_aware(parsedDate, timezone.get_current_timezone())
+                    dates.append(parsedDate.date())
                 form.save() 
                 messages.success(request, 'Product edited successfully')
-                date = dc.datefromisoformat(request.POST.get('date')).date()
                 referer = request.META.get('HTTP_REFERER')
                 path = urlparse(referer).path
                 if re.match(r'^/categories/[^/]+/$', path):
                     segments = path.split('/')
                     categoryName = list(filter(lambda x: x != '', segments)).pop()
                     products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date=date), many=True).data
-                    items = [record2(date, products)] 
+                    items = [record2(date, products) for date in dates] 
                 else: 
-                    items = [record(date, request)]
+                    items = [record(date, request) for date in dates]
                 context = {
                     'items':items, 
                     'showToast':True,
+                    'edited':True
                 }
                 emitter.emit('products_updated', request)
                 indexEventEmitter.emit('product_updated', ProductSerializer(product).data)
@@ -92,14 +99,19 @@ class Dashboard(View):
         return redirect(request.META.get('HTTP_REFERER'))
     
     def handle_add_product(self, request: HttpRequest):
+        print(request.POST)
         form = AddProductForm(self.check_category(request))
         cedis = request.POST.get('cedis')
         pesewas = request.POST.get('pesewas')
         price = self.format_price(cedis, pesewas)
+        parsedDate = datetime.strptime(request.POST.get('date'), '%Y-%m-%d')
+        dateToday = datetime.today().date()
         if form.is_valid():
             product = form.save(commit=False)
             product.price = price
             product.user = request.user
+            if parsedDate.date() != dateToday:
+                product.date = timezone.make_aware(parsedDate, timezone.get_current_timezone())
             form.save()
             emitter.emit('products_updated', request)
             indexEventEmitter.emit('product_updated', ProductSerializer(product).data)

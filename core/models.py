@@ -17,7 +17,7 @@ class Product(models.Model):
     name = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='products', null=True, blank=True)
     price = models.FloatField()
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateTimeField(default=timezone.now, blank=True)
     description = models.TextField(blank=True)
     
     def __str__(self):

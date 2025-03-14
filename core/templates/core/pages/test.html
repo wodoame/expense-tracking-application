@@ -2,57 +2,42 @@
 {% load static %}
 {% load custom_tags %}
 {% block main %}
-<style>
-     .loader2 {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: inline-block;
-  position: relative;
-  border: 3px solid;
-  border-color: #FFF #FFF transparent;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-}
-.loader2::after {
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  border: 3px solid;
-  border-color: transparent #FF3D00 #FF3D00;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  animation: rotationBack 0.5s linear infinite;
-  transform-origin: center center;
-}
 
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+{% component 'dateSelectField' id='input' %}
+  
+{% endcomponent / %}
 
-@keyframes rotationBack {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(-360deg);
-  }
-}
-</style>
-   <main id="main-content" class="p-4">
-      {% experimental %}
-          {% include 'core/components/staticRecordSkeleton.html' %}
-      {% endexperimental %}
-   </main>
+<!-- dynamically set data-vc-theme to light for light mode -->
+ <!-- But I think there's some configuration to fix that -->
+  {# 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // Destructuring the Calendar constructor and its utilities.
+    const { Calendar } = window.VanillaCalendarPro;
+    // const {getDate} = window.VanillaCalendarProUtils; 
+    // const { getDateString } = window.VanillaCalendarProUtils;
+
+    // Instantiate the calendar and initialize it.
+    const calendar = new Calendar('#input', 
+    {
+      inputMode:true, 
+      positionToInput: 'auto', 
+      onClickDate(self, event){
+      const selectedDate = self.context.selectedDates[0];
+        if (selectedDate) {
+          // Update the input field with the selected date
+          const formattedDate = new Date(selectedDate).toDateString()
+          document.getElementById("input").value = formattedDate;
+      }
+
+     }
+  }) 
+  calendar.init();
+
+    // Create logs for demonstration.
+    console.log('A copy of the calendar:', calendar);
+   // console.log('Date string conversion utility:', getDateString(new Date()));
+  });
+</script>
+#}
 {% endblock %}

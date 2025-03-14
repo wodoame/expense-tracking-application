@@ -79,9 +79,45 @@ function createSelectFieldInstance(id: string){
     }
   }
 
+function createDatePicker(id:string){
+  return{
+    calendar:undefined,
+    field:undefined, 
+    options:{
+       inputMode:true, 
+       positionToInput: 'center',
+       styles: {
+        calendar: 'vc z-[60] border', // z-[60] is the z-index of the modal an it works for displaying the calendar 
+        }, 
+        onClickDate(self:any, event:Event){
+          const selectedDate = self.context.selectedDates[0];
+            if (selectedDate) {
+              (<HTMLInputElement>document.getElementById(id + '-value')).value = selectedDate; 
+              // Update the input field with the selected date
+              const formattedDate = new Date(selectedDate); 
+              (<HTMLInputElement>document.getElementById(id)).value = formattedDate.toDateString();
+          }
+        }
+    }, 
+    init(){
+      const { Calendar } = window['VanillaCalendarPro'];
+      this.field = document.getElementById(id);
+      this.calendar = new Calendar(this.field, this.options);
+      this.calendar.init();
+      // Get today's date
+      const today = new Date();
+      // Convert to dateString format
+      const dateString = today.toDateString();
+      this.field.value = dateString;
+      (<HTMLInputElement>document.getElementById(id + '-value')).value = today.toISOString().split('T')[0];
+    }, 
+  }
+}
+
 function handleAlpineInitialization(){
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);
+    Alpine.data('datePicker', createDatePicker);
 }
 
 function initializeFlowbite(){
