@@ -78,7 +78,7 @@ class Dashboard(View):
                 path = urlparse(referer).path
                 if re.match(r'^/categories/[^/]+/$', path):
                     segments = path.split('/')
-                    categoryName = list(filter(lambda x: x != '', segments)).pop()
+                    categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
                     products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date__in=dates), many=True).data
                     items = [record2(date, products) for date in dates] 
                 else: 
