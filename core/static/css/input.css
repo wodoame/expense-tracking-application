@@ -177,3 +177,17 @@ body{
 .option.selected{
   @apply bg-gray-50 dark:bg-dark2;
 }
+
+/* calendar */
+/* I'll find a better way to write the dark mode styles for the calendar using the documentation but for now let me just improvise */
+[data-vc-theme=dark].vc {
+  /* --tw-bg-opacity: 1;
+  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+  color: #fff; */
+  @apply !bg-dark2
+}
+
+[data-vc-theme=dark] .vc-date__btn {
+  @apply !bg-transparent;
+  color: #94a3b8;
+}
