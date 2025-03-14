@@ -52,6 +52,7 @@ class AddProductModal extends BaseModal {
             form.reset();
             const field = selectFieldManager.getInstance('categories-add-product');
             field.select(field.none);
+            datePickerManager.getInstance('add-product-date').setToday();
         }
         else {
             form.reportValidity();

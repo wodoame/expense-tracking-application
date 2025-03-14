@@ -104,12 +104,7 @@ function createDatePicker(id) {
             this.field = document.getElementById(id);
             this.calendar = new Calendar(this.field, this.options);
             this.calendar.init();
-            // Get today's date
-            const today = new Date();
-            // Convert to dateString format
-            const dateString = today.toDateString();
-            this.field.value = dateString;
-            document.getElementById(id + '-value').value = today.toISOString().split('T')[0];
+            this.setToday();
         },
         setDate(date) {
             const selectedDate = new Date(date);
@@ -117,6 +112,14 @@ function createDatePicker(id) {
             const isoDateString = selectedDate.toISOString().split('T')[0];
             document.getElementById(id + '-value').value = isoDateString;
             this.calendar.update();
+        },
+        setToday() {
+            // Get today's date
+            const today = new Date();
+            // Convert to dateString format
+            const dateString = today.toDateString();
+            this.field.value = dateString;
+            document.getElementById(id + '-value').value = today.toISOString().split('T')[0];
         }
     };
 }

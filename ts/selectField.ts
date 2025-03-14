@@ -19,7 +19,8 @@ class SelectFieldManager{
 
 const selectFieldManager = new SelectFieldManager();
 type DatePickerInstance = {
-  setDate: (date:string)=>void
+  setDate: (date:string)=>void;
+  setToday: ()=>void;
 }
 class DatePickerManager{
   instances: {[key: string]: DatePickerInstance} = {}; 
