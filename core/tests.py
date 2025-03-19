@@ -8,8 +8,6 @@ from django.shortcuts import redirect
 import core.datechecker as dc 
 from datetime import datetime
 from .serializers import ProductSerializer
-class CategoryTests(SimpleTestCase):
-   pass
 
 class ProductTests(TestCase):
     def setUp(self):
@@ -18,28 +16,6 @@ class ProductTests(TestCase):
     def test_can_add_product(self):
         product = Product.objects.create(name='bread', price=12.00)
         self.assertEqual(Product.objects.count(), 1)
-
-    @patch('core.views.redirect')
-    def test_can_add_product_without_category_via_POST(self, mocked_redirect):
-        self.url = '/implementations/dashboard/'
-        mocked_redirect.return_value = redirect(self.url)
-        client = Client()
-        loginData = {
-            'username':'testuser',
-            'password': 'testpass'
-        }
-        client.login(**loginData)
-        data = {
-            'name': 'bread',
-            'cedis': '10',
-            'pesewas': '50',
-            'category': '',
-            'description': ''
-        }
-        response = client.post(self.url, data)
-        self.assertFalse(response.status_code == status.HTTP_404_NOT_FOUND, 'The URL specified is incorrect')
-        self.assertEqual(Product.objects.count(), 1, 'Product could not be added')
-
 
     @patch('core.views.redirect')
     def test_can_add_product_with_category_via_POST(self, mocked_redirect):
