@@ -68,8 +68,8 @@ def getAllProductsFromCache(user: User):
         cache.set(f'all-products-{user.username}', products)
     return products
         
-def deleteAllProductsFromCache(user: User):
-    cache.delete(f'all-products-{user.username}')
+def deleteAllProductsFromCache(request):
+    cache.delete(f'all-products-{request.user.username}')
 
 def encryptAllProducts():
     for product in Product.objects.all(): 
