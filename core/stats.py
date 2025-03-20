@@ -1,29 +1,52 @@
 from datetime import datetime, timedelta
 import core.datechecker as dc 
+from core.models import User
 
 class WeeklyStats:
-    def __init__(self, products, user):
+    def __init__(self, products: list[dict], user: User):
         self.products = products
         self.user = user
+        self.firstWeek = dc.get_week(user.date_joined.date())
+        self.thisWeek = dc.get_week(datetime.today().date())
+        self.paginator = dc.DateRangePaginator(self.firstWeek[0], self.thisWeek[1], 7)
+        self.numberOfWeeks = self.paginator.get_total_pages()
+        
+        # preprocessing stage: intialize all week data
+        self.weeksData = {}
+        for pageNumber in range(1, self.numberOfWeeks + 1):
+            dateRange = self.paginator.get_page_range(pageNumber)
+            key = self.make_key(dateRange)
+            self.weeksData[key] = {'total': 0} # add any metric that needs to be calculated for each week
+        print(self.weeksData)
         
     def calculate(self):
-        dateToday = datetime.today().date()
-        thisWeek = dc.get_week(dateToday)
-        lastWeek = (thisWeek[0] - timedelta(days=7), thisWeek[1] - timedelta(days=7))
-        totalSpentThisWeek = dc.get_total_spent_in_week(thisWeek, self.products)
-        totalSpentLastWeek = dc.get_total_spent_in_week(lastWeek, self.products)
-        highestWeeklySpending = max(totalSpentThisWeek, totalSpentLastWeek)
-        week = lastWeek
-
-        while week[1] >= self.user.date_joined.date(): 
-            week = (week[0] - timedelta(days=7), week[1] - timedelta(days=7))
-            totalSpent = dc.get_total_spent_in_week(week, self.products)
-            highestWeeklySpending = max(highestWeeklySpending, totalSpent)
-            
+        # intialize some key metrics
+        highestWeeklySpending = 0
+        totalSpentThisWeek = 0
+        totalSpentLastWeek = 0
+        thisWeek = self.thisWeek
+        lastWeek = (self.thisWeek[0] - timedelta(weeks=1), self.thisWeek[1] - timedelta(weeks=1))
+        
+        # perform the calculations
+        for product in self.products:
+            date = dc.datefromisoformat(product.get('date')).date()
+            week = dc.get_week(date)
+            key = self.make_key(week)
+            self.weeksData[key]['total'] += product.get('price')
+            highestWeeklySpending = max(highestWeeklySpending, self.weeksData[key]['total'])
+        
+        totalSpentThisWeek = self.weeksData[self.make_key(thisWeek)]['total']
+        totalSpentLastWeek = self.weeksData[self.make_key(lastWeek)]['total']
         return [{'text': 'Total spent this week', 'data':totalSpentThisWeek},
                 {'text': 'Total spent last week', 'data':totalSpentLastWeek},
                 {'text': 'Highest weekly spending', 'data':highestWeeklySpending}
                 ]
+        
+    def make_key(self, week):
+        return str((
+            week[0].strftime('%Y-%m-%d'),
+            week[1].strftime('%Y-%m-%d')
+        ))
 
 class MonthlyStats:
     def __init__(self, products, user):
