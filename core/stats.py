@@ -49,38 +49,34 @@ class WeeklyStats:
         ))
 
 class MonthlyStats:
-    def __init__(self, products, user):
+    def __init__(self, products: list[dict], user: User):
         self.products = products 
         self.user = user
+        self.generator = dc.MonthGenerator(dc.get_month(user.date_joined), dc.get_month(datetime.today()))
+        self.monthsData = {} 
+        # preprocessing: initialize all months data
+        for month in self.generator:
+            print('here')
+            key = str(month)
+            self.monthsData[key] = {'total': 0}    
     
     def calculate(self):
-        dateToday = datetime.today().date()
-        year = dateToday.year
-        month = dateToday.month
-        totalSpentThisMonth = dc.get_total_spent_in_month(year, month, self.products)
-        # set month to 12 if current month is January
-        if month == 1:
-            year -= 1
-            month = 12
-        else: 
-            month -= 1 
-        totalSpentLastMonth = dc.get_total_spent_in_month(year, month, self.products)
-        highestMonthlySpending = max(totalSpentThisMonth, totalSpentLastMonth)
-        date = datetime(year, month, 1)
-        dateJoined = self.user.date_joined
-        endDate = None # I'm setting the end date to the month before the user joined so that we can still find items bought in the month they joined
-        if dateJoined.month == 1: 
-            endDate = datetime(dateJoined.year -1, 12, 1)
-        else: 
-            endDate = datetime(dateJoined.year, dateJoined.month -1, 1)
-
-        while date.date() > endDate.date():
-            if date.month == 1: 
-                date = datetime(date.year - 1, 12, 1)
-            else:
-                date = datetime(date.year, date.month -1, 1)
-            totalSpent = dc.get_total_spent_in_month(date.year, date.month, self.products)
-            highestMonthlySpending = max(totalSpent, highestMonthlySpending)
+        # initialize some metrics
+        totalSpentThisMonth = 0
+        totalSpentLastMonth = 0
+        highestMonthlySpending = 0
+        for product in self.products:
+            date = dc.datefromisoformat(product.get('date')).date()
+            month = dc.get_month(date)
+            key = str(month)
+            self.monthsData[key]['total'] += product.get('price')
+            highestMonthlySpending = max(highestMonthlySpending, self.monthsData[key]['total'])
+    
+        dateToday = datetime.today()
+        thisMonth = dc.get_month(dateToday)
+        lastMonth = dc.get_month(datetime(dateToday.year, dateToday.month, 1) - timedelta(days=1)) 
+        totalSpentThisMonth = self.monthsData[str(thisMonth)]['total']
+        totalSpentLastMonth = self.monthsData[str(lastMonth)]['total']
         return [{'text': 'Total spent this month', 'data':totalSpentThisMonth},
                 {'text': 'Total spent last month', 'data':totalSpentLastMonth},
                 {'text': 'Highest monthly spending', 'data':highestMonthlySpending}

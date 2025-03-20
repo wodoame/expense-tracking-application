@@ -14,6 +14,9 @@ def get_week(date: datetime):
     weekEnd = date + timedelta(days=distanceFromSaturday)
     return (weekStart, weekEnd)    
 
+def get_month(date:datetime):
+    return (date.year, date.month)
+
 def datefromisoformat(date: str):
     return datetime.fromisoformat(date)
     
@@ -216,6 +219,46 @@ class DateRangePaginator:
     def get_total_pages(self) -> int:
         """Return the total number of pages."""
         return self.total_pages
+    
+
+class MonthGenerator:
+    def __init__(self, start_month, end_month):
+        """
+        Initialize the MonthGenerator with start and end months.
         
+        Args:
+            start_month: A tuple of (year, month) where month is 1-12
+            end_month: A tuple of (year, month) where month is 1-12
+        """
+        # Store the limits directly since they're already in (year, month) format
+        self.start = start_month
+        self.end = end_month
+        
+        # Initialize the current position (will be properly set in __iter__)
+        self.current = None
+    
+    def __iter__(self):
+        """Return the iterator object (self)"""
+        # Set current to the start position
+        self.current = self.start
+        return self
+    
+    def __next__(self):
+        """Return the next month as (year, month) tuple"""
+        # If current position is past the end, stop iteration
+        if self.current[0] > self.end[0] or (self.current[0] == self.end[0] and self.current[1] > self.end[1]):
+            raise StopIteration
+        
+        # Store the current position to return
+        result = self.current
+        
+        # Advance to the next month
+        year, month = self.current
+        if month == 12:
+            self.current = (year + 1, 1)  # Move to January of next year
+        else:
+            self.current = (year, month + 1)  # Move to next month of same year
+            
+        return result
         
     

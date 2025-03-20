@@ -231,39 +231,20 @@ class Test(View):
     def get(self, request): 
         context = {}
         # cache.clear()
+        generator = dc.MonthGenerator(start_month=(11, 2024), end_month=(3, 2025))
         user = request.user
         products = ProductSerializer(user.products.all(), many=True).data
-        firstWeek = dc.get_week(user.date_joined.date())
-        thisWeek = dc.get_week(datetime.today().date())
-        paginator = dc.DateRangePaginator(firstWeek[0], thisWeek[1], 7)
-        numberOfWeeks = paginator.get_total_pages()
+        monthsData = {} 
+        for month in generator:
+            key = str(month)
+            monthsData[key] = {'total': 0}
         
-        # preprocessing stage: gather all the weeks
-        weeksData = {}
-        for pageNumber in range(1, numberOfWeeks + 1):
-            dateRange = paginator.get_page_range(pageNumber)
-            key = str((
-                dateRange[0].strftime('%Y-%m-%d'), 
-                dateRange[1].strftime('%Y-%m-%d'))
-                )
-            weeksData[key] = {'products': [], 'total': 0} # add any metric that needs to be calculated for each week
-        print(weeksData)
-        maxWeeklySpending = 0
         for product in products:
             date = dc.datefromisoformat(product.get('date')).date()
-            week = dc.get_week(date)
-            key = str((
-                week[0].strftime('%Y-%m-%d'), 
-                week[1].strftime('%Y-%m-%d'))
-                )
-            weeksData[key]['total'] += product.get('price')
-            maxWeeklySpending = max(maxWeeklySpending, weeksData[key]['total'])
-            
-        for week, data in weeksData.items():
-            print(week)
-            print(data)
-            print('\n\n') 
-        print(f'{maxWeeklySpending=}')
+            month = dc.get_month(date)
+            key = str(month)
+            monthsData[key]['total'] += product.get('price')
+        print(monthsData)
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
