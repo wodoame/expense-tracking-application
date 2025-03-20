@@ -231,20 +231,6 @@ class Test(View):
     def get(self, request): 
         context = {}
         # cache.clear()
-        generator = dc.MonthGenerator(start_month=(11, 2024), end_month=(3, 2025))
-        user = request.user
-        products = ProductSerializer(user.products.all(), many=True).data
-        monthsData = {} 
-        for month in generator:
-            key = str(month)
-            monthsData[key] = {'total': 0}
-        
-        for product in products:
-            date = dc.datefromisoformat(product.get('date')).date()
-            month = dc.get_month(date)
-            key = str(month)
-            monthsData[key]['total'] += product.get('price')
-        print(monthsData)
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
@@ -330,13 +316,13 @@ class StatSummary(View):
         if request.GET.get('type') == 'weekly':
             stats = cache.get(f'weekly-stats-{user.username}')
             if not stats:
-                products = ProductSerializer(user.products.all(), many=True).data
+                products = getAllProductsFromCache(user)
                 stats = Context(WeeklyStats(products, user)).apply()
                 cache.set(f'weekly-stats-{user.username}', stats)
         if request.GET.get('type') == 'monthly':
             stats = cache.get(f'monthly-stats-{user.username}')
             if not stats:
-                products = ProductSerializer(user.products.all(), many=True).data
+                products = getAllProductsFromCache(user)
                 stats = Context(MonthlyStats(products, user)).apply()
                 cache.set(f'monthly-stats-{user.username}', stats)  
         context = {

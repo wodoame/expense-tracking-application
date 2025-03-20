@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required as lr
 from django.core.cache import cache
 import pandas as pd
 from .models import Settings
+from authentication.models import User
 
 def record(date, request):
     user = request.user
@@ -60,6 +61,16 @@ def getCategoriesSkeletonContext():
         'card_count': range(5)
     }
 
+def getAllProductsFromCache(user: User):
+    products = cache.get(f'all-products-{user.username}')
+    if products is None:
+        products = ProductSerializer(user.products.all(), many=True).data
+        cache.set(f'all-products-{user.username}', products)
+    return products
+        
+def deleteAllProductsFromCache(user: User):
+    cache.delete(f'all-products-{user.username}')
+
 def encryptAllProducts():
     for product in Product.objects.all(): 
         product.save() # saving indirectly encrypts the products
@@ -108,3 +119,4 @@ def deleteExpenditureRecordsFromCache(request):
 emitter = EventEmitter() # global event emitter
 emitter.on('products_updated', deleteQuickStatsFromCache)
 emitter.on('products_updated', deleteExpenditureRecordsFromCache)
+emitter.on('products_updated', deleteAllProductsFromCache)

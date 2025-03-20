@@ -4,6 +4,7 @@ from typing import Tuple, Union
 from .serializers import ProductSerializer
 import pandas as pd
 
+
 def get_week(date: datetime):
     weekDay = date.weekday()
     if weekDay == 6: 
@@ -108,12 +109,13 @@ def get_color_ratios(year, month, df: pd.DataFrame):
     return ratios
 
 def get_activity_in_last_year(request):
+    from .utils import getAllProductsFromCache # had to avoid some circular import issues
     dateToday = datetime.today()
     year = dateToday.year
     month = dateToday.month
     activity = []
     user = request.user
-    products = ProductSerializer(user.products.all(), many=True).data
+    products = getAllProductsFromCache(user)
     df = pd.DataFrame(products)
     if not df.empty:
         df['date'] = pd.to_datetime(df['date'], format='ISO8601')

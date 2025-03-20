@@ -56,7 +56,6 @@ class MonthlyStats:
         self.monthsData = {} 
         # preprocessing: initialize all months data
         for month in self.generator:
-            print('here')
             key = str(month)
             self.monthsData[key] = {'total': 0}    
     
