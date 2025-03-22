@@ -47,7 +47,8 @@ class SeeProducts(View):
     def get(self, request, categoryName):
         user = request.user 
         try: 
-            user.categories.get(name=categoryName)
+            if  categoryName != 'None':
+                user.categories.get(name=categoryName)
             context = getRecordSkeletonContext() 
             context.update(
                 {

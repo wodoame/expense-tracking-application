@@ -187,7 +187,10 @@ class Records(View):
         if request.GET.get('oneCategory'):
             categoryName = request.GET.get('categoryName')
             print(request.GET)
-            products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
+            if categoryName != 'None':
+                products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
+            else: 
+                products = ProductSerializer(user.products.filter(category=None), many=True).data
             records = groupByDate(products)
         else:
             previousData: list[dict] = cache.get(f'records-{request.user.username}') # ! BUG: if user has no product stored in the cache, the data will be None which will cause bug
@@ -258,6 +261,22 @@ class Categories(View):
     def get(self, request):
         user = request.user
         categories = CategorySerializerWithMetrics(user.categories.all(), many=True).data
+        productsWithNoCategory = ProductPriceSerializer(user.products.filter(category=None), many=True).data
+        df = pd.DataFrame(productsWithNoCategory)
+        metrics = {
+            "product_count": 0, 
+            "total_amount_spent": 0
+        }
+        if not df.empty:
+            # NOTE: explicitly convert to the respective data types since the original result from pandas is an object
+            metrics['product_count'] = int(df.get('name').count())
+            metrics['total_amount_spent'] = float(df.get('price').sum())
+        categories.append(
+            {
+                "name": "None",
+                "metrics": metrics
+            }
+        )
         categories.sort(key=lambda x:x['metrics']['total_amount_spent'], reverse=True)
         context = {
             'categories': categories
