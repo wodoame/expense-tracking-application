@@ -10,7 +10,7 @@ from whoosh.qparser import MultifieldParser, OrGroup, FuzzyTermPlugin, QueryPars
 import os
 from .utils import * 
 from core.user_settings_schemas import SearchSchema
-from core.utils import getSettings
+from core.utils import getSettings, getAllProductsFromCache
 from core.templatetags.custom_filters import dateOnly, timesince
 from core.datechecker import datefromisoformat
 class Categories(APIView):
@@ -66,7 +66,7 @@ class Search(APIView):
         writer = ix.writer()
         if not isIndexed(ix, user.id):
             print('user not index, index products')
-            products = ProductSerializer(user.products.all(), many=True).data
+            products = getAllProductsFromCache(user)
             for product in products:
                 writer.add_document(
                     id=product.get('id'),
