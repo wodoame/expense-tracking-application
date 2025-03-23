@@ -4,23 +4,23 @@ from whoosh.qparser import QueryParser
 from whoosh.fields import Schema, TEXT, ID, STORED
 from core.utils import EventEmitter
         
-def recreate_index(index_dir, schema_id_file, new_schema, new_schema_id):
+def recreate_index(index_dir: str, schema_id_file: str, new_schema: Schema, new_schema_id: int):
     """Recreate the index with the new schema."""
     os.makedirs(index_dir, exist_ok=True)
     ix = index.create_in(index_dir, new_schema)
     setSchemaId(schema_id_file, new_schema_id)
     print(f"Created new index with updated schema")
 
-def getSchemaId(path):
+def getSchemaId(path:str):
     with open(path, 'r') as f: 
         schemaId = int(f.read().strip())
     return schemaId
 
-def setSchemaId(path, schemaId):
+def setSchemaId(path:str, schemaId:int):
     with open(path, 'w') as f: 
         f.write(str(schemaId)) 
 
-def updateIndex(product, method='update'):
+def updateIndex(product:dict, method='update'):
     """Update the index: add, edit or delete an item from the index"""
     index_dir = 'products_index'
     if not index.exists_in(index_dir):
@@ -46,7 +46,7 @@ def updateIndex(product, method='update'):
             writer.delete_by_term('doc_id', str(product.get('id')))
         writer.commit() 
     
-def isIndexed(ix:index.Index, user_id):
+def isIndexed(ix:index.Index, user_id:int):
     # Step 1: search for an item with the user's id
     # Step 2: If at least one exists then items have been indexed
     q = QueryParser('user_id', ix.schema).parse(str(user_id))
