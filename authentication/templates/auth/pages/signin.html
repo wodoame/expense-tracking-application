@@ -92,7 +92,9 @@
                 <div class="mb-4">
                     <div class="flex items-center justify-between mb-1">
                         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <a href="#" class="text-sm text-blue-600 hover:text-blue-800">Forgot password?</a>
+                        {% experimental %}
+                            <a href="#" class="text-sm text-blue-600 hover:text-blue-800">Forgot password?</a>
+                        {% endexperimental %}
                     </div>
                     <input type="password" id="password" name="password" class="auth-input" placeholder="Enter your password" required>
                 </div>
