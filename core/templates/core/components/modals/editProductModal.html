@@ -1,12 +1,12 @@
 {% component 'baseModal' %}
 {% fill 'title'  %}Edit Expense{% endfill %}
 {% fill 'body'  %}
-<form class="p-4 md:p-5 edit-product-form" x-data="{modal: getEditProductModal(), ff:getEditProductModal().ff, df:getEditProductModal().df, formId: 'edit-product-form'}" method="POST" id="edit-product-form">
+<form class="p-4 md:p-5 edit-product-form" x-data="{modal: getEditProductModal(), ff:getEditProductModal().ff, df:getEditProductModal().df, formId: 'edit-product-form'}" x-init="$watch('isOpen', value => value?$el.scrollTop = 0:null)" method="POST" id="edit-product-form">
     {% csrf_token %}
      <div class="grid gap-4 mb-4 grid-cols-2">
          <div class="col-span-2">
              <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
-             <input type="text" name="name" x-init="ff.setFormField('name', $el)" maxlength="25" id="name" class="input" placeholder="Type expense name" required>
+             <input type="text" name="name" x-init="ff.setFormField('name', $el);$watch('isOpen', value => value?$el.focus():null)" maxlength="25" id="name" class="input" placeholder="Type expense name" required>
          </div>
 
          <div class="col-span-2">

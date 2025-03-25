@@ -1,12 +1,12 @@
 {% component 'baseModal' %}
     {% fill "title"  %}Add Expense{% endfill %}
     {% fill "body"  %}
-    <form class="p-4 md:p-5 add-product-form" x-data="{formId: 'add-product-form'}" action="/actual-dashboard/" method="POST" id="add-product-form">
+    <form class="p-4 md:p-5 add-product-form" x-data="{formId: 'add-product-form'}" x-init="$watch('isOpen', value => value?$el.scrollTop = 0:null)" action="/actual-dashboard/" method="POST" id="add-product-form">
         {% csrf_token %}
          <div class="grid gap-4 mb-4 grid-cols-2">
              <div class="col-span-2">
                  <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
-                 <input type="text" name="name" maxlength="25" id="name" class="input" placeholder="Type expense name" required>
+                 <input type="text" name="name" maxlength="25" id="name" class="input" placeholder="Type expense name" x-init="$watch('isOpen', value => value?$el.focus():null)" required>
              </div>
              
              <div class="col-span-2">
