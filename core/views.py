@@ -130,7 +130,7 @@ class Dashboard(View):
             return redirect('implemented-categories')
         if re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
-           categoryName = list(filter(lambda x: x != '', segments)).pop()
+           categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
            return redirect(f'/components/records/?addProduct=1?&oneCategory=1&categoryName={categoryName}')
         return render(request, 'core/components/toastWrapper.html', {})
         
@@ -185,7 +185,7 @@ class Records(View):
         nextPageNumber = None
         user = request.user 
         if request.GET.get('oneCategory'):
-            categoryName = request.GET.get('categoryName')
+            categoryName = unquote(request.GET.get('categoryName'))
             print(request.GET)
             if categoryName != 'None':
                 products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
