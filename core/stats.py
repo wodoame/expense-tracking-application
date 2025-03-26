@@ -34,9 +34,10 @@ class WeeklyStats:
             key = self.make_key(week)
             self.weeksData[key]['total'] += product.get('price')
             highestWeeklySpending = max(highestWeeklySpending, self.weeksData[key]['total'])
-        
+            
         totalSpentThisWeek = self.weeksData[self.make_key(thisWeek)]['total']
-        totalSpentLastWeek = self.weeksData[self.make_key(lastWeek)]['total']
+        if self.numberOfWeeks > 1:
+            totalSpentLastWeek = self.weeksData[self.make_key(lastWeek)]['total']
         return [{'text': 'Total spent this week', 'data':totalSpentThisWeek},
                 {'text': 'Total spent last week', 'data':totalSpentLastWeek},
                 {'text': 'Highest weekly spending', 'data':highestWeeklySpending}
@@ -75,7 +76,8 @@ class MonthlyStats:
         thisMonth = dc.get_month(dateToday)
         lastMonth = dc.get_month(datetime(dateToday.year, dateToday.month, 1) - timedelta(days=1)) 
         totalSpentThisMonth = self.monthsData[str(thisMonth)]['total']
-        totalSpentLastMonth = self.monthsData[str(lastMonth)]['total']
+        if len(self.monthsData) > 1: 
+            totalSpentLastMonth = self.monthsData[str(lastMonth)]['total']
         return [{'text': 'Total spent this month', 'data':totalSpentThisMonth},
                 {'text': 'Total spent last month', 'data':totalSpentLastMonth},
                 {'text': 'Highest monthly spending', 'data':highestMonthlySpending}
