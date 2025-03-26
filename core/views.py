@@ -130,8 +130,8 @@ class Dashboard(View):
             return redirect('implemented-categories')
         if re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
-           categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
-           return redirect(f'/components/records/?addProduct=1?&oneCategory=1&categoryName={categoryName}')
+           categoryName = unquote(list(filter(lambda x: x != '', segments)).pop()).replace('&', 'AND*') # replacement is there to prevent wrong interpretation: & is part of query string syntax
+           return redirect(f'/components/records/?addProduct=1&oneCategory=1&categoryName={categoryName}')
         return render(request, 'core/components/toastWrapper.html', {})
         
     
@@ -147,7 +147,7 @@ class Dashboard(View):
             path = urlparse(referer).path
             if re.match(r'^/categories/[^/]+/$', path):
                 segments = path.split('/')
-                categoryName = list(filter(lambda x: x != '', segments)).pop()
+                categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
                 products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date=date), many=True).data
                 items = [record2(date, products)] 
             else:
@@ -185,8 +185,7 @@ class Records(View):
         nextPageNumber = None
         user = request.user 
         if request.GET.get('oneCategory'):
-            categoryName = unquote(request.GET.get('categoryName'))
-            print(request.GET)
+            categoryName = request.GET.get('categoryName').replace('AND*', '&')
             if categoryName != 'None':
                 products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
             else: 

@@ -3,6 +3,7 @@ from django.urls import reverse
 from authentication.models import User
 from core.models import Category
 from rest_framework import status
+
 class CategoryCreationTest(TestCase):
     def setUp(self):
         # Create a test client
