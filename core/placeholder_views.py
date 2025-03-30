@@ -1,4 +1,10 @@
-from .views_dependencies import *
+from django.shortcuts import render
+from django.views import View
+from .models import Category
+import core.datechecker as dc 
+from .utils import *
+from django.core.cache import cache
+
 @login_required
 class Dashboard(View):
     def get(self, request):

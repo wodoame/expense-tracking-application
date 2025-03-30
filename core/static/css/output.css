@@ -1217,8 +1217,8 @@ video {
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
-.grid-cols-\[repeat\(5\2c minmax\(10px\2c 10px\)\)\] {
-  grid-template-columns: repeat(5,minmax(10px,10px));
+.grid-cols-\[repeat\(6\2c minmax\(10px\2c 10px\)\)\] {
+  grid-template-columns: repeat(6,minmax(10px,10px));
 }
 
 .grid-rows-\[repeat\(7\2c _minmax\(10px\2c _10px\)\)\] {

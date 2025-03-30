@@ -1,4 +1,26 @@
-from .views_dependencies import *
+from django.shortcuts import render, redirect, HttpResponse
+from django.views import View
+from datetime import datetime, timedelta
+from .models import Product, Category
+import core.datechecker as dc 
+from .forms import *
+from .serializers import * 
+from django.contrib import messages 
+import pandas as pd
+from .stats import * 
+from .utils import *
+from django.utils import timezone
+from django.http import HttpRequest
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+from urllib.parse import urlparse, unquote
+from django.core.cache import cache
+from .placeholder_views import AllExpenditures
+import re
+from .user_settings_schemas import * 
+from api.utils import indexEventEmitter
+from api.views import Search as APISearch
+from django.forms.forms import ValidationError
 
 class RedirectView(View):
     def get(self, request):
@@ -37,8 +59,9 @@ class Dashboard(View):
         return self.handle_add_product(request)
         
     def check_category(self, request):
-        categoryId = request.POST.get('category')
-        
+        categoryId = request.POST.get('category') 
+        if categoryId is None:
+            return request.POST     
         if categoryId != '' and int(categoryId) == 0:
             category = Category.objects.create(name=request.POST.get('newCategoryName'), user=request.user)
             postDict = request.POST.dict()

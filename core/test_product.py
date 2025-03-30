@@ -1,8 +1,8 @@
 from django.test import TestCase, Client
-from django.urls import reverse
-from django.utils import timezone
-from .models import Product, Category # Adjust the import path to match your project structure
+from .models import Product
 from authentication.models import User
+from rest_framework import status 
+from datetime import datetime
 
 class ProductCreationTestCase(TestCase):
     def setUp(self):
@@ -19,20 +19,35 @@ class ProductCreationTestCase(TestCase):
             email='test@example.com',
             password='testpassword'
         )
+        self.add_url = '/implementations/dashboard/'
+        self.edit_url = '/implementations/dashboard/?edit=1'
+        self.edit_url = '/implementations/dashboard/?delete=1'
     
-    def test_create_product_with_bad_category_name(self):
+    def test_create_product_no_category(self):
         """
-        Test creating a product with a category name that contains invalid characters.
+        Test creating a product with valid data.
         """
-        category = Category.objects.create(name='Repairs & Electricals') # & is the bad character
+        # Login if authentication is required
+        self.client.login(username='testuser', password='testpassword')
         
+        # Prepare form data
         data = {
-            'name': 'Test Product',  # Contains invalid characters
-            'date': '2025-03-26',
-            'description': 'A detailed description of the test product', 
-            'category': category.id
+            'name': 'Test Product',
+            'cedis': 10,
+            'pesewas': 50,
+            'description': 'This is a test product.',
+            'date': datetime.today().strftime('%Y-%m-%d'),
         }
         
-        # Send POST request
-        response = self.client.post(self.category_create_url, data)
-        # TODO: complete the test
+        # Send POST request to the product creation view
+        response = self.client.post(self.add_url, data)
+        
+        # Check if the response is a redirect
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        
+        # Check if the product has been created
+        self.assertEqual(Product.objects.count(), 1)
+        
+        # Check if the product's details match the provided data
+        product = Product.objects.get(name='Test Product')
+        self.assertTrue(product.name == 'Test Product')
