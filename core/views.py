@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-from urllib.parse import urlparse, unquote
+from urllib.parse import urlparse, unquote, quote
 from django.core.cache import cache
 from .placeholder_views import AllExpenditures
 import re
@@ -102,6 +102,8 @@ class Dashboard(View):
                 if re.match(r'^/categories/[^/]+/$', path):
                     segments = path.split('/')
                     categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
+                    if form.is_valid():
+                        cache.delete(f'records-{quote(categoryName)}-{request.user.username}')
                     products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date__in=dates), many=True).data
                     items = [record2(date, products) for date in dates] 
                 else: 
@@ -153,8 +155,10 @@ class Dashboard(View):
             return redirect('implemented-categories')
         if re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
-           categoryName = unquote(list(filter(lambda x: x != '', segments)).pop()).replace('&', 'AND*') # replacement is there to prevent wrong interpretation: & is part of query string syntax
-           return redirect(f'/components/records/?addProduct=1&oneCategory=1&categoryName={categoryName}')
+           categoryName = quote(unquote(list(filter(lambda x: x != '', segments)).pop()))
+           if form.is_valid():
+               cache.delete(f'records-{categoryName}-{request.user.username}')
+           return redirect(f'/components/records/?page=1&addProduct=1&oneCategory=1&categoryName={categoryName}')
         return render(request, 'core/components/toastWrapper.html', {})
         
     
@@ -207,9 +211,9 @@ class Records(View):
         nextPageNumber = None
         user = request.user 
         if request.GET.get('oneCategory'):
-            categoryName = request.GET.get('categoryName').replace('AND*', '&')
+            categoryName = unquote(request.GET.get('categoryName'))
             if categoryName != 'None':
-                paginator = ExpensePaginator(request, extra_filters={'category__name': categoryName}, cache_key=f'records-{categoryName}-{request.user.username}')
+                paginator = ExpensePaginator(request, extra_filters={'category__name': categoryName}, cache_key=f'records-{quote(categoryName)}-{request.user.username}')
                 page = int(request.GET.get('page'))
                 pageData = paginator.get_page(page)
                 nextPageNumber = pageData.get('nextPageNumber') 
