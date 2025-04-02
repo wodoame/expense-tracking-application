@@ -204,40 +204,31 @@ class ActivityCalendar(View):
 class Records(View):
     def get(self, request): 
         records = []
-        data = {}
         nextPageNumber = None
         user = request.user 
         if request.GET.get('oneCategory'):
             categoryName = request.GET.get('categoryName').replace('AND*', '&')
             if categoryName != 'None':
-                products = ProductSerializer(user.products.filter(category__name=categoryName), many=True).data
+                paginator = ExpensePaginator(request, extra_filters={'category__name': categoryName}, cache_key=f'records-{categoryName}-{request.user.username}')
+                page = int(request.GET.get('page'))
+                pageData = paginator.get_page(page)
+                nextPageNumber = pageData.get('nextPageNumber') 
+                if pageData.get('from_cache'):
+                    return self.cache_response(pageData)
+                records = pageData.get('records')
             else: 
                 products = ProductSerializer(user.products.filter(category=None), many=True).data
-            records = groupByDate(products)
+                records = groupByDate(products)
         else:
-            previousData: list[dict] = cache.get(f'records-{request.user.username}') # ! BUG: if user has no product stored in the cache, the data will be None which will cause bug
-            numberOfDays = 7
-            paginator = dc.DateRangePaginator(user.date_joined.date(), datetime.today().date(), numberOfDays, reverse=True)
-            if previousData is None or (previousData is not None and int(request.GET.get('page')) > len(previousData)):
-                page = int(request.GET.get('page'))
-                data = AllExpenditures.get_context(request, previousData, paginator, page)
-                records = data.get('records')
-                nextPageNumber = data.get('nextPageNumber')
-            else: 
-                print('cached upto page', len(previousData))
-                html = ''
-                for item in previousData:
-                    html += render_to_string('core/components/paginateExpenditures.html', {'items': item.get('records')})
-                if len(previousData) < paginator.get_total_pages(): # len(previousData) is  the number of pages cached so far
-                    nextPageNumber = len(previousData) + 1
-                    print(nextPageNumber)
-                    extraContext = getRecordSkeletonContext()
-                    extraContext.update({'nextPageNumber':nextPageNumber})
-                    html += render_to_string('core/components/paginator.html', extraContext)
-                if request.GET.get('addProduct'): # if page reloads due to adding a products display a message
-                    html += render_to_string('core/components/toastWrapper.html')
-                return HttpResponse(html)
+            paginator = ExpensePaginator(request,
+                                        cache_key=f'records-{request.user.username}')
+            page = int(request.GET.get('page'))
+            pageData = paginator.get_page(page)
+            nextPageNumber = pageData.get('nextPageNumber')
+            if pageData.get('from_cache'):
+                return self.cache_response(pageData)                
     
+            records = pageData.get('records')
         context = {
             'items':records, 
             'nextPageNumber':nextPageNumber,
@@ -245,6 +236,22 @@ class Records(View):
             }
         context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
+    
+            
+
+    def generate_html_from_cache(self, pages: list[dict], context):
+        html = ''
+        for page in pages:
+            html += render_to_string('core/components/paginateExpenditures.html', {'items': page.get('records')})
+        html + render_to_string('core/components/paginator.html', context)
+        return HttpResponse(html)
+    
+    def cache_response(self, pageData: list[dict]):
+        pages = pageData.get('pages')
+        nextPageNumber = pageData.get('nextPageNumber')
+        context = {'nextPageNumber': nextPageNumber}
+        context.update(getRecordSkeletonContext())
+        return self.generate_html_from_cache(pages, context={'nextPageNumber': nextPageNumber})
     
 # @login_required
 class Settings(View): 
@@ -256,6 +263,8 @@ class Test(View):
     def get(self, request): 
         context = {}
         # cache.clear()
+        paginator = ExpensePaginator(request, {'category__name': 'Food'})
+        print(paginator.get_page(1))
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 

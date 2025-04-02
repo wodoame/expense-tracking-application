@@ -174,7 +174,7 @@ class DateRangePaginator:
         self.total_days = (end_date - start_date).days + 1
         self.total_pages = (self.total_days + dates_per_page - 1) // dates_per_page
         
-    def get_page_range(self, page_number: int) -> Tuple[datetime, datetime]:
+    def get_date_range(self, page_number: int) -> Tuple[datetime, datetime]:
         """
         Get the date range for a specific page number.
         

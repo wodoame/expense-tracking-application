@@ -27,7 +27,7 @@ class AllExpenditures(View):
             nextPageNumber = None
         else:
             nextPageNumber = page + 1
-        dateRange = paginator.get_page_range(page)
+        dateRange = paginator.get_date_range(page)
         products = ProductSerializer(user.products.filter(date__date__range=(dateRange[1], dateRange[0])), many=True).data
         records = groupByDate(products)
         cachedData.append({

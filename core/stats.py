@@ -14,7 +14,7 @@ class WeeklyStats:
         # preprocessing stage: intialize all week data
         self.weeksData = {}
         for pageNumber in range(1, self.numberOfWeeks + 1):
-            dateRange = self.paginator.get_page_range(pageNumber)
+            dateRange = self.paginator.get_date_range(pageNumber)
             key = self.make_key(dateRange)
             self.weeksData[key] = {'total': 0} # add any metric that needs to be calculated for each week
         print(self.weeksData)
