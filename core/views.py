@@ -255,7 +255,7 @@ class Records(View):
         nextPageNumber = pageData.get('nextPageNumber')
         context = {'nextPageNumber': nextPageNumber}
         context.update(getRecordSkeletonContext())
-        return self.generate_html_from_cache(pages, context={'nextPageNumber': nextPageNumber})
+        return self.generate_html_from_cache(pages, context)
     
 # @login_required
 class Settings(View): 
