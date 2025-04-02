@@ -243,11 +243,12 @@ class Records(View):
     
             
 
-    def generate_html_from_cache(self, pages: list[dict], context):
+    def generate_html_from_cache(self, pages: list[dict], context:dict):
         html = ''
         for page in pages:
             html += render_to_string('core/components/paginateExpenditures.html', {'items': page.get('records')})
-        html + render_to_string('core/components/paginator.html', context)
+        if context.get('nextPageNumber') is not None:
+            html += render_to_string('core/components/paginator.html', context)
         return HttpResponse(html)
     
     def cache_response(self, pageData: list[dict]):
