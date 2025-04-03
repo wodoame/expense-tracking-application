@@ -102,8 +102,6 @@ class Dashboard(View):
                 if re.match(r'^/categories/[^/]+/$', path):
                     segments = path.split('/')
                     categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
-                    if form.is_valid():
-                        cache.delete(f'records-{quote(categoryName)}-{request.user.username}')
                     products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date__in=dates), many=True).data
                     items = [record2(date, products) for date in dates] 
                 else: 
@@ -114,7 +112,11 @@ class Dashboard(View):
                     'edited':True
                 }
                 emitter.emit('products_updated', request)
-                indexEventEmitter.emit('product_updated', ProductSerializer(product).data)
+                serializedProduct =  ProductSerializer(product).data
+                category:dict | None = serializedProduct.get('category')
+                if category is not None:
+                    cache.delete(f"records-{quote(category.get('name'))}-{request.user.username}")
+                indexEventEmitter.emit('product_updated', serializedProduct)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
@@ -139,7 +141,11 @@ class Dashboard(View):
                 product.date = timezone.make_aware(parsedDate, timezone.get_current_timezone())
             form.save()
             emitter.emit('products_updated', request)
-            indexEventEmitter.emit('product_updated', ProductSerializer(product).data)
+            serializedProduct =  ProductSerializer(product).data
+            indexEventEmitter.emit('product_updated', serializedProduct)
+            category:dict | None = serializedProduct.get('category')
+            if category is not None:
+                cache.delete(f"records-{quote(category.get('name'))}-{request.user.username}")
             messages.success(request, 'Product added successfully')
         else: 
             errors = form.errors.get_json_data()
@@ -156,8 +162,6 @@ class Dashboard(View):
         if re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
            categoryName = quote(unquote(list(filter(lambda x: x != '', segments)).pop()))
-           if form.is_valid():
-               cache.delete(f'records-{categoryName}-{request.user.username}')
            return redirect(f'/components/records/?page=1&addProduct=1&oneCategory=1&categoryName={categoryName}')
         return render(request, 'core/components/toastWrapper.html', {})
         
@@ -166,8 +170,12 @@ class Dashboard(View):
         productId = request.POST.get('id')
         try:
             product = Product.objects.get(id=productId)
-            indexEventEmitter.emit('product_updated', ProductSerializer(product).data, method='delete')
+            serializedProduct =  ProductSerializer(product).data
+            category:dict | None = serializedProduct.get('category')
             product.delete()
+            indexEventEmitter.emit('product_updated', serializedProduct, method='delete')
+            if category is not None:
+                cache.delete(f"records-{quote(category.get('name'))}-{request.user.username}")
             messages.success(request, 'Product deleted successfully')
             date = dc.datefromisoformat(request.POST.get('date')).date() 
             referer = request.META.get('HTTP_REFERER')
