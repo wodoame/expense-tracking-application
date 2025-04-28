@@ -1205,10 +1205,6 @@ video {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -1405,10 +1401,6 @@ video {
 
 .border-b {
   border-bottom-width: 1px;
-}
-
-.border-b-2 {
-  border-bottom-width: 2px;
 }
 
 .border-t {
@@ -1693,11 +1685,6 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
 }
 
 .py-9 {
@@ -2246,6 +2233,87 @@ body:is(.dark *) {
   color: rgb(59 130 246 / var(--tw-text-opacity, 1));
 }
 
+/*  calendar */
+
+.calendar {
+  z-index: 60;
+  border-width: 1px;
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.calendar:is(.dark *) {
+  border-color: rgb(243 244 246 / 0.05);
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1));
+}
+
+.date-btn {
+  border-radius: 9999px;
+}
+
+.date-btn:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.date-btn:is(.dark *) {
+  background-color: transparent !important;
+}
+
+.date-btn:is(.dark *):hover {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1)) !important;
+}
+
+.vc-date[data-vc-date-selected] {
+  border-radius: 0.125rem;
+  outline-style: solid;
+  outline-width: 1px;
+  outline-color: #3b82f6;
+  /* 
+   To use border instead of outline
+   1. make all .vc-date border-1 but transparent (to prevent layout shift)
+   2. make the border visible for the selected date
+  
+  */
+}
+
+[data-vc-years-year]:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+[data-vc-years-year]:is(.dark *):hover {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1)) !important;
+}
+
+[data-vc-years-year-selected] {
+  border-radius: 0.125rem !important;
+  outline-style: solid;
+  outline-width: 1px;
+  outline-color: #3b82f6;
+}
+
+[data-vc-months-month]:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+[data-vc-months-month]:is(.dark *):hover {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1)) !important;
+}
+
+[data-vc-months-month-selected] {
+  border-radius: 0.125rem !important;
+  outline-style: solid;
+  outline-width: 1px;
+  outline-color: #3b82f6;
+}
+
 .placeholder\:pl-3::-moz-placeholder {
   padding-left: 0.75rem;
 }
@@ -2382,10 +2450,6 @@ body:is(.dark *) {
 .focus\:ring-pink-300:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(249 168 212 / var(--tw-ring-opacity, 1));
-}
-
-.focus\:ring-offset-2:focus {
-  --tw-ring-offset-width: 2px;
 }
 
 .group:hover .group-hover\:text-gray-900 {

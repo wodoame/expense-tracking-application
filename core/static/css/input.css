@@ -192,3 +192,34 @@ body{
 .link{
   @apply hover:underline underline-offset-4 hover:text-blue-500 dark:hover:text-blue-500 cursor-pointer;
 }
+
+/*  calendar */
+.calendar{
+  @apply dark:bg-dark2 z-[60] shadow-md border dark:border-darkborder;
+}
+
+.date-btn{
+  @apply hover:dark:!bg-[#374151] dark:!bg-transparent rounded-full hover:text-white;
+
+}
+.vc-date[data-vc-date-selected]{
+  @apply outline outline-blue-500 outline-1 rounded-sm;
+  /* 
+   To use border instead of outline
+   1. make all .vc-date border-1 but transparent (to prevent layout shift)
+   2. make the border visible for the selected date
+  
+  */
+}
+[data-vc-years-year]{
+  @apply hover:dark:!bg-[#374151] hover:text-white;
+}
+[data-vc-years-year-selected]{
+  @apply outline outline-blue-500 outline-1 !rounded-sm;
+}
+[data-vc-months-month]{
+  @apply hover:dark:!bg-[#374151] hover:text-white;
+}
+[data-vc-months-month-selected]{
+  @apply outline outline-blue-500 outline-1 !rounded-sm;
+}

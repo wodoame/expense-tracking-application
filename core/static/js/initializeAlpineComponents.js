@@ -86,7 +86,14 @@ function createDatePicker(id) {
             inputMode: true,
             positionToInput: 'center',
             styles: {
-                calendar: 'vc z-[60] border dark:border-darkborder', // z-[60] is the z-index of the modal an it works for displaying the calendar 
+                // Some styles are left blank to remove default styles
+                calendar: 'calendar',
+                dateBtn: 'vc-date__btn date-btn',
+                date: 'vc-date',
+                month: '',
+                year: '',
+                yearsYear: '',
+                monthsMonth: '',
             },
             onClickDate(self, event) {
                 const selectedDate = self.context.selectedDates[0];
