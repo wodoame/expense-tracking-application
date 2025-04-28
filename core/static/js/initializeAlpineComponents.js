@@ -92,8 +92,8 @@ function createDatePicker(id) {
                 date: 'vc-date',
                 month: '',
                 year: '',
-                yearsYear: '',
-                monthsMonth: '',
+                yearsYear: 'vc-years__year',
+                monthsMonth: 'vc-months__month',
             },
             onClickDate(self, event) {
                 const selectedDate = self.context.selectedDates[0];

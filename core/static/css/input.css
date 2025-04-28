@@ -195,7 +195,7 @@ body{
 
 /*  calendar */
 .calendar{
-  @apply dark:bg-dark2 z-[60] shadow-md border dark:border-darkborder;
+  @apply dark:bg-dark2 bg-white z-[60] shadow-md border dark:border-darkborder;
 }
 
 .date-btn{
@@ -203,7 +203,7 @@ body{
 
 }
 .vc-date[data-vc-date-selected]{
-  @apply outline outline-blue-500 outline-1 rounded-sm;
+  @apply dark:outline dark:outline-blue-500 outline-1 rounded-sm;
   /* 
    To use border instead of outline
    1. make all .vc-date border-1 but transparent (to prevent layout shift)
@@ -212,14 +212,18 @@ body{
   */
 }
 [data-vc-years-year]{
-  @apply hover:dark:!bg-[#374151] hover:text-white;
+  @apply hover:dark:!bg-[#374151] dark:!bg-transparent hover:text-white;
 }
 [data-vc-years-year-selected]{
-  @apply outline outline-blue-500 outline-1 !rounded-sm;
+  @apply dark:outline dark:outline-blue-500 outline-1 !rounded-sm;
 }
 [data-vc-months-month]{
-  @apply hover:dark:!bg-[#374151] hover:text-white;
+  @apply hover:dark:!bg-[#374151] dark:!bg-transparent hover:text-white;
 }
 [data-vc-months-month-selected]{
-  @apply outline outline-blue-500 outline-1 !rounded-sm;
+  @apply dark:outline dark:outline-blue-500 outline-1 !rounded-sm;
 }
+
+/* 
+  [data-vc-date-today] date-btn to style the background of the today date 
+*/

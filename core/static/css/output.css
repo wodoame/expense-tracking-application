@@ -2238,6 +2238,8 @@ body:is(.dark *) {
 .calendar {
   z-index: 60;
   border-width: 1px;
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -2269,9 +2271,15 @@ body:is(.dark *) {
 
 .vc-date[data-vc-date-selected] {
   border-radius: 0.125rem;
-  outline-style: solid;
   outline-width: 1px;
+}
+
+.vc-date[data-vc-date-selected]:is(.dark *) {
+  outline-style: solid;
   outline-color: #3b82f6;
+}
+
+.vc-date[data-vc-date-selected]{
   /* 
    To use border instead of outline
    1. make all .vc-date border-1 but transparent (to prevent layout shift)
@@ -2285,6 +2293,10 @@ body:is(.dark *) {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
+[data-vc-years-year]:is(.dark *) {
+  background-color: transparent !important;
+}
+
 [data-vc-years-year]:is(.dark *):hover {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1)) !important;
@@ -2292,14 +2304,21 @@ body:is(.dark *) {
 
 [data-vc-years-year-selected] {
   border-radius: 0.125rem !important;
-  outline-style: solid;
   outline-width: 1px;
+}
+
+[data-vc-years-year-selected]:is(.dark *) {
+  outline-style: solid;
   outline-color: #3b82f6;
 }
 
 [data-vc-months-month]:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+[data-vc-months-month]:is(.dark *) {
+  background-color: transparent !important;
 }
 
 [data-vc-months-month]:is(.dark *):hover {
@@ -2309,10 +2328,17 @@ body:is(.dark *) {
 
 [data-vc-months-month-selected] {
   border-radius: 0.125rem !important;
-  outline-style: solid;
   outline-width: 1px;
+}
+
+[data-vc-months-month-selected]:is(.dark *) {
+  outline-style: solid;
   outline-color: #3b82f6;
 }
+
+/* 
+  [data-vc-date-today] date-btn to style the background of the today date 
+*/
 
 .placeholder\:pl-3::-moz-placeholder {
   padding-left: 0.75rem;
