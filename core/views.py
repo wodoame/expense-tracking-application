@@ -152,18 +152,17 @@ class Dashboard(View):
             print(errors)
         referer = request.META.get('HTTP_REFERER')
         path = urlparse(referer).path
-        print('the path is', path)
         if path == '/all-expenditures/':
             return redirect('/components/records/?page=1&addProduct=1')
         if path == '/dashboard/':
             return redirect('implemented-dashboard')
         if path == '/categories/':
             return redirect('implemented-categories')
-        if re.match(r'^/categories/[^/]+/$', path):
+        if referer is not None and re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
            categoryName = quote(unquote(list(filter(lambda x: x != '', segments)).pop()))
            return redirect(f'/components/records/?page=1&addProduct=1&oneCategory=1&categoryName={categoryName}')
-        return render(request, 'core/components/toastWrapper.html', {})
+        return render(request, 'core/components/toastWrapper/toastWrapper.html', {})
         
     
     def handle_delete_product(self, request):
@@ -273,11 +272,14 @@ class Settings(View):
 
 
 class Test(View):
-    def get(self, request): 
+    def get(self, request):
+        from django.db.models import Min, Max, Count
         context = {}
         # cache.clear()
-        paginator = ExpensePaginator(request, {'category__name': 'Food'})
-        print(paginator.get_page(1))
+        distinct_dates = Product.objects.filter(
+        date__date__range=(request.user.date_joined.date(), datetime.today().date()),
+    ).values('date__date').annotate(count=Count('date__date')).values_list('date__date', flat=True)
+        print(distinct_dates)
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 

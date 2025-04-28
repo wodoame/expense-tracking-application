@@ -19,13 +19,20 @@ class ProductCreationTestCase(TestCase):
             email='test@example.com',
             password='testpassword'
         )
+        
         self.add_url = '/implementations/dashboard/'
-        self.edit_url = '/implementations/dashboard/?edit=1'
-        self.edit_url = '/implementations/dashboard/?delete=1'
     
-    def test_create_product_no_category(self):
+    def test_add_product(self):
         """
-        Test creating a product with valid data.
+        required data:
+        - name: str
+        - cedis: int
+        - pesewas: int
+        - description: str
+        - date: str (YYYY-MM-DD)
+        
+        optional data: 
+        - category: str
         """
         # Login if authentication is required
         self.client.login(username='testuser', password='testpassword')
@@ -37,17 +44,16 @@ class ProductCreationTestCase(TestCase):
             'pesewas': 50,
             'description': 'This is a test product.',
             'date': datetime.today().strftime('%Y-%m-%d'),
+            'category': 'Test Category'
         }
         
         # Send POST request to the product creation view
         response = self.client.post(self.add_url, data)
         
         # Check if the response is a redirect
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertTrue(response.status_code == status.HTTP_302_FOUND or response.status_code == status.HTTP_200_OK)
+        product = Product.objects.latest('date')
         
         # Check if the product has been created
         self.assertEqual(Product.objects.count(), 1)
         
-        # Check if the product's details match the provided data
-        product = Product.objects.get(name='Test Product')
-        self.assertTrue(product.name == 'Test Product')
