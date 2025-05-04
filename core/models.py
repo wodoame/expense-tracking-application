@@ -3,7 +3,7 @@ from authentication.models import User
 from .encryption import EncryptionHelper
 from django.conf import settings 
 from django.utils import timezone
-
+from datetime import timedelta, datetime
 class Category(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories', null=True)
     name = models.CharField(max_length=25)
@@ -51,7 +51,7 @@ class Product(models.Model):
     
 class Settings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')
-    search = models.JSONField(default=dict)
+    populated_weekly_spending = models.BooleanField(default=False) 
     
     def __str__(self):
         return self.user.username + ' settings'
@@ -62,5 +62,57 @@ class KeyValuePair(models.Model):
     
     def __str__(self):
         return self.key
+
+class WeeklySpending(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='weekly_spendings', null=True)
+    week_start = models.DateField(unique=True)
+    week_end = models.DateField(unique=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    
+    @staticmethod
+    def populate_weekly_spending(user: User):
+        # Group by week and calculate total amount
+        weekly_totals = (user.products
+                         .annotate(week_start=models.functions.TruncWeek('date') - timedelta(days=1)) # week starts on Sunday so minus 1 day
+                         .values('week_start')
+                         .annotate(total_amount=models.Sum('price'))
+                         )
+        
+        # Insert or update WeeklySpending records
+        for entry in weekly_totals:
+            WeeklySpending.objects.update_or_create(
+                user=user,
+                week_start=entry['week_start'],
+                week_end=entry['week_start'] + timedelta(days=6),
+                total_amount=entry['total_amount'], 
+            )
+            
+        user.settings.populated_weekly_spending = True
+        user.settings.save() 
+        
+    @staticmethod
+    def update_weekly_spending(user: User, date: datetime):
+        from .datechecker import get_week 
+        week = get_week(date)
+        weekly_stats = (user.products
+            .filter(date__date__range=(week[0], week[1]))
+            .annotate(week_start=models.functions.TruncWeek('date') - timedelta(days=1)) # week starts on Sunday so minus 1 day
+            .values('week_start')
+            .annotate(total_amount=models.Sum('price'))
+            )
+        
+        # Update or create the WeeklySpending record for the week
+        WeeklySpending.objects.update_or_create(
+            user=user, 
+            week_start=week[0],
+            week_end=week[1],
+            total_amount=weekly_stats.first()['total_amount'] 
+        )
+        
+    class Meta:
+        ordering = ['-total_amount']
+        
+    def __str__(self):
+        return self.user.username + ' weekly spending from ' + str(self.week_start) + ' to ' + str(self.week_end) + ': ' + str(self.total_amount)
     
     

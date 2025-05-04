@@ -273,13 +273,12 @@ class Settings(View):
 
 class Test(View):
     def get(self, request):
-        from django.db.models import Min, Max, Count
         context = {}
-        # cache.clear()
-        distinct_dates = Product.objects.filter(
-        date__date__range=(request.user.date_joined.date(), datetime.today().date()),
-    ).values('date__date').annotate(count=Count('date__date')).values_list('date__date', flat=True)
-        print(distinct_dates)
+        from .models import WeeklySpending
+        user = request.user
+        product = user.products.last()
+        x = WeeklySpending.update_weekly_spending(user, product)
+        print(x)
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
