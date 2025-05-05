@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Sum
+from django.db.models.functions import TruncWeek
 from authentication.models import User
 from .encryption import EncryptionHelper
 from django.conf import settings 
@@ -65,17 +67,18 @@ class KeyValuePair(models.Model):
 
 class WeeklySpending(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='weekly_spendings', null=True)
-    week_start = models.DateField(unique=True)
-    week_end = models.DateField(unique=True)
+    week_start = models.DateField()
+    week_end = models.DateField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     
     @staticmethod
     def populate_weekly_spending(user: User):
         # Group by week and calculate total amount
         weekly_totals = (user.products
-                         .annotate(week_start=models.functions.TruncWeek('date') - timedelta(days=1)) # week starts on Sunday so minus 1 day
+                         .annotate(
+                           week_start=TruncWeek('date')) # week starts on Sunday so minus 1 day
                          .values('week_start')
-                         .annotate(total_amount=models.Sum('price'))
+                         .annotate(total_amount=Sum('price'))
                          )
         
         # Insert or update WeeklySpending records
@@ -92,22 +95,24 @@ class WeeklySpending(models.Model):
         
     @staticmethod
     def update_weekly_spending(user: User, date: datetime):
-        from .datechecker import get_week 
-        week = get_week(date)
+        from .datechecker import get_week_monday_based
+        week = get_week_monday_based(date)
         weekly_stats = (user.products
             .filter(date__date__range=(week[0], week[1]))
-            .annotate(week_start=models.functions.TruncWeek('date') - timedelta(days=1)) # week starts on Sunday so minus 1 day
+            .annotate(week_start=TruncWeek('date'))
             .values('week_start')
             .annotate(total_amount=models.Sum('price'))
             )
         
-        # Update or create the WeeklySpending record for the week
-        WeeklySpending.objects.update_or_create(
-            user=user, 
-            week_start=week[0],
-            week_end=week[1],
-            total_amount=weekly_stats.first()['total_amount'] 
-        )
+        # get or create the WeeklySpending record for the week
+        weeklySpending, created = WeeklySpending.objects.get_or_create(user=user, week_start=week[0], week_end=week[1])
+        if weekly_stats.count() > 0:
+            weeklySpending.total_amount = weekly_stats[0]['total_amount']
+            weeklySpending.save()
+        else: # if there are no products in that week, set total_amount to 0
+            weeklySpending.total_amount = 0
+            weeklySpending.save()
+
         
     class Meta:
         ordering = ['-total_amount']

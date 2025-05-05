@@ -13,7 +13,31 @@ def get_week(date: datetime):
     distanceFromSaturday = 5 - weekDay
     weekStart = date - timedelta(days=distanceFromSunday)
     weekEnd = date + timedelta(days=distanceFromSaturday)
-    return (weekStart, weekEnd)    
+    return (weekStart, weekEnd) 
+from datetime import datetime, timedelta
+
+def get_week_monday_based(dt: datetime):
+    """
+    Returns a tuple of (week_start, week_end) for the Monday-based week containing the input datetime.
+    - week_start: Monday
+    - week_end: Sunday
+    
+    Args:
+        dt (datetime): The input datetime object.
+        
+    Returns:
+        tuple: (week_start, week_end), where both are datetime objects.
+    """
+    # Calculate Monday (week start)
+    days_to_monday = dt.weekday()  # 0=Monday, 1=Tuesday, ..., 6=Sunday
+    week_start = dt - timedelta(days=days_to_monday)
+  
+    
+    # Calculate Sunday (week end) by adding 6 days and setting to end of day
+    week_end = week_start + timedelta(days=6)
+    
+    return (week_start, week_end)
+    
 
 def get_month(date:datetime):
     return (date.year, date.month)

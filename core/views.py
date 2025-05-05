@@ -99,7 +99,7 @@ class Dashboard(View):
                 messages.success(request, 'Product edited successfully')
                 referer = request.META.get('HTTP_REFERER')
                 path = urlparse(referer).path
-                if re.match(r'^/categories/[^/]+/$', path):
+                if referer is not None and re.match(r'^/categories/[^/]+/$', path):
                     segments = path.split('/')
                     categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
                     products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date__in=dates), many=True).data
@@ -110,8 +110,8 @@ class Dashboard(View):
                     'items':items, 
                     'showToast':True,
                     'edited':True
-                }
-                emitter.emit('products_updated', request)
+                }    
+                emitter.emit('products_updated', request, dates=dates) # for editing a product, two different weeks may be affected
                 serializedProduct =  ProductSerializer(product).data
                 category:dict | None = serializedProduct.get('category')
                 if category is not None:
@@ -140,7 +140,7 @@ class Dashboard(View):
             if parsedDate.date() != dateToday:
                 product.date = timezone.make_aware(parsedDate, timezone.get_current_timezone())
             form.save()
-            emitter.emit('products_updated', request)
+            emitter.emit('products_updated', request, dates=[product.date.date()])
             serializedProduct =  ProductSerializer(product).data
             indexEventEmitter.emit('product_updated', serializedProduct)
             category:dict | None = serializedProduct.get('category')
@@ -179,7 +179,7 @@ class Dashboard(View):
             date = dc.datefromisoformat(request.POST.get('date')).date() 
             referer = request.META.get('HTTP_REFERER')
             path = urlparse(referer).path
-            if re.match(r'^/categories/[^/]+/$', path):
+            if referer is not None and re.match(r'^/categories/[^/]+/$', path):
                 segments = path.split('/')
                 categoryName = unquote(list(filter(lambda x: x != '', segments)).pop())
                 products = ProductSerializer(request.user.products.filter(category__name=categoryName, date__date=date), many=True).data
@@ -190,7 +190,7 @@ class Dashboard(View):
                 'items':items,
                 'showToast':True,
             }
-            emitter.emit('products_updated', request)
+            emitter.emit('products_updated', request, dates=[date])
             if not items[0].get('products'):
                 return render(request, 'core/components/toastWrapper/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
             return render(request, 'core/components/paginateExpenditures.html', context) 
@@ -380,8 +380,7 @@ class StatSummary(View):
         if request.GET.get('type') == 'weekly':
             stats = cache.get(f'weekly-stats-{user.username}')
             if not stats:
-                products = getAllProductsFromCache(user)
-                stats = Context(WeeklyStats(products, user)).apply()
+                stats = Context(WeeklyStats(user)).apply()
                 cache.set(f'weekly-stats-{user.username}', stats)
         if request.GET.get('type') == 'monthly':
             stats = cache.get(f'monthly-stats-{user.username}')

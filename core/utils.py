@@ -1,4 +1,3 @@
-from .models import Product
 from .serializers import ProductSerializer
 from .datechecker import get_total, datefromisoformat, DateRangePaginator
 import asyncio 
@@ -6,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required as lr 
 from django.core.cache import cache
 import pandas as pd
-from .models import Settings
+from .models import Settings, WeeklySpending, Product
 from authentication.models import User
 from collections.abc import Callable
 from django.http import HttpRequest
@@ -71,8 +70,6 @@ def getAllProductsFromCache(user: User) -> list[dict]:
         cache.set(f'all-products-{user.username}', products)
     return products
         
-def deleteAllProductsFromCache(request: HttpRequest):
-    cache.delete(f'all-products-{request.user.username}')
 
 def encryptAllProducts():
     for product in Product.objects.all(): 
@@ -111,19 +108,31 @@ def getSettings(user: User):
     settings, created = Settings.objects.get_or_create(user=user)
     return settings
         
-
-def deleteQuickStatsFromCache(request: HttpRequest):
+# Event handlers
+def deleteAllProductsFromCache(request: HttpRequest, **kwargs):
+    cache.delete(f'all-products-{request.user.username}')
+    
+def deleteQuickStatsFromCache(request: HttpRequest, **kwargs):
     cache.delete(f'weekly-stats-{request.user.username}')
     cache.delete(f'monthly-stats-{request.user.username}')
     
-def deleteExpenditureRecordsFromCache(request: HttpRequest):
+def deleteExpenditureRecordsFromCache(request: HttpRequest, **kwargs):
     cache.delete(f'records-{request.user.username}')
-    
+
+def updateWeeklySpendingData(request: HttpRequest, **kwargs):
+    user = request.user
+    dates = kwargs.get('dates')
+    settings = getSettings(user)
+    if settings.populated_weekly_spending:
+        for date in dates:
+            WeeklySpending.update_weekly_spending(user, date)
+            
+        
 emitter = EventEmitter() # global event emitter
 emitter.on('products_updated', deleteQuickStatsFromCache)
 emitter.on('products_updated', deleteExpenditureRecordsFromCache)
 emitter.on('products_updated', deleteAllProductsFromCache)
-
+emitter.on('products_updated', updateWeeklySpendingData)
 
 class ExpensePaginator: 
     
