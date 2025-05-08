@@ -115,7 +115,9 @@ class Dashboard(View):
                 serializedProduct =  ProductSerializer(product).data
                 category:dict | None = serializedProduct.get('category')
                 if category is not None:
-                    cache.delete(f"records-{quote(category.get('name'))}-{request.user.username}")
+                    cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
+                    cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}")
+
                 indexEventEmitter.emit('product_updated', serializedProduct)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
@@ -145,7 +147,8 @@ class Dashboard(View):
             indexEventEmitter.emit('product_updated', serializedProduct)
             category:dict | None = serializedProduct.get('category')
             if category is not None:
-                cache.delete(f"records-{quote(category.get('name'))}-{request.user.username}")
+                cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
+                cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}") 
             messages.success(request, 'Product added successfully')
         else: 
             errors = form.errors.get_json_data()
@@ -174,7 +177,9 @@ class Dashboard(View):
             product.delete()
             indexEventEmitter.emit('product_updated', serializedProduct, method='delete')
             if category is not None:
-                cache.delete(f"records-{quote(category.get('name'))}-{request.user.username}")
+                cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
+                cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}")
+                
             messages.success(request, 'Product deleted successfully')
             date = dc.datefromisoformat(request.POST.get('date')).date() 
             referer = request.META.get('HTTP_REFERER')
@@ -214,16 +219,30 @@ class ActivityCalendar(View):
 # @login_required    
 class Records(View):
     def get(self, request): 
+        """
+         query parameters:
+            - page: the page number to be displayed
+            - oneCategory: if True, only records for the specified category will be displayed
+            - categoryName: the name of the category to be displayed
+            - addProduct: if True, a toast will be displayed to indicate that a product has been added
+        """
         records = []
         nextPageNumber = None
         user = request.user 
         if request.GET.get('oneCategory'):
             categoryName = unquote(request.GET.get('categoryName'))
             if categoryName != 'None':
-                paginator = ExpensePaginator(request, extra_filters={'category__name': categoryName}, cache_key=f'records-{quote(categoryName)}-{request.user.username}')
+                paginator = EnhancedExpensePaginator(
+                    request,
+                    cache_key=f'{quote(categoryName)}-records-{user.username}', 
+                    specific_category=True, 
+                    category_name=categoryName, 
+                    extra_filters={'category__name': categoryName}
+                    ) 
                 page = int(request.GET.get('page'))
-                pageData = paginator.get_page(page)
-                nextPageNumber = pageData.get('nextPageNumber') 
+                pageData = paginator.get_page(page) # e.g pageData -> {'nextPageNumber': 2, 'records': [], 'from_cache': False}
+                nextPageNumber = pageData.get('nextPageNumber')      
+                print(nextPageNumber)
                 if pageData.get('from_cache'):
                     return self.cache_response(pageData)
                 records = pageData.get('records')
@@ -231,11 +250,14 @@ class Records(View):
                 products = ProductSerializer(user.products.filter(category=None), many=True).data
                 records = groupByDate(products)
         else:
-            paginator = ExpensePaginator(request,
-                                        cache_key=f'records-{request.user.username}')
+            paginator = EnhancedExpensePaginator(
+                    request,
+                    cache_key=f'records-{request.user.username}', 
+                    ) 
             page = int(request.GET.get('page'))
             pageData = paginator.get_page(page)
             nextPageNumber = pageData.get('nextPageNumber')
+            print(nextPageNumber)
             if pageData.get('from_cache'):
                 return self.cache_response(pageData)                
     
@@ -274,11 +296,16 @@ class Settings(View):
 class Test(View):
     def get(self, request):
         context = {}
-        from .models import WeeklySpending
         user = request.user
-        product = user.products.last()
-        x = WeeklySpending.update_weekly_spending(user, product)
-        print(x)
+        categoryName = 'Snacks'
+        paginator = EnhancedExpensePaginator(
+            request,
+            cache_key=f'{quote(categoryName)}-records-{user.username}',
+            specific_category=False,
+            # extra_filters={'category__name': 'Snacks'},
+            )
+        for page in range(1, paginator.get_total_pages() + 1):
+            print(page, '\n\n', paginator.get_page(page), '\n\n')
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 

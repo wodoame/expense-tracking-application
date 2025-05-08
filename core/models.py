@@ -30,7 +30,7 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     
     def __str__(self):
-        return self.name
+        return self.encryption_helper.decrypt(self.name)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.encryption_helper = EncryptionHelper(key=settings.ENCRYPTION_KEY)
@@ -87,7 +87,7 @@ class WeeklySpending(models.Model):
                 user=user,
                 week_start=entry['week_start'],
                 week_end=entry['week_start'] + timedelta(days=6),
-                total_amount=entry['total_amount'], 
+                defaults={'total_amount': entry['total_amount']}
             )
             
         user.settings.populated_weekly_spending = True
