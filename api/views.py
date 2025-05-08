@@ -13,6 +13,7 @@ from core.user_settings_schemas import SearchSchema
 from core.utils import getSettings, getAllProductsFromCache
 from core.templatetags.custom_filters import dateOnly, timesince
 from core.datechecker import datefromisoformat
+from django.core.cache import cache
 class Categories(APIView):
     def get(self, request):
         user = request.user 
@@ -117,3 +118,8 @@ class RecreateIndexes(APIView):
             product_schema_id.value = str(int(product_schema_id.value) + 1)
             product_schema_id.save()
         return Response({'message': 'success'})
+    
+class ClearCache(APIView):
+    def get(self, request):
+        cache.clear()
+        return Response({'message': 'cache cleared successfully'})

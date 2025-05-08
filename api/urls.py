@@ -5,4 +5,5 @@ urlpatterns = [
     path('categories/', api_views.Categories.as_view()),
     path('search/', api_views.Search.as_view()),
     path('recreate-indexes/', api_views.RecreateIndexes.as_view()),
+    path('clear-cache/', api_views.ClearCache.as_view(), name='clear-cache'),
 ]
