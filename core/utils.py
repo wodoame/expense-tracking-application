@@ -125,11 +125,12 @@ def deleteExpenditureRecordsFromCache(request: HttpRequest, **kwargs):
 def updateWeeklySpendingData(request: HttpRequest, **kwargs):
     user = request.user
     dates = kwargs.get('dates')
-    settings = getSettings(user)
-    if settings.populated_weekly_spending:
-        for date in dates:
-            WeeklySpending.update_weekly_spending(user, date)
-            
+    if dates is not None:
+        settings = getSettings(user)
+        if settings.populated_weekly_spending:
+            for date in dates:
+                WeeklySpending.update_weekly_spending(user, date)
+                
         
 emitter = EventEmitter() # global event emitter
 emitter.on('products_updated', deleteQuickStatsFromCache)
@@ -285,9 +286,14 @@ class EnhancedExpensePaginator:
             }
 
         # fetch the first page if there's no cached data
-        if cached_data is None:
+        if cached_data is None and page == 1:
             data = self.get_data(1)
             cache.set(self.cache_key, [data])
+            return data
+        
+        # fetch the page if there's no cached data and it's not the first page
+        if cached_data is None and page > 1:
+            data = self.get_data(page)
             return data
         
         # Add the new fetched page to the cached data        

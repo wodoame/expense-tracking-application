@@ -17,4 +17,25 @@ class CategoryCreationTest(TestCase):
         )
         
         # URL for the category creation view
-        self.category_create_url = '/implementations/categories/'
+        self.create_category_url = '/implementations/categories/'
+        self.edit_category_url = '/implementations/categories/?edit=1'
+        self.delete_category_url = '/implementations/categories/?delete=1'
+        
+    def test_create_category(self):
+        # Login if authentication is required
+        self.client.login(username='testuser', password='testpassword')
+        
+        # Prepare form data for category creation 
+        data = {
+            'name': 'Test Category',
+            'description': 'This is a test category.',
+        }
+        
+        # Send POST request to the product creation view
+        response = self.client.post(self.create_category_url, data)
+        
+        # Check if the response is a redirect
+        self.assertTrue(response.status_code == status.HTTP_302_FOUND or response.status_code == status.HTTP_200_OK)
+        self.assertEqual(Category.objects.count(), 1) 
+    
+    
