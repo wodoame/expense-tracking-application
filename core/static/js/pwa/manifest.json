@@ -1,0 +1,17 @@
+{
+  "name": "Personal Expense Tracker",
+  "short_name": "Xpense",
+  "description": "A Progressive Web App for tracking personal expenses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1E293B",
+  "icons": [
+    {
+      "src": "/static/imgs/logo-100x100.png",
+      "sizes": "100x100",
+      "type": "image/png"
+    }
+  ],
+  "scope": "/"
+}

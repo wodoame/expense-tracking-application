@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to the manifest -->
+    <link rel="manifest" href="{% static 'js/pwa/manifest.json' %}">
     <script src="{% static 'js/htmx.min.js' %}"></script>
     
     <link rel="stylesheet" href="{% static 'css/output.css'%}">
@@ -23,6 +25,20 @@
 <body class="dark:bg-[#0F172A]">
     {% block content %}
     {% endblock %}
+    <!-- Register the service worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/js/pwa/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
     <script src="{% static 'js/flowbitejs.min.js' %}"></script>    
     <script src="{% static 'js/vanilla-calendar-pro/index.min.js' %}"></script>    
     <script src="{% static 'js/vanilla-calendar-pro/utils.min.js' %}"></script>    
