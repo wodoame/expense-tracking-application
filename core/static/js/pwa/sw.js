@@ -6,7 +6,7 @@ const urlsToCache = [
   '/static/js/alpine.min.js',    // Replace with your JS file path
   '/static/js/htmx.min.js',    // Replace with your JS file path
 
-//   '/static/pwa/icons/icon-192x192.png',
+  '/static/fonts/Poppins-Regular.ttf',
   '/static/imgs/logo-100x100.png'
 ];
 
