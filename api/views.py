@@ -14,6 +14,8 @@ from core.utils import getSettings, getAllProductsFromCache
 from core.templatetags.custom_filters import dateOnly, timesince
 from core.datechecker import datefromisoformat
 from django.core.cache import cache
+from rest_framework import status
+from .models import ErrorLog
 class Categories(APIView):
     def get(self, request):
         user = request.user 
@@ -123,3 +125,31 @@ class ClearCache(APIView):
     def get(self, request):
         cache.clear()
         return Response({'message': 'cache cleared successfully'})
+    
+class ErrorLogs(APIView):
+    def get(self, request):
+        try: # Query all error logs, ordered by timestamp
+            logs = ErrorLog.objects.all().values(
+                'message', 'user__username', 'timestamp', 'stack_trace',
+                'request_path', 'status_code', 'level', 'method', 'ip_address'
+            )
+            # Format logs for JSON response
+            formatted_logs = [
+                {
+                    'message': log['message'],
+                    'username': log['user__username'] or 'Anonymous',
+                    'timestamp': log['timestamp'],
+                    'date': dateOnly(log['timestamp']),
+                    'time_since': timesince(log['timestamp']),
+                    'stack_trace': log['stack_trace'].splitlines() if log['stack_trace'] else [],
+                    'request_path': log['request_path'],
+                    'status_code': log['status_code'],
+                    'level': log['level'],
+                    'method': log['method'],
+                    'ip_address': log['ip_address'],
+                }
+                for log in logs
+            ]
+            return Response({'logs': formatted_logs}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
