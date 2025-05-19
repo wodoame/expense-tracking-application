@@ -296,7 +296,8 @@ class Settings(View):
 class Test(View):
     def get(self, request):
         context = {}
-        return render(request, 'core/pages/test.html', context)
+        # testing error logging by accessing a non-existent page
+        return render(request, 'core/pages/non_existent_page.html', context)
     
     def post(self, request): 
        pass
