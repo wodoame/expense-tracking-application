@@ -139,7 +139,7 @@ def get_activity_in_last_year(request):
     month = dateToday.month
     activity = []
     user = request.user
-    products = getAllProductsFromCache(user)
+    products = getAllProductsFromCache(user) # TODO: get products bought in the last year and not all products
     df = pd.DataFrame(products)
     if not df.empty:
         df['date'] = pd.to_datetime(df['date'], format='ISO8601')

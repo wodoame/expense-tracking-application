@@ -1,10 +1,20 @@
 from django.shortcuts import render
 from django.views import View
 from .models import Category
-import core.datechecker as dc 
+# import core.datechecker as dc 
 from .utils import *
-from django.core.cache import cache
+# from django.core.cache import cache
 
+"""
+    Summary
+    --------
+    This file contains the views which are loaded when the user enters a URL into the browser.
+    They do not contain the actual content of the page, but rather the logic to load the content.
+    The logic to load the main content includes page skeletons which trigger HTMX requests.
+    The actual content is processed and returned by the views in the core/views.py file.
+    These views serve as the layer to check user authentication via the custom @login_required decorator in core/utils.py.
+    The views are also used to load the skeletons or placeholders for the pages hence the name placeholder_views.py.
+"""
 @login_required
 class Dashboard(View):
     def get(self, request):
@@ -16,31 +26,6 @@ class AllExpenditures(View):
     def get(self, request):
         context = getRecordSkeletonContext()
         return render(request, 'core/pages/allExpenditures.html', context)
-    
-    @staticmethod
-    def get_context(request, cachedData:list | None, paginator: dc.DateRangePaginator, page):
-        if cachedData is None:
-            cachedData = []
-        user = request.user
-        context = {}
-        if page == paginator.get_total_pages(): 
-            nextPageNumber = None
-        else:
-            nextPageNumber = page + 1
-        dateRange = paginator.get_date_range(page)
-        products = ProductSerializer(user.products.filter(date__date__range=(dateRange[1], dateRange[0])), many=True).data
-        records = groupByDate(products)
-        cachedData.append({
-            'page': page, 
-            'nextPageNumber': nextPageNumber, 
-            'records': records
-        })
-        cache.set(f'records-{request.user.username}', cachedData) # store this page in the cache
-        context = {
-        'records': records, 
-        'nextPageNumber':nextPageNumber
-        }
-        return context
 
 @login_required
 class Categories(View):
@@ -50,6 +35,11 @@ class Categories(View):
 
 @login_required
 class SeeProducts(View):
+    """ 
+        This view is used to load the expenses of a specific category.
+        It is used to load the skeleton for the page.
+        The actual content is loaded by the Records view in core/views.py.
+    """
     def get(self, request, categoryName):
         user = request.user 
         try: 

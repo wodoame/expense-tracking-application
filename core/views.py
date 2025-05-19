@@ -296,16 +296,6 @@ class Settings(View):
 class Test(View):
     def get(self, request):
         context = {}
-        user = request.user
-        categoryName = 'Snacks'
-        paginator = EnhancedExpensePaginator(
-            request,
-            cache_key=f'{quote(categoryName)}-records-{user.username}',
-            specific_category=False,
-            # extra_filters={'category__name': 'Snacks'},
-            )
-        for page in range(1, paginator.get_total_pages() + 1):
-            print(page, '\n\n', paginator.get_page(page), '\n\n')
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
