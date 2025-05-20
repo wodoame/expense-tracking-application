@@ -30,6 +30,8 @@ class ErrorLog(models.Model):
     )  # Log level
     method = models.CharField(max_length=10, blank=True)  # HTTP method (GET, POST, etc.)
     ip_address = models.GenericIPAddressField(null=True, blank=True)  # Client IP
+    error_type = models.CharField(max_length=100, blank=True, null=True)  # Exception type (e.g., TypeError)
+
 
     class Meta:
         ordering = ['-timestamp']  # Latest errors first

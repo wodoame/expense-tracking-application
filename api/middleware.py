@@ -20,6 +20,7 @@ class ErrorLoggingMiddleware:
             status_code=500,
             level='ERROR',
             method=request.method,
-            ip_address=request.META.get('REMOTE_ADDR')
+            ip_address=request.META.get('REMOTE_ADDR'),
+            error_type=exception.__class__.__name__,
         )
         return HttpResponseServerError('Internal Server Error')
