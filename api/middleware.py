@@ -11,11 +11,16 @@ class ErrorLoggingMiddleware:
         return response
 
     def process_exception(self, request, exception):
+        stack_trace = ''.join(traceback.format_exc())
+        # Avoid logging the same error multiple times
+        if ErrorLog.objects.filter(stack_trace=stack_trace).exists():
+            return None
+        
         # Log unhandled exceptions
         ErrorLog.objects.create(
             message=str(exception),
             user=request.user if request.user.is_authenticated else None,
-            stack_trace=''.join(traceback.format_exc()),
+            stack_trace=stack_trace,
             request_path=request.path,
             status_code=500,
             level='ERROR',

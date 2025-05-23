@@ -11,13 +11,6 @@ class Category(models.Model):
     name = models.CharField(max_length=25)
     description = models.TextField(max_length=255, blank=True, null=True)
     
-    # class Meta:
-    #     unique_together = ['user', 'name']
-        # Alternative in newer Django versions:
-        # constraints = [
-        #     models.UniqueConstraint(fields=['user', 'name'], name='unique_user_category')
-        # ]
-    
     def __str__(self):
         return self.name
     
