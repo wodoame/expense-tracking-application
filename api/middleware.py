@@ -25,6 +25,8 @@ class ErrorLoggingMiddleware:
             status_code=500,
             level='ERROR',
             method=request.method,
+            get_data=request.GET.dict(),
+            post_data=request.POST.dict(),
             ip_address=request.META.get('REMOTE_ADDR'),
             error_type=exception.__class__.__name__,
         )

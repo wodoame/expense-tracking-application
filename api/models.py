@@ -29,6 +29,8 @@ class ErrorLog(models.Model):
         default='ERROR'
     )  # Log level
     method = models.CharField(max_length=10, blank=True)  # HTTP method (GET, POST, etc.)
+    get_data = models.JSONField(null=True, blank=True)  # Request data (if applicable)
+    post_data = models.JSONField(null=True, blank=True)  # Request data (if applicable)
     ip_address = models.GenericIPAddressField(null=True, blank=True)  # Client IP
     error_type = models.CharField(max_length=100, blank=True, null=True)  # Exception type (e.g., TypeError)
 

@@ -131,7 +131,7 @@ class ErrorLogs(APIView):
         try: # Query all error logs, ordered by timestamp
             logs = ErrorLog.objects.all().values(
                 'message', 'user__username', 'timestamp', 'stack_trace',
-                'request_path', 'status_code', 'level', 'method', 'ip_address', 'error_type'
+                'request_path', 'status_code', 'level', 'method', 'get_data', 'post_data', 'ip_address', 'error_type'
             )
             # Format logs for JSON response
             formatted_logs = [
@@ -147,6 +147,8 @@ class ErrorLogs(APIView):
                     'status_code': log['status_code'],
                     'level': log['level'],
                     'method': log['method'],
+                    'get_data': log['get_data'],
+                    'post_data': log['post_data'],
                     'ip_address': log['ip_address']
                 }
                 for log in logs
