@@ -144,6 +144,9 @@ class MonthlySpending(models.Model):
                 month_end=month_end,
                 defaults={'total_amount': entry['total_amount']}
             )
+        
+        user.settings.populated_monthly_spending = True
+        user.settings.save()
 
     @staticmethod
     def update_monthly_spending(user: User, date: datetime):
