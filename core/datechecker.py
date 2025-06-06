@@ -40,7 +40,24 @@ def get_week_monday_based(dt: datetime):
     
 
 def get_month(date:datetime):
-    return (date.year, date.month)
+    """
+    Returns a tuple of (month_start, month_end) for the month containing the input date.
+    - month_start: First day of the month
+    - month_end: Last day of the month
+    
+    Args:
+        date (datetime): The input datetime object.
+        
+    Returns:
+        tuple: (month_start, month_end), where both are datetime objects.
+    """
+    month_start = date.replace(day=1)
+    if date.month == 12:
+        month_end = date.replace(year=date.year + 1, month=1, day=1) - timedelta(days=1)
+    else:
+        month_end = date.replace(month=date.month + 1, day=1) - timedelta(days=1)
+    
+    return (month_start, month_end)
 
 def datefromisoformat(date: str):
     return datetime.fromisoformat(date)
