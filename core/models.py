@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Sum
-from django.db.models.functions import TruncWeek
+from django.db.models.functions import TruncWeek, TruncMonth
 from authentication.models import User
 from .encryption import EncryptionHelper
 from django.conf import settings 
@@ -113,4 +113,57 @@ class WeeklySpending(models.Model):
     def __str__(self):
         return self.user.username + ' weekly spending from ' + str(self.week_start) + ' to ' + str(self.week_end) + ': ' + str(self.total_amount)
     
-    
+
+class MonthlySpending(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='monthly_spendings', null=True)
+    month_start = models.DateField()
+    month_end = models.DateField()
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+
+    @staticmethod
+    def populate_monthly_spending(user: User):
+        # Group by month and calculate total amount
+        monthly_totals = (
+            user.products
+            .annotate(month_start=TruncMonth('date'))
+            .values('month_start')
+            .annotate(total_amount=Sum('price'))
+        )
+        for entry in monthly_totals:
+            # Calculate month_end (last day of the month)
+            month_start = entry['month_start']
+            if month_start.month == 12:
+                next_month = month_start.replace(year=month_start.year + 1, month=1, day=1)
+            else:
+                next_month = month_start.replace(month=month_start.month + 1, day=1)
+            month_end = next_month - timedelta(days=1)
+            MonthlySpending.objects.update_or_create(
+                user=user,
+                month_start=month_start,
+                month_end=month_end,
+                defaults={'total_amount': entry['total_amount']}
+            )
+
+    @staticmethod
+    def update_monthly_spending(user: User, date: datetime):
+        from .datechecker import get_month
+        month = get_month(date)
+        month_start = month[0]
+        month_end = month[1]
+        monthly_stats = (
+            user.products
+            .filter(date__date__range=(month_start, month_end))
+            .annotate(month_start=TruncMonth('date'))
+            .values('month_start')
+            .annotate(total_amount=Sum('price'))
+        )
+        monthlySpending, created = MonthlySpending.objects.update_or_create(
+            user=user, month_start=month_start, month_end=month_end, defaults={'total_amount': monthly_stats[0]['total_amount'] if monthly_stats.count() > 0 else 0}
+        )
+        monthlySpending.save()
+
+    class Meta:
+        ordering = ['-total_amount']
+
+    def __str__(self):
+        return f"{self.user.username} monthly spending from {self.month_start} to {self.month_end}: {self.total_amount}"
