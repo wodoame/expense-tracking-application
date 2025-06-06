@@ -296,7 +296,9 @@ class Settings(View):
 class Test(View):
     def get(self, request):
         context = {}
-        # testing error logging by accessing a non-existent page
+        use_date = request.user.products.last().date
+        res = MonthlySpending.update_monthly_spending(request.user, use_date)
+        print(res)
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 
@@ -403,8 +405,7 @@ class StatSummary(View):
         if request.GET.get('type') == 'monthly':
             stats = cache.get(f'monthly-stats-{user.username}')
             if not stats:
-                products = getAllProductsFromCache(user)
-                stats = Context(MonthlyStats(products, user)).apply()
+                stats = Context(MonthlyStats(user)).apply()
                 cache.set(f'monthly-stats-{user.username}', stats)  
         context = {
             'stats':stats
