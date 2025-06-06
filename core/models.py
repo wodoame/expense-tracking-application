@@ -98,13 +98,13 @@ class WeeklySpending(models.Model):
             )
         
         # get or create the WeeklySpending record for the week
-        weeklySpending, created = WeeklySpending.objects.get_or_create(user=user, week_start=week[0], week_end=week[1])
-        if weekly_stats.count() > 0:
-            weeklySpending.total_amount = weekly_stats[0]['total_amount']
-            weeklySpending.save()
-        else: # if there are no products in that week, set total_amount to 0
-            weeklySpending.total_amount = 0
-            weeklySpending.save()
+        weeklySpending, created = WeeklySpending.objects.update_or_create(
+            user=user,
+            week_start=week[0],
+            week_end=week[1],
+            defaults={'total_amount': weekly_stats[0]['total_amount'] if weekly_stats.count() > 0 else 0} 
+        )
+        weeklySpending.save()
 
         
     class Meta:
