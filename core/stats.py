@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import core.datechecker as dc 
-from core.models import User, WeeklySpending
+from core.models import User, WeeklySpending, MonthlySpending
 from .utils import getSettings
 
 class WeeklyStats:
@@ -32,40 +32,34 @@ class WeeklyStats:
                 ]
 
 class MonthlyStats:
-    def __init__(self, products: list[dict], user: User):
-        self.products = products 
+    def __init__(self, user: User):
         self.user = user
-        self.generator = dc.MonthGenerator(dc.get_month(user.date_joined), dc.get_month(datetime.today()))
-        self.monthsData = {} 
-        # preprocessing: initialize all months data
-        for month in self.generator:
-            key = str(month)
-            self.monthsData[key] = {'total': 0}    
-    
+        self.thisMonth = dc.get_month(datetime.today().date())
+        last_month_date = self.thisMonth[0] - timedelta(days=1)
+        self.lastMonth = dc.get_month(last_month_date)
+
     def calculate(self):
-        # initialize some metrics
-        totalSpentThisMonth = 0
-        totalSpentLastMonth = 0
-        highestMonthlySpending = 0
-        for product in self.products:
-            date = dc.datefromisoformat(product.get('date')).date()
-            month = dc.get_month(date)
-            key = str(month)
-            self.monthsData[key]['total'] += product.get('price')
-            highestMonthlySpending = max(highestMonthlySpending, self.monthsData[key]['total'])
-    
-        dateToday = datetime.today()
-        thisMonth = dc.get_month(dateToday)
-        lastMonth = dc.get_month(datetime(dateToday.year, dateToday.month, 1) - timedelta(days=1)) 
-        totalSpentThisMonth = self.monthsData[str(thisMonth)]['total']
-        if len(self.monthsData) > 1: 
-            totalSpentLastMonth = self.monthsData[str(lastMonth)]['total']
-        return [{'text': 'Total spent this month', 'data':totalSpentThisMonth},
-                {'text': 'Total spent last month', 'data':totalSpentLastMonth},
-                {'text': 'Highest monthly spending', 'data':highestMonthlySpending}
-              ]
-  
-        
+        user = self.user
+        # If you have a populated_monthly_spending flag, check and populate here
+        settings = getSettings(user)
+        if not settings.populated_monthly_spending:
+            MonthlySpending.populate_monthly_spending(user)
+
+        totalSpentThisMonth = user.monthly_spendings.filter(month_start=self.thisMonth[0]).first()
+        totalSpentLastMonth = user.monthly_spendings.filter(month_start=self.lastMonth[0]).first()
+        highestMonthlySpending = user.monthly_spendings.first()
+        if totalSpentThisMonth:
+            totalSpentThisMonth = totalSpentThisMonth.total_amount
+        if totalSpentLastMonth:
+            totalSpentLastMonth = totalSpentLastMonth.total_amount
+        if highestMonthlySpending:
+            highestMonthlySpending = highestMonthlySpending.total_amount
+
+        return [
+            {'text': 'Total spent this month', 'data': totalSpentThisMonth or 0},
+            {'text': 'Total spent last month', 'data': totalSpentLastMonth or 0},
+            {'text': 'Highest monthly spending', 'data': highestMonthlySpending or 0}
+        ]
         
         
 class Context:
