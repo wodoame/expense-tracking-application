@@ -16,20 +16,22 @@ class WeeklyStats:
         if not settings.populated_weekly_spending:
             WeeklySpending.populate_weekly_spending(user)
             
-        totalSpentThisWeek = user.weekly_spendings.filter(week_start=self.thisWeek[0]).first()
-        totalSpentLastWeek = user.weekly_spendings.filter(week_start=self.lastWeek[0]).first()
-        highestWeeklySpending = user.weekly_spendings.first()
-        if totalSpentThisWeek:
-            totalSpentThisWeek = totalSpentThisWeek.total_amount
-        if totalSpentLastWeek:
-            totalSpentLastWeek = totalSpentLastWeek.total_amount
-        if highestWeeklySpending:   
-            highestWeeklySpending = highestWeeklySpending.total_amount
-        
-        return [{'text': 'Total spent this week', 'data':totalSpentThisWeek or 0},
-                {'text': 'Total spent last week', 'data':totalSpentLastWeek or 0},
-                {'text': 'Highest weekly spending', 'data':highestWeeklySpending or 0}
-                ]
+        thisWeekData = user.weekly_spendings.filter(week_start=self.thisWeek[0]).first()
+        lastWeekData = user.weekly_spendings.filter(week_start=self.lastWeek[0]).first()
+        highestWeekData = user.weekly_spendings.first()
+
+        return [
+               self.get_stat(thisWeekData, 'Total spent this week'),
+               self.get_stat(lastWeekData, 'Total spent last week'),
+               self.get_stat(highestWeekData, 'Highest weekly spending')
+            ]
+    def get_stat(self, data: WeeklySpending, label:str):
+        UNSET_ID = -1
+        result = {'text': label, 'data': 0, 'id': UNSET_ID}
+        if data:
+             result['id'] = data.id
+             result['data'] = data.total_amount
+        return result
 
 class MonthlyStats:
     def __init__(self, user: User):
@@ -45,21 +47,23 @@ class MonthlyStats:
         if not settings.populated_monthly_spending:
             MonthlySpending.populate_monthly_spending(user)
 
-        totalSpentThisMonth = user.monthly_spendings.filter(month_start=self.thisMonth[0]).first()
-        totalSpentLastMonth = user.monthly_spendings.filter(month_start=self.lastMonth[0]).first()
-        highestMonthlySpending = user.monthly_spendings.first()
-        if totalSpentThisMonth:
-            totalSpentThisMonth = totalSpentThisMonth.total_amount
-        if totalSpentLastMonth:
-            totalSpentLastMonth = totalSpentLastMonth.total_amount
-        if highestMonthlySpending:
-            highestMonthlySpending = highestMonthlySpending.total_amount
-
+        thisMonthData = user.monthly_spendings.filter(month_start=self.thisMonth[0]).first()
+        lastMonthData = user.monthly_spendings.filter(month_start=self.lastMonth[0]).first()
+        highestMonthData = user.monthly_spendings.first()
+       
         return [
-            {'text': 'Total spent this month', 'data': totalSpentThisMonth or 0},
-            {'text': 'Total spent last month', 'data': totalSpentLastMonth or 0},
-            {'text': 'Highest monthly spending', 'data': highestMonthlySpending or 0}
+               self.get_stat(thisMonthData, 'Total spent this month'),
+               self.get_stat(lastMonthData, 'Total spent last month'),
+               self.get_stat(highestMonthData, 'Highest monthly spending')
         ]
+        
+    def get_stat(self, data: MonthlySpending, label:str):
+        UNSET_ID = -1
+        result = {'text': label, 'data': 0, 'id': UNSET_ID}
+        if data:
+             result['id'] = data.id
+             result['data'] = data.total_amount
+        return result
         
         
 class Context:
