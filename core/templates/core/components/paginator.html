@@ -1,5 +1,5 @@
 <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 items-start"
-  hx-get="/components/records/?page={{nextPageNumber|default:1}}"
+  hx-get="/components/records/?page={{nextPageNumber|default:1}}{{extra_query_params}}"
   hx-vals="js:{...getAdditionalParams()}"
   hx-trigger="revealed"
   hx-swap="outerHTML"
@@ -8,3 +8,15 @@
       {% include 'core/components/staticRecordSkeleton.html' %}
     {% endfor %}
 </div>
+
+{# 
+    extra_query_params: A string containing additional query parameters to be appended to the URL
+    nextPageNumber: The page number to be fetched when the paginator is revealed
+    card_count: A list of integers representing the number of cards to display
+    getAdditionalParams: A JavaScript function that returns additional query parameters for the request
+    
+    Difference between query parameters provided by extra_query_params and getAdditionalParams ?
+    extra_query_params is provided by python code in the view
+    getAddtionalParams is provided by JavaScript code
+    see getAdditionalParams in ts\utils.ts
+#}
