@@ -42,6 +42,14 @@ class Routes{
        this.router.navigate('/categories/category-name/', `/categories/${categoryName}/`);
        document.getElementById('pageHeading').textContent = categoryName;
     }
+    viewWeek(id: number, dateRange: string){
+        // -1 represents a week that does not exist
+        if(id != -1){
+            setQueryParameter('week_id', id); // add week_id to the query parameters
+            this.router.navigate('viewWeekSkeleton', `/weeks/${id}/`);
+            document.getElementById('pageHeading').textContent = `${dateRange}`;
+        }
+    } 
 }
 
 const router = new Router();
