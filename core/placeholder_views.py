@@ -1,10 +1,8 @@
 from django.shortcuts import render
 from django.views import View
 from .models import Category
-# import core.datechecker as dc 
 from .utils import *
-# from django.core.cache import cache
-
+from core.templatetags.custom_filters import dateOnly
 """
     Summary
     --------
@@ -53,5 +51,25 @@ class SeeProducts(View):
             )
             return render(request, 'core/pages/see-products.html', context)
         except Category.DoesNotExist:
+            return render(request, 'auth/pages/404.html')
+
+@login_required
+class Week(View):
+    """
+        This view is used to load the skeleton for the weeks page.
+        The actual content is loaded by the Records view in core/views.py.
+    """
+    def get(self, request, pk):
+        context = getRecordSkeletonContext()
+        try:
+            week_spending = WeeklySpending.objects.get(user=request.user, id=pk)
+            context.update(
+                {
+                    'pageHeading':f'{dateOnly(week_spending.week_start)} - {dateOnly(week_spending.week_end)}',
+                    'extra_query_params': f'&week_id={pk}',
+                }
+            )
+            return render(request, 'core/pages/week.html', context)
+        except WeeklySpending.DoesNotExist:
             return render(request, 'auth/pages/404.html')
        
