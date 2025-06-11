@@ -249,6 +249,9 @@ class Records(View):
             else: 
                 products = ProductSerializer(user.products.filter(category=None), many=True).data
                 records = groupByDate(products)
+        elif request.GET.get('week_id'):
+            week_id = request.GET.get('week_id')
+            return self.get_week(request, week_id)
         else:
             paginator = EnhancedExpensePaginator(
                     request,
@@ -268,6 +271,18 @@ class Records(View):
             'seeProductsPage': request.GET.get('addProduct')
             }
         context.update(getRecordSkeletonContext())
+        return render(request, 'core/components/paginateExpenditures.html', context)
+    
+    def get_week(self, request: HttpRequest, week_id: int):
+        user = request.user
+        spending_data = WeeklySpending.objects.get(id=week_id)
+        products = ProductSerializer(
+            Product.objects.filter(date__date__range=(spending_data.week_start, spending_data.week_end), user=user),
+            many=True).data
+        records = groupByDate(products)
+        context = {
+            'items': records, 
+        }
         return render(request, 'core/components/paginateExpenditures.html', context)
     
             
@@ -317,6 +332,7 @@ class Routes(View):
                   '/categories/category-name/': render_to_string('core/placeholders/seeProductsSkeleton.html',getRecordSkeletonContext()),
                   'seeProductsSkeleton': render_to_string('core/placeholders/seeProductsSkeleton2.html',getRecordSkeletonContext()),
                   '/search/': render_to_string('core/components/staticRecordSkeleton2.html', getRecordSkeletonContext()),
+                  'viewWeekSkeleton': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
                 }
             )
         return render(request, 'core/components/blank.html', context)
@@ -424,5 +440,4 @@ class SearchResults(View):
         context = {
             'results': data.get('results')
         }
-        return render(request, 'core/components/searchResults.html', context)
-        
+        return render(request, 'core/components/searchResults.html', context)   
