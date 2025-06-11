@@ -423,6 +423,7 @@ class StatSummary(View):
             if not stats:
                 stats = Context(MonthlyStats(user)).apply()
                 cache.set(f'monthly-stats-{user.username}', stats)  
+        print(stats)
         context = {
             'stats':stats
         }
