@@ -8,7 +8,7 @@
 // form.submit();
 //     } 
 //  }
-const queryParams = {}; // additional query parameters that should be sent with the request
+let queryParams = {}; // additional query parameters that should be sent with the request
 const setQueryParameter = (key, value) => {
     queryParams[key] = value;
 };
@@ -64,6 +64,7 @@ function getCategoryName() {
 // It is called during HTMX requests to add additional parameters to the request
 function getAdditionalParams() {
     const result = { ...queryParams }; // spread the queryParams object to get a copy of it
+    queryParams = {}; // reset the queryParams object to an empty object
     // if the current route is a category route, we add the category name and oneCategory flag to the result
     const pattern = /^\/categories\/[^\/]+\/$/;
     if (pattern.test(router.currentRoute)) {
