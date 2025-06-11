@@ -7,6 +7,10 @@
           // form.submit();
     //     } 
     //  }
+const queryParams = {}; // additional query parameters that should be sent with the request
+const setQueryParameter = (key:string, value:any)=>{
+    queryParams[key] = value; 
+}
 
 async function fetchJSONData(url: string){
       try{
@@ -65,16 +69,23 @@ const getSidebar = (()=>{
  function getCategoryName(){
      return decodeURIComponent(window.location.pathname.split('/').filter(segment => segment !== '').pop());
  }
+
+ // This function returns the additional parameters that should be sent with the request
+ // It is called during HTMX requests to add additional parameters to the request
  function getAdditionalParams(){
+    const result = {...queryParams}; // spread the queryParams object to get a copy of it
+   
+    // if the current route is a category route, we add the category name and oneCategory flag to the result
     const pattern = /^\/categories\/[^\/]+\/$/;
     if(pattern.test(router.currentRoute)){
         const categoryName =  getCategoryName();
         return {
             categoryName:categoryName,
             oneCategory:1,
+            ...result
         }
     }
-    return {};
+    return result;
  }
 
  class StatSummary{
