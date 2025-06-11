@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import core.datechecker as dc 
 from core.models import User, WeeklySpending, MonthlySpending
 from .utils import getSettings
+from core.templatetags.custom_filters import dateOnly
 
 class WeeklyStats:
     def __init__(self, user: User):
@@ -27,10 +28,11 @@ class WeeklyStats:
             ]
     def get_stat(self, data: WeeklySpending, label:str):
         UNSET_ID = -1
-        result = {'text': label, 'data': 0, 'id': UNSET_ID}
+        result = {'text': label, 'data': 0, 'id': UNSET_ID, 'date_range': None}
         if data:
              result['id'] = data.id
              result['data'] = data.total_amount
+             result['date_range'] = dateOnly(data.week_start) + ' - ' + dateOnly(data.week_end)
         return result
 
 class MonthlyStats:
