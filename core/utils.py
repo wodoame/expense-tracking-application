@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required as lr 
 from django.core.cache import cache
 import pandas as pd
-from .models import Settings, WeeklySpending, Product
+from .models import Settings, WeeklySpending, Product, MonthlySpending
 from django.db.models import Min
 from authentication.models import User
 from collections.abc import Callable
@@ -130,13 +130,23 @@ def updateWeeklySpendingData(request: HttpRequest, **kwargs):
         if settings.populated_weekly_spending:
             for date in dates:
                 WeeklySpending.update_weekly_spending(user, date)
-                
-        
+
+def updateMonthlySpendingData(request: HttpRequest, **kwargs):
+    user = request.user
+    dates = kwargs.get('dates')
+    if dates is not None:
+        settings = getSettings(user)
+        if settings.populated_monthly_spending:
+            for date in dates:
+                MonthlySpending.update_monthly_spending(user, date)
+
+
 emitter = EventEmitter() # global event emitter
 emitter.on('products_updated', deleteQuickStatsFromCache)
 emitter.on('products_updated', deleteExpenditureRecordsFromCache)
 emitter.on('products_updated', deleteAllProductsFromCache)
 emitter.on('products_updated', updateWeeklySpendingData)
+emitter.on('products_updated', updateMonthlySpendingData)
 
 class ExpensePaginator: 
     
