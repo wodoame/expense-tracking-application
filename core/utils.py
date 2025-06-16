@@ -147,68 +147,6 @@ emitter.on('products_updated', deleteExpenditureRecordsFromCache)
 emitter.on('products_updated', deleteAllProductsFromCache)
 emitter.on('products_updated', updateWeeklySpendingData)
 emitter.on('products_updated', updateMonthlySpendingData)
-
-class ExpensePaginator: 
-    
-    def __init__(self, request:HttpRequest, number_of_days=7, extra_filters: dict = {}, use_cache=True, cache_key: str| None = None):
-        if use_cache and cache_key is None: 
-            raise ValueError("Cache key must be specified") 
-        self.numberOfDays = number_of_days
-        self.user: User = request.user
-        self.dateRangePaginator = DateRangePaginator(
-            self.user.date_joined.date(),
-            datetime.today().date(),
-            self.numberOfDays,
-            reverse=True)
-        self.extra_filters = extra_filters
-        self.use_cache = use_cache
-        self.cache_key = cache_key
-    
-    def get_page(self, page_number: int):
-        """
-          cachedData is a list of pages 
-          A page is a dictionary containing the records to display: [{}, {}, ..., {}]
-        """
-        if self.use_cache:
-            cachedData: list[dict] | None = cache.get(self.cache_key)
-            if cachedData is None:
-                data = self.get_data(1)
-                cache.set(self.cache_key, [data])
-                return data
-            
-            if cachedData is not None and page_number <= len(cachedData):
-                return {
-                    'from_cache': True,
-                    'pages': cachedData,
-                    'nextPageNumber':self.get_next_page_number(len(cachedData))
-                }
-            
-            if cachedData is not None and page_number > len(cachedData):
-                data = self.get_data(page_number)
-                cache.set(self.cache_key, cachedData + [data])
-                return data
-        return self.get_data(page_number)
-    
-    def get_data(self, page_number:int):
-        """" get the page data based on the page number"""
-        dateRange = self.dateRangePaginator.get_date_range(page_number)
-        if self.dateRangePaginator.reverse:
-            dateRange = sorted(dateRange) # make the smaller data come first 
-        products = ProductSerializer(
-            self.user.products.filter(date__date__range=(dateRange[0], dateRange[1]), **self.extra_filters),
-            many=True).data
-        records = groupByDate(products)
-        return {
-            'from_cache': False,
-            'records': records, 
-            'nextPageNumber':self.get_next_page_number(page_number)
-        }
-        
-
-    def get_next_page_number(self, current_page_number: int) -> int | None:
-        if current_page_number < self.dateRangePaginator.total_pages:
-            return current_page_number + 1
-        return None
     
 class EnhancedExpensePaginator:
     def __init__(self, request:HttpRequest, cache_key: str, number_of_days=7, specific_category: bool = False, category_name='',  extra_filters: dict = {}):
