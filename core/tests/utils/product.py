@@ -37,3 +37,13 @@ def create_random_product(user: User):
         description=description
     )
     return product
+
+def create_random_products(user: User, count: int):
+    """
+    Utility function to create and save multiple random Products for the given user.
+    """
+    products = []
+    for _ in range(count):
+        product = create_random_product(user)
+        products.append(product)
+    return products
