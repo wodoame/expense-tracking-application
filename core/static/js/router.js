@@ -47,6 +47,12 @@ class Routes {
             document.getElementById('pageHeading').textContent = `${dateRange}`;
         }
     }
+    viewDay(date, pageHeading) {
+        setQueryParameter('date', date);
+        setQueryParameter('seeDay', '1'); // a flag that indicates we are viewing a day
+        this.router.navigate('seeDaySkeleton', `/days/${date}/`);
+        document.getElementById('pageHeading').textContent = pageHeading;
+    }
 }
 const router = new Router();
 const routes = new Routes(router);
