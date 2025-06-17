@@ -35,5 +35,9 @@ class DatePickerManager{
 }
 
 const datePickerManager = new DatePickerManager();
+export {
+  datePickerManager, 
+  selectFieldManager
+};
 
 

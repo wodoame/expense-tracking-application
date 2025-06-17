@@ -1,4 +1,3 @@
-"use strict";
 class SelectFieldManager {
     constructor() {
         this.instances = {};
@@ -23,3 +22,4 @@ class DatePickerManager {
     }
 }
 const datePickerManager = new DatePickerManager();
+export { datePickerManager, selectFieldManager };

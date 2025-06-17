@@ -1,4 +1,3 @@
-"use strict";
 // function showFormLoader(id:string){
 // append the id of the current modal toggled to the -form-loader to get the specific loader
 //     const form = <HTMLFormElement>document.getElementById(id); 
@@ -8,6 +7,7 @@
 // form.submit();
 //     } 
 //  }
+import { router } from "./router.js";
 let queryParams = {}; // additional query parameters that should be sent with the request
 const setQueryParameter = (key, value) => {
     queryParams[key] = value;
@@ -120,3 +120,4 @@ class EventEmitter {
 }
 const globalEventEmitter = new EventEmitter();
 globalEventEmitter.addEventListener('popstate', generateGraph);
+export { categoryPublisher, fetchJSONData, getSidebar, globalEventEmitter, queryParams, setQueryParameter, statSummary };

@@ -1,3 +1,6 @@
+import { router } from "./router.js";
+import { categoryPublisher } from "./utils.js";
+import { datePickerManager, selectFieldManager } from "./selectField.js";
 class ModalManager{
     modals:any; 
     currentlyOpenModal: ModalInstance | null;  // track the currently opened modal
@@ -463,3 +466,28 @@ function handleCloseModal(){
         modalManager.currentlyOpenModal.close();
     }
 }
+
+// make some things available globally
+// product modals
+window['getAddProductModal'] = getAddProductModal;
+window['getDeleteProductModal'] = getDeleteProductModal;
+window['getShowDetailsModal'] = getShowDetailsModal;
+window['getEditProductModal'] = getEditProductModal;
+
+// category modals
+window['getCategoryDetailsModal'] = getCategoryDetailsModal;
+window['getAddCategoryModal'] = getAddCategoryModal;
+window['getDeleteCategoryModal'] = getDeleteCategoryModal;
+window['getEditCategoryModal'] = getEditCategoryModal;
+
+// other modals
+window['getSearchModal'] = getSearchModal;
+
+// others
+window['handleCloseModal'] = handleCloseModal;
+window['modalManager'] = modalManager;
+
+export {
+    modalManager, 
+    handleCloseModal
+}; 
