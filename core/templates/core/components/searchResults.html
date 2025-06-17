@@ -54,7 +54,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">GHS {{result.price|floatformat:2}}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 link" @click.stop="routes.category('{{result.category.name|default:'None'}}')">{{result.category.name|default:'None'}}</td>
                     <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.date_timesince}}</td> -->
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{result.date}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 link" @click.stop="routes.viewDay('{{result.raw_date}}', '{{result.date}}')">{{result.date}}</td>
                     {# 
                     
                     <td>
