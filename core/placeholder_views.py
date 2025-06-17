@@ -72,4 +72,20 @@ class Week(View):
             return render(request, 'core/pages/week.html', context)
         except WeeklySpending.DoesNotExist:
             return render(request, 'auth/pages/404.html')
+@login_required
+class Day(View):
+    def get(self, request: HttpRequest, date: str):
+        """
+            This view is used to load the skeleton for the day page.
+            The actual content is loaded by the Records view in core/views.py.
+        """
+        
+        context = getRecordSkeletonContext(card_count=1)
+        context.update(
+            {
+                'pageHeading': dateOnly(date),
+                'extra_query_params': f'&date={date}&seeDay=1',
+            }
+        )
+        return render(request, 'core/pages/day.html', context)
        
