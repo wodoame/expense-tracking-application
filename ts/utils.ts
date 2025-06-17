@@ -7,6 +7,7 @@
           // form.submit();
     //     } 
     //  }
+import { router } from "./router.js";
 let queryParams = {}; // additional query parameters that should be sent with the request
 const setQueryParameter = (key:string, value:any)=>{
     queryParams[key] = value; 
@@ -143,3 +144,13 @@ const getSidebar = (()=>{
 
 const globalEventEmitter = new EventEmitter();
 globalEventEmitter.addEventListener('popstate', generateGraph);
+
+export {
+    categoryPublisher,
+    fetchJSONData,
+    getSidebar,
+    globalEventEmitter, 
+    queryParams, 
+    setQueryParameter, 
+    statSummary
+};

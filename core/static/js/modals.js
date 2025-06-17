@@ -1,4 +1,6 @@
-"use strict";
+import { router } from "./router.js";
+import { categoryPublisher } from "./utils.js";
+import { datePickerManager, selectFieldManager } from "./selectField.js";
 class ModalManager {
     constructor() {
         this.modals = {}; // a store of created modals
@@ -418,3 +420,20 @@ function handleCloseModal() {
         modalManager.currentlyOpenModal.close();
     }
 }
+// make some things available globally
+// product modals
+window['getAddProductModal'] = getAddProductModal;
+window['getDeleteProductModal'] = getDeleteProductModal;
+window['getShowDetailsModal'] = getShowDetailsModal;
+window['getEditProductModal'] = getEditProductModal;
+// category modals
+window['getCategoryDetailsModal'] = getCategoryDetailsModal;
+window['getAddCategoryModal'] = getAddCategoryModal;
+window['getDeleteCategoryModal'] = getDeleteCategoryModal;
+window['getEditCategoryModal'] = getEditCategoryModal;
+// other modals
+window['getSearchModal'] = getSearchModal;
+// others
+window['handleCloseModal'] = handleCloseModal;
+window['modalManager'] = modalManager;
+export { modalManager, handleCloseModal };

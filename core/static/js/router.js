@@ -1,4 +1,4 @@
-"use strict";
+import { getSidebar, setQueryParameter, statSummary } from "./utils.js";
 class Router {
     constructor() {
         this.currentRoute = window.location.pathname;
@@ -57,3 +57,4 @@ class Routes {
 const router = new Router();
 const routes = new Routes(router);
 router.init();
+export { router, routes };

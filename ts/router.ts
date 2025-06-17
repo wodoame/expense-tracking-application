@@ -1,3 +1,4 @@
+import { getSidebar, setQueryParameter, statSummary } from "./utils.js";
 class Router{
     routes: {
         [path: string]: string;
@@ -61,3 +62,5 @@ class Routes{
 const router = new Router();
 const routes = new Routes(router);
 router.init();
+
+export { router, routes };
