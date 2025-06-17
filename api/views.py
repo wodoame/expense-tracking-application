@@ -105,6 +105,7 @@ class Search(APIView):
                     'name': result.get('name'),
                     'description': result.get('description'),
                     'date': dateOnly(result.get('date')),
+                    'raw_date': datetime.fromisoformat(result.get('date')).strftime('%Y-%m-%d'),
                     'price': result.get('price'),
                     'category': result.get('category'),
                     'date_timesince': timesince(datefromisoformat(result.get('date')).date())
