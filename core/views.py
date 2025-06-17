@@ -249,6 +249,9 @@ class Records(View):
             else: 
                 products = ProductSerializer(user.products.filter(category=None), many=True).data
                 records = groupByDate(products)
+        elif request.GET.get('seeDay'):
+            date = request.GET.get('date')
+            return self.get_day(request, date)
         elif request.GET.get('week_id'):
             week_id = request.GET.get('week_id')
             return self.get_week(request, week_id)
@@ -279,6 +282,21 @@ class Records(View):
         products = ProductSerializer(
             Product.objects.filter(date__date__range=(spending_data.week_start, spending_data.week_end), user=user),
             many=True).data
+        records = groupByDate(products)
+        context = {
+            'items': records, 
+        }
+        return render(request, 'core/components/paginateExpenditures.html', context)
+    
+    def get_day(self, request: HttpRequest, date: str):
+        """
+        This method is used to get the records for a specific day.
+        It is used to load the skeleton for the day page.
+        The actual content is loaded by the Records view in core/views.py.
+        """
+        user = request.user
+        date = dc.datefromisoformat(date).date()
+        products = ProductSerializer(user.products.filter(date__date=date), many=True).data
         records = groupByDate(products)
         context = {
             'items': records, 
@@ -333,6 +351,7 @@ class Routes(View):
                   'seeProductsSkeleton': render_to_string('core/placeholders/seeProductsSkeleton2.html',getRecordSkeletonContext()),
                   '/search/': render_to_string('core/components/staticRecordSkeleton2.html', getRecordSkeletonContext()),
                   'viewWeekSkeleton': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
+                  'seeDaySkeleton': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext(card_count=1)),
                 }
             )
         return render(request, 'core/components/blank.html', context)
