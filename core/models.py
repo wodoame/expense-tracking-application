@@ -22,6 +22,9 @@ class Product(models.Model):
     date = models.DateTimeField(default=timezone.now, blank=True)
     description = models.TextField(blank=True)
     
+    class Meta:
+        ordering = ['-date']
+    
     def __str__(self):
         return self.encryption_helper.decrypt(self.name)
     def __init__(self, *args, **kwargs):
