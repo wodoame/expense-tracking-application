@@ -58,3 +58,5 @@ const router = new Router();
 const routes = new Routes(router);
 router.init();
 export { router, routes };
+// make globally accessible
+window['routes'] = routes;

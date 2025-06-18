@@ -121,3 +121,7 @@ class EventEmitter {
 const globalEventEmitter = new EventEmitter();
 globalEventEmitter.addEventListener('popstate', generateGraph);
 export { categoryPublisher, fetchJSONData, getSidebar, globalEventEmitter, queryParams, setQueryParameter, statSummary };
+// make globally accessible
+window['getAdditionalParams'] = getAdditionalParams;
+window['statSummary'] = statSummary;
+window['getDropdown'] = getDropdown;

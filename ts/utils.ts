@@ -154,3 +154,8 @@ export {
     setQueryParameter, 
     statSummary
 };
+
+// make globally accessible
+window['getAdditionalParams'] = getAdditionalParams;
+window['statSummary'] = statSummary;
+window['getDropdown'] = getDropdown;
