@@ -16,6 +16,7 @@ from core.datechecker import datefromisoformat
 from django.core.cache import cache
 from rest_framework import status
 from .models import ErrorLog
+from django.core.paginator import Paginator
 class Categories(APIView):
     def get(self, request):
         user = request.user 
@@ -31,7 +32,7 @@ class Search(APIView):
     def get(self, request: Request):
         query = request.query_params.get('query').strip()
         user = request.user
-        data = self.search_products(query, user)
+        data = self.search_products(query, user,  1)
         return Response(data)
     
     def search_categories(self, query: str) -> dict:
@@ -46,7 +47,7 @@ class Search(APIView):
         return data
     
     @staticmethod
-    def search_products(query:str, user) -> dict:
+    def search_products(query:str, user: User, page_number: int) -> dict:
         schema_id_file = 'product_schema_id.txt'
         if not os.path.exists(schema_id_file):
             setSchemaId(schema_id_file, -1)
@@ -67,9 +68,19 @@ class Search(APIView):
 
         # Add documents to the index
         writer = ix.writer()
-        if not isIndexed(ix, user.id):
-            print('user not index, index products')
-            products = getAllProductsFromCache(user)
+        context = {}
+        if not page_is_cached(user, page_number):
+            cache.set(f'{user.username}-search-page', page_number)
+            print(f'page {page_number} not index, index products')
+            products = user.products.all()
+            paginator = Paginator(products, 50) # NOTE: recreate the index if you change the page size
+            page = paginator.page(page_number)
+            context['has_next_page'] = page.has_next()
+            context['next_page_number'] = page.next_page_number() if page.has_next() else None
+            products = ProductSerializer(
+                page.object_list,
+                many=True,
+                ).data 
             for product in products:
                 writer.add_document(
                     id=product.get('id'),
@@ -79,7 +90,7 @@ class Search(APIView):
                     description=product.get('description'),
                     date=product.get('date'),
                     category=product.get('category'), 
-                    price=product.get('price')
+                    price=product.get('price'), 
                     ) 
             writer.commit()
 
@@ -99,6 +110,7 @@ class Search(APIView):
                 'query': query, 
                 'type': 'Products',
                 'total': len(results),
+                'context': context,
                 'results': [
                  {
                     'id': result.get('id'),

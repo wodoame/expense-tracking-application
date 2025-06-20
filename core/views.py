@@ -455,9 +455,16 @@ class SearchResults(View):
     def get(self, request):
         print(request.GET)
         query = request.GET.get('query').strip()
-        user = request.user 
-        data = APISearch.search_products(query, user)
+        page_number = int(request.GET.get('page_number', 1))
+        user = request.user
+        data = APISearch.search_products(query, user, page_number)
         context = {
-            'results': data.get('results')
+            'results': data.get('results'), 
+            'has_next_page': data['context'].get('has_next_page'),
+            'next_page_number': data['context'].get('next_page_number'),
+            'query': query,
         }
+        context.update(getRecordSkeletonContext(row_count=2))
+        if request.GET.get('additional'): 
+            return render(request, 'core/components/additionalSearchResults.html', context)
         return render(request, 'core/components/searchResults.html', context)   
