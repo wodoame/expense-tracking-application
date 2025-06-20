@@ -3,6 +3,8 @@ from whoosh import index
 from whoosh.qparser import QueryParser
 from whoosh.fields import Schema, TEXT, ID, STORED
 from core.utils import EventEmitter
+from authentication.models import User
+from django.core.cache import cache
         
 def recreate_index(index_dir: str, schema_id_file: str, new_schema: Schema, new_schema_id: int):
     """Recreate the index with the new schema."""
@@ -53,6 +55,10 @@ def isIndexed(ix:index.Index, user_id:int):
     with ix.searcher() as searcher:
         results = searcher.search(q, limit=1)
         return not results.is_empty()
+    
+def page_is_cached(user: User, page_number):
+    res = cache.get(f'{user.username}-search-page')
+    return (res is not None) and page_number <= res
         
 def getCurrentProductSchema(): 
     # Define the schema
