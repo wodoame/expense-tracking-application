@@ -70,7 +70,8 @@ def getCurrentProductSchema():
         description=TEXT(stored=True),
         date=STORED,
         category=STORED,
-        price=STORED
+        price=STORED, 
+        page_number=ID, # page number the search result exists on
         )
     return schema
 
