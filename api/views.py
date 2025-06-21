@@ -74,7 +74,8 @@ class Search(APIView):
         paginator = Paginator(products, 50) # NOTE: recreate the index if you change the page size
         latest_cached_page = cache.get(f'{user.username}-search-page')
         print(f'{latest_cached_page=}')
-        if latest_cached_page is None: 
+        if latest_cached_page is None or not isIndexed(ix, user.id): 
+            latest_cached_page = None # forcefully set it to None so that indexing can start all over again due to page_is_cached() returning False for page 1
             os.makedirs(index_dir, exist_ok=True)
             ix = index.create_in(index_dir, ix.schema)
         if page_is_cached(user, page_number):
