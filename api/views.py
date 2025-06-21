@@ -71,7 +71,7 @@ class Search(APIView):
         context = {}
         get_for_current_page_only = False # fetch search results which are found on other pages than the current page_number
         products = user.products.all()
-        paginator = Paginator(products, 5) # NOTE: recreate the index if you change the page size
+        paginator = Paginator(products, 50) # NOTE: recreate the index if you change the page size
         latest_cached_page = cache.get(f'{user.username}-search-page')
         print(f'{latest_cached_page=}')
         if latest_cached_page is None: 
