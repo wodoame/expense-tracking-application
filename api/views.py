@@ -5,18 +5,17 @@ from rest_framework.request import Request
 from core.models import *
 from django.db.models import Q
 from whoosh import index
-from whoosh.fields import Schema, TEXT, ID, STORED
 from whoosh.qparser import MultifieldParser, OrGroup, FuzzyTermPlugin, QueryParser
 import os
 from .utils import * 
-from core.user_settings_schemas import SearchSchema
-from core.utils import getSettings, getAllProductsFromCache
 from core.templatetags.custom_filters import dateOnly, timesince
 from core.datechecker import datefromisoformat
 from django.core.cache import cache
 from rest_framework import status
 from .models import ErrorLog
 from django.core.paginator import Paginator
+from django.conf import settings
+
 class Categories(APIView):
     def get(self, request):
         user = request.user 
@@ -71,7 +70,7 @@ class Search(APIView):
         context = {}
         get_for_current_page_only = False # fetch search results which are found on other pages than the current page_number
         products = user.products.all()
-        paginator = Paginator(products, 50) # NOTE: recreate the index if you change the page size
+        paginator = Paginator(products, settings.SEARCH_PAGE_SIZE) # NOTE: recreate the index if you change the page size
         latest_cached_page = cache.get(f'{user.username}-search-page')
         print(f'{latest_cached_page=}')
         if latest_cached_page is None or not isIndexed(ix, user.id): 

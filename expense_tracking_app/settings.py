@@ -232,3 +232,5 @@ if not DEBUG:
             },
         },
     }
+    
+SEARCH_PAGE_SIZE = os.getenv('SEARCH_PAGE_SIZE', 50)
