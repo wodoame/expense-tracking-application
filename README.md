@@ -7,7 +7,7 @@ XPENSE is a Django-based expense tracking application designed to help users man
 
 ## 🚀 Live Website  
 
-[Visit XPENSE](https://expense-tracking-application.onrender.com)  
+[Visit XPENSE](https://exta.netlify.app)  
 *Note: The site may take some time to load as it is hosted on a free plan, and servers go idle when inactive.*
 
 
