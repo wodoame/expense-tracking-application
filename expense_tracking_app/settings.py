@@ -52,10 +52,12 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'django_components',
+     'corsheaders',
     # 'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
@@ -234,3 +236,12 @@ if not DEBUG:
     }
     
 SEARCH_PAGE_SIZE = os.getenv('SEARCH_PAGE_SIZE', 50)
+
+CORS_ALLOWED_ORIGINS = [
+       "https://exta.netlify.app",
+   ]
+
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173"
+    ]

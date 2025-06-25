@@ -16,6 +16,11 @@ from .models import ErrorLog
 from django.core.paginator import Paginator
 from django.conf import settings
 
+
+class Status(APIView):
+    def get(self, request):
+        return Response({'status': 'ok', 'message': 'API is reachable.'})
+
 class Categories(APIView):
     def get(self, request):
         user = request.user 
