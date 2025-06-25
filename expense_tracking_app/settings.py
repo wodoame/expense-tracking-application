@@ -47,12 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders'
     'core', 
     'authentication',
     'api',
     'rest_framework',
     'django_components',
-     'corsheaders',
     # 'debug_toolbar',
 ]
 
