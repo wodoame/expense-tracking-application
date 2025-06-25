@@ -2,7 +2,10 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4" id="statSummary">
     <!-- begin card -->
     <a 
-    @click="routes.viewWeek({{stats.0.id}}, '{{stats.0.date_range}}')"
+    {% if type == 'weekly' %}
+      @click="routes.viewWeek({{stats.0.id}}, '{{stats.0.date_range}}')"
+    {% endif %}
+
     class="cursor-pointer block p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
       <p class="font-normal text-gray-700 dark:text-gray-400 py-1">{{stats.0.text}}</p>
         <p class="text-2xl font-bold dark:text-gray-300">GHS {{stats.0.data|floatformat:2}}</p>
@@ -10,7 +13,9 @@
            <!-- end card  -->
      <!-- begin card -->
      <a
+     {% if type == 'weekly' %}
      @click="routes.viewWeek({{stats.1.id}}, '{{stats.1.date_range}}')"
+     {% endif %}
      class="cursor-pointer block p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
         <p class="font-normal text-gray-700 dark:text-gray-400 py-1">{{stats.1.text}}</p>
         <p class="text-2xl font-bold dark:text-gray-300">GHS {{stats.1.data|floatformat:2}}</p>
@@ -18,7 +23,9 @@
      <!-- end card  -->
      <!-- begin card -->
      <a
-      @click="routes.viewWeek({{stats.2.id}}, '{{stats.2.date_range}}')"
+      {% if type == 'weekly' %}
+        @click="routes.viewWeek({{stats.2.id}}, '{{stats.2.date_range}}')"  
+      {% endif %}
       class="cursor-pointer block p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
         <p class="font-normal text-gray-700 dark:text-gray-400 py-1">{{stats.2.text}}</p>
         <p class="text-2xl font-bold dark:text-gray-300">GHS {{stats.2.data|floatformat:2}}</p>

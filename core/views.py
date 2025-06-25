@@ -444,7 +444,8 @@ class StatSummary(View):
                 cache.set(f'monthly-stats-{user.username}', stats)  
         print(stats)
         context = {
-            'stats':stats
+            'stats':stats, 
+            'type': request.GET.get('type')
         }
         return render(request, 'core/components/statSummary.html', context)
 class Search(View):
