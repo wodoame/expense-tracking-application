@@ -82,7 +82,7 @@
             {% endexperimental %}
     
             <!-- Login Form -->
-            <form action="{% url 'signin' %}" method="POST">
+            <form action="{% url 'signin' %}" id="signin-form" method="POST">
                 {% csrf_token %}
                 <div class="mb-4">
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
@@ -104,8 +104,14 @@
                     <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
                 </div> -->
                 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all">
-                    Sign in
+                <button id="signin-btn" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all">
+                   <div class="flex gap-2 justify-center">
+                       <span id="signin-btn-text">Sign in</span>
+                     <svg id="signin-spinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                   </div>
                 </button>
             </form>
     
@@ -125,5 +131,20 @@
     <script src="{% static 'main.js' %}"></script>
     <script src="{% static 'js/flowbitejs.min.js' %}"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signin-form');
+            const btn = document.getElementById('signin-btn');
+            const btnText = document.getElementById('signin-btn-text');
+            const spinner = document.getElementById('signin-spinner');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    btn.disabled = true;
+                    spinner.classList.remove('hidden');
+                    btnText.textContent = 'Signing in...';
+                });
+            }
+        });
+    </script>
 {% endblock scripts %}
 
