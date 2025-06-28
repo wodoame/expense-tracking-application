@@ -253,7 +253,7 @@ class EnhancedExpensePaginator:
                 
     def get_data(self, page:int):
         date_range = self.enhanced_pages.get(page)
-        products = ProductSerializer(self.user.products.filter(date__date__range=(date_range[0], date_range[1]), **self.extra_filters), many=True).data
+        products = ProductSerializer(self.user.products.filter(date__date__range=(date_range[0], date_range[1]), **self.extra_filters), many=True).data if date_range else []
         records = groupByDate(products)
         return {
         'page': page,
