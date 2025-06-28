@@ -165,7 +165,7 @@ class Dashboard(View):
            segments = path.split('/')
            categoryName = quote(unquote(list(filter(lambda x: x != '', segments)).pop()))
            return redirect(f'/components/records/?page=1&addProduct=1&oneCategory=1&categoryName={categoryName}')
-        return render(request, 'core/components/toastWrapper/toastWrapper.html', {})
+        return redirect('implemented-dashboard')
         
     
     def handle_delete_product(self, request):

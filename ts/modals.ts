@@ -39,17 +39,21 @@ class BaseModal{
 }
 
 class AddProductModal extends BaseModal{
+   
    submitForm(){
        const form = <HTMLFormElement>document.getElementById('add-product-form');
        if(form.checkValidity()){
+        const currentPagePath = window.location.pathname;
         let target = '#main-content'
         const pattern = /^\/categories\/[^\/]+\/$/;
         if(pattern.test(router.currentRoute)){
             document.getElementById('see-products').outerHTML = router.routes['seeProductsSkeleton']; // insert the placeholder without triggering htmx
             target = '#see-products';
         }
-        else{
-            document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
+        // some pages don't have their paths mapping to some placholder html so we'll just navigate to the dashboard by default
+        if(!(currentPagePath in router.routes) || currentPagePath == '/search/'){ 
+            document.getElementById('main-content').innerHTML = router.routes['/dashboard/']; // insert the placeholder without triggering htmx
+            history.pushState(null, '', '/dashboard/');
         }
         this.close();
         if(router.currentRoute == '/all-expenditures/'){
