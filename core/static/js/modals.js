@@ -28,42 +28,50 @@ class BaseModal {
     }
 }
 class AddProductModal extends BaseModal {
+    _showPageSkeleton(path) {
+        const pattern = /^\/categories\/[^\/]+\/$/;
+        if (pattern.test(path))
+            return document.getElementById('see-products').outerHTML = router.routes['seeProductsSkeleton']; // insert the placeholder without triggering htmx
+        if (!(path in router.routes) || path == '/search/')
+            return this._navigateToDashboard();
+        return document.getElementById('main-content').innerHTML = router.routes[path];
+    }
+    _getHTMXTarget(path) {
+        const pattern = /^\/categories\/[^\/]+\/$/;
+        if (pattern.test(path))
+            return '#see-products';
+        if (path == '/all-expenditures/')
+            return '#all-expenditures';
+        return '#main-content';
+    }
+    _navigateToDashboard() {
+        document.getElementById('main-content').innerHTML = router.routes['/dashboard/'];
+        history.pushState(null, '', '/dashboard/');
+        router.currentRoute = '/dashboard/';
+    }
+    _resetFormUI(form) {
+        form.reset();
+        selectFieldManager.getInstance('categories-add-product').select(selectFieldManager.getInstance('categories-add-product').none);
+        datePickerManager.getInstance('add-product-date').setToday();
+    }
+    _submitProductForm(form, target) {
+        const formData = htmx.values(form);
+        htmx.ajax('POST', '/implementations/dashboard/', {
+            values: formData,
+            target: target,
+        }).then(() => {
+            categoryPublisher.fetchLatest();
+        });
+    }
     submitForm() {
         const form = document.getElementById('add-product-form');
         if (form.checkValidity()) {
-            const excludedRoutes = ['/search/'];
             const currentPagePath = window.location.pathname;
-            console.log(currentPagePath);
-            let target = '#main-content';
-            const pattern = /^\/categories\/[^\/]+\/$/;
-            if (pattern.test(currentPagePath)) {
-                document.getElementById('see-products').outerHTML = router.routes['seeProductsSkeleton']; // insert the placeholder without triggering htmx
-                target = '#see-products';
-            }
-            if (currentPagePath == '/all-expenditures/') {
-                target = '#all-expenditures'; // put the content inside #all-expenditures div instead of #main-content
-            }
-            // some pages don't have their paths mapping to some placholder html so we'll just navigate to the dashboard by default
-            if (!(currentPagePath in router.routes) || excludedRoutes.includes(currentPagePath)) {
-                document.getElementById('main-content').innerHTML = router.routes['/dashboard/']; // insert the placeholder without triggering htmx
-                history.pushState(null, '', '/dashboard/');
-                router.currentRoute = '/dashboard/';
-            }
-            if (currentPagePath in router.routes && !excludedRoutes.includes(currentPagePath)) {
-                document.getElementById('main-content').innerHTML = router.routes[currentPagePath]; // insert the placeholder without triggering htmx
-            }
+            const target = this._getHTMXTarget(currentPagePath);
+            this._showPageSkeleton(currentPagePath);
             this.close();
-            const formData = htmx.values(form);
-            htmx.ajax('POST', '/implementations/dashboard/', {
-                values: formData,
-                target: target,
-            }).then(() => {
-                categoryPublisher.fetchLatest();
-            });
-            form.reset();
-            const field = selectFieldManager.getInstance('categories-add-product');
-            field.select(field.none);
-            datePickerManager.getInstance('add-product-date').setToday();
+            this._submitProductForm(form, target);
+            this._resetFormUI(form);
         }
         else {
             form.reportValidity();
