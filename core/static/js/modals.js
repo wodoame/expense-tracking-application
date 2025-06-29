@@ -31,22 +31,28 @@ class AddProductModal extends BaseModal {
     submitForm() {
         const form = document.getElementById('add-product-form');
         if (form.checkValidity()) {
+            const excludedRoutes = ['/search/'];
             const currentPagePath = window.location.pathname;
+            console.log(currentPagePath);
             let target = '#main-content';
             const pattern = /^\/categories\/[^\/]+\/$/;
-            if (pattern.test(router.currentRoute)) {
+            if (pattern.test(currentPagePath)) {
                 document.getElementById('see-products').outerHTML = router.routes['seeProductsSkeleton']; // insert the placeholder without triggering htmx
                 target = '#see-products';
             }
-            // some pages don't have their paths mapping to some placholder html so we'll just navigate to the dashboard by default
-            if (!(currentPagePath in router.routes) || currentPagePath == '/search/') {
-                document.getElementById('main-content').innerHTML = router.routes['/dashboard/']; // insert the placeholder without triggering htmx
-                history.pushState(null, '', '/dashboard/');
-            }
-            this.close();
-            if (router.currentRoute == '/all-expenditures/') {
+            if (currentPagePath == '/all-expenditures/') {
                 target = '#all-expenditures'; // put the content inside #all-expenditures div instead of #main-content
             }
+            // some pages don't have their paths mapping to some placholder html so we'll just navigate to the dashboard by default
+            if (!(currentPagePath in router.routes) || excludedRoutes.includes(currentPagePath)) {
+                document.getElementById('main-content').innerHTML = router.routes['/dashboard/']; // insert the placeholder without triggering htmx
+                history.pushState(null, '', '/dashboard/');
+                router.currentRoute = '/dashboard/';
+            }
+            if (currentPagePath in router.routes && !excludedRoutes.includes(currentPagePath)) {
+                document.getElementById('main-content').innerHTML = router.routes[currentPagePath]; // insert the placeholder without triggering htmx
+            }
+            this.close();
             const formData = htmx.values(form);
             htmx.ajax('POST', '/implementations/dashboard/', {
                 values: formData,
