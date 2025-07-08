@@ -88,4 +88,13 @@ class Day(View):
             }
         )
         return render(request, 'core/pages/day.html', context)
+
+class Weeks(View):
+    """
+        This view is used to load the skeleton for the weeks page.
+        The actual content is loaded by the Records view in core/views.py.
+    """
+    def get(self, request):
+        context = getRecordSkeletonContext()
+        return render(request, 'core/pages/weeks.html', context)
        

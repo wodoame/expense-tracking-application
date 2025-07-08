@@ -1,6 +1,6 @@
-import { router } from "./router.js";
-import { categoryPublisher } from "./utils.js";
-import { datePickerManager, selectFieldManager } from "./selectField.js";
+import { router } from "./router";
+import { categoryPublisher } from "./utils";
+import { datePickerManager, selectFieldManager } from "./selectField";
 class ModalManager{
     modals:any; 
     currentlyOpenModal: ModalInstance | null;  // track the currently opened modal

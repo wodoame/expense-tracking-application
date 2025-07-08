@@ -7,7 +7,7 @@
           // form.submit();
     //     } 
     //  }
-import { router } from "./router.js";
+import { router } from "./router";
 let queryParams = {}; // additional query parameters that should be sent with the request
 const setQueryParameter = (key:string, value:any)=>{
     queryParams[key] = value; 

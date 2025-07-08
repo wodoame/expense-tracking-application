@@ -1,3 +1,5 @@
+import Alpine from "alpinejs";
+
 (function(){
     document.addEventListener('alpine:init', ()=>{
       Alpine.data('themeToggler', ()=>({

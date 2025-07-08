@@ -32,6 +32,7 @@ urlpatterns = [
     path('', core_views.RedirectView.as_view()),
     path('dashboard/', placeholder_views.Dashboard.as_view(), name='dashboard'),
     path('weeks/<int:pk>/', placeholder_views.Week.as_view(), name='get-a-week'),
+    path('weeks/', placeholder_views.Weeks.as_view(), name='weeks'),
     path('days/<str:date>/', placeholder_views.Day.as_view(), name='get-a-day'),
     path('all-expenditures/', placeholder_views.AllExpenditures.as_view(), name='all-expenditures'),
     path('categories/', placeholder_views.Categories.as_view(), name='categories'),

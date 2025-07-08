@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Product, Category
+from .models import *
 import pandas as pd
+from core.templatetags.custom_filters import dateOnly
 class CategorySerializer(serializers.ModelSerializer):
     class Meta: 
         model = Category
@@ -43,3 +44,16 @@ class ProductPriceSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Product
         fields = ['name', 'price']
+        
+class WeeklySpendingSerializer(serializers.ModelSerializer):
+    week_start = serializers.SerializerMethodField()
+    week_end = serializers.SerializerMethodField()
+    class Meta:
+        model = WeeklySpending
+        fields = ['id', 'total_amount', 'week_start', 'week_end']
+
+    def get_week_start(self, obj):
+        return dateOnly(obj.week_start)
+
+    def get_week_end(self, obj):
+        return dateOnly(obj.week_end)

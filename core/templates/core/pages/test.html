@@ -2,9 +2,11 @@
 {% load static %}
 {% load custom_tags %}
 {% block main %}
-  <template>
-    <weeks-records :data=""></weeks-records>
+<div x-data>
+  <template x-if="$store.weeksRecords.ready">
+    <weeks-records :data="$store.weeksRecords.data"></weeks-records>
   </template>
+</div>
 <!-- <div id="chart" class="dark:bg-dark2 rounded-md">
 
 </div>

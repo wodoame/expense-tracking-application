@@ -1,4 +1,4 @@
-import { getSidebar, setQueryParameter, statSummary } from "./utils.js";
+import { getSidebar, setQueryParameter, statSummary } from "./utils";
 class Router{
     routes: {
         [path: string]: string;

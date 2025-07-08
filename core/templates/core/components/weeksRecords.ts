@@ -1,10 +1,31 @@
 import { BaseElement } from "./baseElement";
 import { html} from "lit";
 import { customElement, property } from "lit/decorators.js";
+import Alpine from "alpinejs";
+import { fetchTextData } from "./utils/core";
+import { routes } from "../../../../ts/router";
 
 @customElement('weeks-records')
-export class MyButton extends BaseElement {
-    @property({ type: String }) accessor label = 'Click Me';
+export class WeeksRecords extends BaseElement {
+    @property({ type: String }) accessor data: any;
+
+    populateData(textData: string){
+        const data: any[] = JSON.parse(textData);
+        const res = data.map((entry)=>html`
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200 link" 
+                @click=${() => routes.viewWeek(entry.id, `${entry.week_start} - ${entry.week_end}`)}                
+                >    
+                ${entry.week_start} - ${entry.week_end}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
+                    ${entry.total_amount}
+                </td>
+            </tr>
+        `)
+
+        return res;
+    }
 
     render() {
         return html`
@@ -41,7 +62,7 @@ export class MyButton extends BaseElement {
                   </tr>
                 </thead>
                 <tbody class="divide-y dark:divide-gray-100/5">
-                  <tr x-data="{data: $el.dataset.info}">
+                    ${html`${this.populateData(this.data)}`}
                     <!-- checkbox  -->
                     <!-- <td class="w-4 p-4">
                       <div class="flex items-center">
@@ -49,9 +70,7 @@ export class MyButton extends BaseElement {
                           <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                       </div>
                   </td> -->
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200"></td>
+                    
                     <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 link"></td>
                     <td>
                         <div class="price ps-6 flex gap-5">
@@ -64,8 +83,6 @@ export class MyButton extends BaseElement {
                            </button>
                         </div>
                     </td> -->
-                  </tr>
-          
                 </tbody>
               </table>
             </div>
@@ -76,3 +93,84 @@ export class MyButton extends BaseElement {
         `;
     }
 }
+@customElement('weeks-records-skeleton')
+export class WeeksRecordsSkeleton extends BaseElement {
+    @property({ type: Number }) accessor nRows = 5; // number of rows to display in the skeleton
+
+    populateData(nRows: number) {
+        const res = [];
+        for (let i = 0; i < nRows; i++) {
+            res.push(html`
+                <tr>
+                   <td class="px-6 py-4">
+                      <div class="h-4 w-32 record-skeleton"></div>
+                    </td>
+                   <td class="px-6 py-4">
+                      <div class="h-4 w-12 record-skeleton"></div>
+                    </td>
+                </tr>
+            `);
+        }
+        return res;
+    }
+
+    render() {
+        return html`
+        <div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder rounded-md border relative record" {% if edited %}hx-swap-oob="true"{% endif %} id="d-{{date|dateString}}" x-data="{id: $id('record')}">
+            <h3 class="p-2  tracking-tight border-b dark:border-darkborder text-gray-900 dark:text-gray-300">
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-bold">
+                <!-- {{date|timesince}} -->
+                </div>
+            </div>   
+            <div class="text-sm text-gray-500 dark:text-gray-400 font-medium my-2">
+                <!-- {{ date | dateOnly}} -->
+            </div>
+            </h3>
+        
+    <div class="flex flex-col">
+        <div class="-m-1.5 overflow-x-auto">
+          <div class="p-1.5 min-w-full inline-block align-middle">
+            <div class="overflow-hidden">
+              <table class="min-w-full divide-y dark:divide-gray-100/5">
+                <thead>
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Week</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Total</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y dark:divide-gray-100/5">
+                    ${html`${this.populateData(this.nRows)}`}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+ </div>
+        `;
+    }
+}
+
+interface WeeksRecordsStore {
+    ready: boolean;
+    data: any;
+    getData: () => Promise<void>;
+    init: () => void;
+}
+
+document.addEventListener('alpine:init', () => {
+    Alpine.store('weeksRecords', {
+        ready: false,
+        data: undefined,
+        async getData() {
+            const data = await fetchTextData('/api/weekly-spendings/');
+            this.data = data;
+            this.ready = true;
+        },
+        init() {
+            this.getData();
+        },
+    } as WeeksRecordsStore);
+});
+

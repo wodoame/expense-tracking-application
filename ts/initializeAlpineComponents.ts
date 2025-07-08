@@ -1,6 +1,7 @@
-import { categoryPublisher, fetchJSONData, globalEventEmitter, getSidebar} from "./utils.js";
-import { modalManager, handleCloseModal } from "./modals.js";
-import { datePickerManager, selectFieldManager } from "./selectField.js";
+import { categoryPublisher, fetchJSONData, globalEventEmitter, getSidebar} from "./utils";
+import { modalManager, handleCloseModal } from "./modals";
+import { datePickerManager, selectFieldManager } from "./selectField";
+import Alpine from "alpinejs";
 
 function createModalInstance(id: string){
     return {

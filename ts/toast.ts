@@ -1,3 +1,5 @@
+import Alpine from "alpinejs";
+
 (function(){
   let autoDismiss: boolean;
   document.addEventListener('alpine:init', ()=>{

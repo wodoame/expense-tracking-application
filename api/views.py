@@ -190,3 +190,15 @@ class ErrorLogs(APIView):
             return Response({'count': logs.count(), 'logs': formatted_logs}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GetWeeklySpendings(APIView):
+    def get(self, request):
+        user = request.user
+        try:
+            weekly_spendings = WeeklySpendingSerializer(user.weekly_spendings.all(), many=True).data
+            return Response(weekly_spendings, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
