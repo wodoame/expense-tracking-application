@@ -160,7 +160,7 @@ interface WeeksRecordsStore {
 }
 
 document.addEventListener('alpine:init', () => {
-    Alpine.store('weeksRecords', {
+    Alpine.data('weeksRecords', ()=>({
         ready: false,
         data: undefined,
         async getData() {
@@ -171,6 +171,6 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.getData();
         },
-    } as WeeksRecordsStore);
+    } as WeeksRecordsStore));
 });
 

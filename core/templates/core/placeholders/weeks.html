@@ -1,0 +1,10 @@
+{% include 'core/components/pageHeading.html' with text=pageHeading %}
+<div x-data="weeksRecords">
+  <template x-if="ready">
+    <weeks-records :data="data"></weeks-records>
+  </template>
+
+  <template x-if="!ready">
+    <weeks-records-skeleton nRows="5"></weeks-records-skeleton>
+  </template>
+</div>

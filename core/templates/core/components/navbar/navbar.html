@@ -28,9 +28,14 @@
             <button x-data @click="getSearchModal().open()">
               <svg xmlns="http://www.w3.org/2000/svg" class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </button>
+            
+            {% component 'themeToggler' / %}
 
-           {% component 'themeToggler' / %}
-
+            <!-- search icon -->
+            <button x-data @click="routes.weeks()">
+               <span class="text-xs font-medium link">Weeks</span>
+            </button>
+            
           <!-- <a href="https://flowbite.com" class="flex ms-2 md:me-24">
             <img src="" class="h-8 me-3" alt="FlowBite Logo" />
             <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">XPENSE</span>

@@ -57,6 +57,10 @@ class Routes{
         this.router.navigate('seeDaySkeleton', `/days/${date}/`);
         document.getElementById('pageHeading').textContent = pageHeading;
     }
+    weeks(){
+        this.router.navigate('/weeks/');
+        document.getElementById('pageHeading').textContent = 'Weeks';
+    }
 }
 
 const router = new Router();

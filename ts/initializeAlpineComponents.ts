@@ -2,6 +2,7 @@ import { categoryPublisher, fetchJSONData, globalEventEmitter, getSidebar} from 
 import { modalManager, handleCloseModal } from "./modals";
 import { datePickerManager, selectFieldManager } from "./selectField";
 import Alpine from "alpinejs";
+import { router } from "./router";
 
 function createModalInstance(id: string){
     return {
@@ -149,11 +150,12 @@ function initializeFlowbite(){
 }
 
 function restoreHistory(e:PopStateEvent){
-  if(e.state){
+  const currentPath = window.location.pathname;
+  if(e.state && currentPath in router.routes){
     document.getElementById('main-content').innerHTML = e.state.html;
-    if(window.location.pathname == '/dashboard/'){
-      globalEventEmitter.emit('popstate');
-    }
+    // if(window.location.pathname == '/dashboard/'){
+    //   globalEventEmitter.emit('popstate');
+    // }
   }
   initializeFlowbite();
 };

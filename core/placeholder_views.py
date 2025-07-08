@@ -95,6 +95,8 @@ class Weeks(View):
         The actual content is loaded by the Records view in core/views.py.
     """
     def get(self, request):
-        context = getRecordSkeletonContext()
+        context = {
+            'pageHeading': 'Weeks'
+        }
         return render(request, 'core/pages/weeks.html', context)
        
