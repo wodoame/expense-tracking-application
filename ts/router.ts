@@ -10,6 +10,7 @@ class Router{
         this.routes = data;
     }
     navigate(route: string, forcedRoute?:string){
+        // console.log(document.getElementById('main-content').innerHTML);
         history.replaceState({html: document.getElementById('main-content').innerHTML}, '') // store html for the current page
         history.pushState(null, '', forcedRoute?forcedRoute:route); // push url for the next page
         this.currentRoute = forcedRoute?forcedRoute:route;

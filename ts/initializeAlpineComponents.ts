@@ -3,7 +3,7 @@ import { modalManager, handleCloseModal } from "./modals";
 import { datePickerManager, selectFieldManager } from "./selectField";
 import Alpine from "alpinejs";
 import { router } from "./router";
-
+import { weeksRecordsStore } from "../core/templates/core/components/weeksRecords";
 function createModalInstance(id: string){
     return {
         isOpen: false,
@@ -152,7 +152,14 @@ function initializeFlowbite(){
 function restoreHistory(e:PopStateEvent){
   const currentPath = window.location.pathname;
   if(e.state && currentPath in router.routes){
-    document.getElementById('main-content').innerHTML = e.state.html;
+    if(currentPath == '/weeks/'){
+      weeksRecordsStore.useCachedData = true; // set the flag to true so that the component can use cached data
+      document.getElementById('main-content').innerHTML = router.routes['/weeks/'];
+      document.getElementById('pageHeading').textContent = 'Weeks';
+    }
+    else{
+      document.getElementById('main-content').innerHTML = e.state.html;
+    }
     // if(window.location.pathname == '/dashboard/'){
     //   globalEventEmitter.emit('popstate');
     // }
