@@ -46,6 +46,12 @@ export class WeeksChart extends BaseElement{
     }
    }
 
+   getGridOptions(){
+    return {
+      borderColor: this.getisDark() ? '#f3f4f60d' : '#e5e7eb',
+    }
+   }
+
    getisDark(){
     return document.documentElement.classList.contains('dark');
    }
@@ -63,6 +69,7 @@ renderChart(){
         enabled: false // Disables zooming
         }
     },
+    grid: this.getGridOptions(),
     stroke: {
     curve: 'smooth',
     width: 1
@@ -109,7 +116,8 @@ updateColors(){
                     style: this.getLabelsStyleOptions()
                 }
             }, 
-            tooltip: this.getToolTipOptions()
+            tooltip: this.getToolTipOptions(), 
+            grid: this.getGridOptions()
         });
     }
 }
