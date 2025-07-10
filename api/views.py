@@ -195,8 +195,13 @@ class ErrorLogs(APIView):
 class GetWeeklySpendings(APIView):
     def get(self, request):
         user = request.user
+        limit = request.query_params.get('limit')
+        query = user.weekly_spendings.all().order_by('-week_start')
+        if limit: 
+            query = query[:int(limit)]
+        
         try:
-            weekly_spendings = WeeklySpendingSerializer(user.weekly_spendings.all().order_by('-week_start'), many=True).data
+            weekly_spendings = WeeklySpendingSerializer(query, many=True).data
             return Response(weekly_spendings, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
