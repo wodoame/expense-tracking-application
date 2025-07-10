@@ -45,7 +45,7 @@ export class WeeksRecords extends BaseElement {
                 ${entry.week_start} - ${entry.week_end}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                    ${entry.total_amount}
+                    GHS ${entry.total_amount}
                 </td>
             </tr>
         `)

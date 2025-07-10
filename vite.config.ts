@@ -5,7 +5,10 @@ export default defineConfig({
     outDir: 'core/static/js/vite', 
     rollupOptions: {
       output: {
-        entryFileNames: 'bundle.js'
+        entryFileNames: 'bundle.js', 
+        manualChunks: {
+          vendor: ['alpinejs', 'lit', 'apexcharts']
+        }
       }
     }
   }

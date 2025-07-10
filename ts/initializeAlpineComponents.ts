@@ -4,6 +4,7 @@ import { datePickerManager, selectFieldManager } from "./selectField";
 import Alpine from "alpinejs";
 import { router } from "./router";
 import { weeksRecordsStore } from "../core/templates/core/components/weeksRecords";
+import { weeklyChartData } from "../core/templates/core/components/weeksChart";
 function createModalInstance(id: string){
     return {
         isOpen: false,
@@ -158,6 +159,9 @@ function restoreHistory(e:PopStateEvent){
       document.getElementById('pageHeading').textContent = 'Weeks';
     }
     else{
+      if(currentPath == '/dashboard/'){
+         weeklyChartData.useCachedData = true; // use cached data when navigating back to dashboard
+      }
       document.getElementById('main-content').innerHTML = e.state.html;
     }
     // if(window.location.pathname == '/dashboard/'){

@@ -13,15 +13,15 @@
 
 {% include 'core/components/statSummarySkeleton2.html' %}
 
-{% comment %}
-<!-- chart -->
-<div>
-    {% component 'chart' / %}
-</div>
-<!-- /chart -->
-{% endcomment %}
         
-        <!-- begin activity -->
+<div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start">
+   <div class="p-4 bg-gray-50 dark:bg-dark2 dark:border-darkborder rounded-md border">
+      <p class="font-bold p-2 text-gray-700 dark:text-gray-400 py-1">Weekly trend</p>
+      <weeks-chart></weeks-chart>
+   </div>
+   <div class="p-4 hidden md:block bg-gray-50 h-full dark:bg-dark2 dark:border-darkborder rounded-md border">
+   </div>
+</div> 
 <div class="grid grid-cols-1 mt-4 md:grid-cols-2 gap-4 items-start" id="product-items">
   <!-- today  -->
    {% include 'core/components/records.html' with products=today date=dateToday total=todayTotal only %}
@@ -30,7 +30,6 @@
    {% include 'core/components/records.html' with products=yesterday date=dateYesterday total=yesterdayTotal only %}
 
 </div> 
-<!-- activity -->
 
 <div class="my-12" hx-get="/components/activityCalendar/" hx-trigger="load">
     <div>
@@ -39,4 +38,3 @@
 </div>
 
 {% component 'toastWrapper' / %}
-<script>generateGraph()</script>

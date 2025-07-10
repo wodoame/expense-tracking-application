@@ -143,7 +143,6 @@ const getSidebar = (()=>{
 }
 
 const globalEventEmitter = new EventEmitter();
-globalEventEmitter.addEventListener('popstate', generateGraph);
 
 export {
     categoryPublisher,
