@@ -452,7 +452,7 @@ class Search(View):
 class SearchResults(View):
     def get(self, request):
         print(request.GET)
-        query = request.GET.get('query').strip()
+        query = request.GET.get('query').lower().strip()
         page_number = int(request.GET.get('page_number', 1))
         user = request.user
         data = APISearch.search_products(query, user, page_number)
