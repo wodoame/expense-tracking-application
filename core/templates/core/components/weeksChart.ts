@@ -127,7 +127,7 @@ updateColors(){
 }
 
 async fetchData(){
-    if(weeklyChartData.useCachedData || weeklyChartData.data){
+    if(weeklyChartData.useCachedData && weeklyChartData.data){
         this.data = weeklyChartData.data // this data is assumed to be already sorted
         weeklyChartData.useCachedData = false // reset this so we can fetch again
     }
