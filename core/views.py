@@ -15,12 +15,10 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from urllib.parse import urlparse, unquote, quote
 from django.core.cache import cache
-from .placeholder_views import AllExpenditures
 import re
 from .user_settings_schemas import * 
 from api.utils import indexEventEmitter
 from api.views import Search as APISearch
-from django.forms.forms import ValidationError
 
 class RedirectView(View):
     def get(self, request):
@@ -329,9 +327,7 @@ class Settings(View):
 class Test(View):
     def get(self, request):
         context = {}
-        use_date = request.user.products.last().date
-        res = MonthlySpending.update_monthly_spending(request.user, use_date)
-        print(res)
+        decryptAllProducts()
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 

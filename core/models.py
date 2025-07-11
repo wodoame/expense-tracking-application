@@ -2,10 +2,9 @@ from django.db import models
 from django.db.models import Sum
 from django.db.models.functions import TruncWeek, TruncMonth
 from authentication.models import User
-from .encryption import EncryptionHelper
-from django.conf import settings 
 from django.utils import timezone
 from datetime import timedelta, datetime
+
 class Category(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories', null=True)
     name = models.CharField(max_length=25)
@@ -26,26 +25,15 @@ class Product(models.Model):
         ordering = ['-date']
     
     def __str__(self):
-        return self.encryption_helper.decrypt(self.name)
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.encryption_helper = EncryptionHelper(key=settings.ENCRYPTION_KEY)
-
-    def save(self, *args, **kwargs):
-        # Encrypt sensitive fields before saving
-        if not self.encryption_helper.is_encrypted(self.name):
-            self.name = self.encryption_helper.encrypt(self.name)
-        if not self.encryption_helper.is_encrypted(self.description): 
-            self.description = self.encryption_helper.encrypt(self.description)
-        super().save(*args, **kwargs)
-
+        return self.name
+    
     def get_name(self):
         # Decrypt the item name when needed
-        return self.encryption_helper.decrypt(self.name)
+        return self.name
 
     def get_description(self):
         # Decrypt the description when needed
-        return self.encryption_helper.decrypt(self.description)
+        return self.description
     
 class Settings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')

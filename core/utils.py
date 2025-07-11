@@ -12,6 +12,8 @@ from collections.abc import Callable
 from django.http import HttpRequest
 from datetime import datetime, date
 from urllib.parse import quote 
+from core.encryption import EncryptionHelper
+from django.conf import settings
 
 def record(date:date, request:HttpRequest) -> dict:
     user = request.user
@@ -76,6 +78,15 @@ def getAllProductsFromCache(user: User) -> list[dict]:
 def encryptAllProducts():
     for product in Product.objects.all(): 
         product.save() # saving indirectly encrypts the products
+        
+def decryptAllProducts():
+    encryption_helper = EncryptionHelper(key=settings.ENCRYPTION_KEY)
+    print('Decrypting all products...')
+    for product in Product.objects.all():
+        product.name = encryption_helper.decrypt(product.name)
+        product.description = encryption_helper.decrypt(product.description)
+        product.save()
+    print('All products decrypted successfully.')
 
 
 class EventEmitter:
