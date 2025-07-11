@@ -72,32 +72,11 @@ class Search(APIView):
 
         # Add documents to the index
         writer = ix.writer()
-        context = {}
-        get_for_current_page_only = False # fetch search results which are found on other pages than the current page_number
-        products = user.products.all()
-        paginator = Paginator(products, settings.SEARCH_PAGE_SIZE) # NOTE: recreate the index if you change the page size
-        latest_cached_page = cache.get(f'{user.username}-search-page')
-        print(f'{latest_cached_page=}')
-        if latest_cached_page is None or not isIndexed(ix, user.id): 
-            latest_cached_page = None
-            cache.set(f'{user.username}-search-page', latest_cached_page) # forcefully set it to None so that indexing can start all over again due to page_is_cached() returning False for page 1
-            os.makedirs(index_dir, exist_ok=True)
-            ix = index.create_in(index_dir, ix.schema)
-        if page_is_cached(user, page_number):
-            context['has_next_page'] = paginator.page(latest_cached_page).has_next() # check if the latest cached page has a next page
-            if context['has_next_page']:
-                context['next_page_number'] = latest_cached_page + 1
-        elif not page_is_cached(user, page_number):
-            cache.set(f'{user.username}-search-page', page_number)
-            print(f'page {page_number} not index, index products')
-            page = paginator.page(page_number)
-            get_for_current_page_only = True
-            context['has_next_page'] = page.has_next()
-            context['next_page_number'] = page.next_page_number() if page.has_next() else None
-            products = ProductSerializer(
-                page.object_list,
-                many=True,
-                ).data 
+        # If documents for this particular query exist for the user, then don't add them again
+        if not isIndexed(ix, user.id, query):
+            sqlQuery =  Q(name__icontains=query) | Q(description__icontains=query)
+            products = ProductSerializer(user.products.filter(sqlQuery).order_by('-date'), many=True).data
+            print('len(products): ', len(products))
             for product in products:
                 writer.add_document(
                     id=product.get('id'),
@@ -106,9 +85,10 @@ class Search(APIView):
                     name=product.get('name'),
                     description=product.get('description'),
                     date=product.get('date'),
-                    category=product.get('category'), 
-                    price=product.get('price'), 
-                    page_number=str(page_number)
+                    category=product.get('category'),
+                    price=product.get('price'),
+                    page_number=str(page_number),
+                    query=query
                     ) 
             writer.commit()
 
@@ -121,17 +101,14 @@ class Search(APIView):
                 q = qp.parse(f'{query}~') # edit distance is 1
             else:
                 q = qp.parse(f'{query}')
-            if not get_for_current_page_only:
                 q = q & QueryParser('user_id', ix.schema).parse(str(user.id)) 
-            else: # If all products have not been indexed then we need to get only the products for the current page
-                q =  q & (QueryParser('page_number', ix.schema).parse(str(page_number)) & QueryParser('user_id', ix.schema).parse(str(user.id)))
+            
             print(q)
             results = searcher.search(q)
             data = {
                 'query': query, 
                 'type': 'Products',
                 'total': len(results),
-                'context': context,
                 'results': [
                  {
                     'id': result.get('id'),

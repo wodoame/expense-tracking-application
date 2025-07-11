@@ -48,17 +48,14 @@ def updateIndex(product:dict, method='update'):
             writer.delete_by_term('doc_id', str(product.get('id')))
         writer.commit() 
     
-def isIndexed(ix:index.Index, user_id:int):
+def isIndexed(ix:index.Index, user_id:int, query:str):
     # Step 1: search for an item with the user's id
     # Step 2: If at least one exists then items have been indexed
-    q = QueryParser('user_id', ix.schema).parse(str(user_id))
+    q = QueryParser('user_id', ix.schema).parse(str(user_id)) & QueryParser('query', ix.schema).parse(query)
+    print('isIndexed query: ', q)
     with ix.searcher() as searcher:
         results = searcher.search(q, limit=1)
         return not results.is_empty()
-    
-def page_is_cached(user: User, page_number):
-    res = cache.get(f'{user.username}-search-page')
-    return (res is not None) and page_number <= res
         
 def getCurrentProductSchema(): 
     # Define the schema
@@ -72,6 +69,7 @@ def getCurrentProductSchema():
         category=STORED,
         price=STORED, 
         page_number=ID, # page number the search result exists on
+        query=ID
         )
     return schema
 
