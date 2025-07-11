@@ -1637,6 +1637,10 @@ video {
   fill: #0d9488;
 }
 
+.stroke-blue-500 {
+  stroke: #3b82f6;
+}
+
 .stroke-current {
   stroke: currentColor;
 }

@@ -56,6 +56,28 @@ export class WeeksChart extends BaseElement{
     return document.documentElement.classList.contains('dark');
    }
 
+   getXaxisOptions(){
+    return {
+      labels: {
+        style: this.getLabelsStyleOptions()
+      },
+      axisBorder: {
+        color: this.getisDark() ? '#f3f4f60d' : '#e5e7eb'
+      }, 
+      axisTicks: {
+        color: this.getisDark() ? '#f3f4f60d' : '#e5e7eb'
+      }
+    };
+  }
+
+  getYaxisOptions(){
+    return {
+      labels: {
+        style: this.getLabelsStyleOptions()
+      }
+    };
+  }
+
 renderChart(){
 // Detect dark mode (using Tailwind's 'dark' class on <html>)
 
@@ -78,17 +100,8 @@ renderChart(){
       name: 'Weekly Spendings',
       data: this.data.map((entry)=>entry.total_amount)
     }],
-    xaxis: {
-    //   categories: [1991,1992,1993,1994,1995,1996,1997,1998,1999], 
-      labels: {
-        style: this.getLabelsStyleOptions()
-      }
-    }, 
-    yaxis: {
-      labels: {
-        style: this.getLabelsStyleOptions()
-      }
-    },
+    xaxis: this.getXaxisOptions(),
+    yaxis: this.getYaxisOptions(),
     tooltip: this.getToolTipOptions()
  };
 
@@ -105,17 +118,8 @@ updateColors(){
   
     if (this.chart) {
         this.chart.updateOptions({
-            xaxis: {
-            // categories: [1991,1992,1993,1994,1995,1996,1997,1998,1999], 
-            labels: {
-                style: this.getLabelsStyleOptions()
-            }
-            }, 
-            yaxis: {
-                labels: {
-                    style: this.getLabelsStyleOptions()
-                }
-            }, 
+            xaxis: this.getXaxisOptions(),
+            yaxis: this.getYaxisOptions(),
             tooltip: this.getToolTipOptions(), 
             grid: this.getGridOptions()
         });
@@ -141,6 +145,7 @@ async fetchData(){
 }
 
 firstUpdated() {
+    this.ready = false; 
     this.renderChart();
     this.fetchData();
 
@@ -188,7 +193,7 @@ firstUpdated() {
           ">
             ${
                 svg`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="#888" size="40" class="lucide lucide-loader animate-spin"><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path d="M12 18v4"></path><path d="m4.9 19.1 2.9-2.9"></path><path d="M2 12h4"></path><path d="m4.9 4.9 2.9 2.9"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="#888" size="40" class="lucide lucide-loader animate-spin stroke-blue-500"><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path d="M12 18v4"></path><path d="m4.9 19.1 2.9-2.9"></path><path d="M2 12h4"></path><path d="m4.9 4.9 2.9 2.9"></path></svg>
                 `}
           </div>
         ` : null}

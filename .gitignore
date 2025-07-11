@@ -11,3 +11,6 @@ trial.py
 products_index/
 product_schema_id.txt
 docs/personal
+.vscode/
+.venv/
+venv/
