@@ -10,6 +10,7 @@ from core.datechecker import datefromisoformat
 from django.core.cache import cache
 from rest_framework import status
 from .models import ErrorLog
+from django.core.paginator import Paginator
 
 class Status(APIView):
     def get(self, request):
@@ -47,7 +48,9 @@ class Search(APIView):
     @staticmethod
     def search_products(query:str, user: User, page_number: int) -> dict:        
         sqlQuery =  Q(name__icontains=query) | Q(description__icontains=query)
-        products = ProductSerializer(user.products.filter(sqlQuery).order_by('-date'), many=True).data
+        limit = 10
+        paginator = Paginator(user.products.filter(sqlQuery).order_by('-date'), limit)
+        products = ProductSerializer(paginator.page(page_number).object_list, many=True).data
         data = {
             'query': query, 
             'type': 'Products',
