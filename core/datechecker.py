@@ -150,13 +150,13 @@ def get_color_ratios(year, month, df: pd.DataFrame):
     return ratios
 
 def get_activity_in_last_year(request):
-    from .utils import getAllProductsFromCache # had to avoid some circular import issues
+    from .utils import get_products_in_the_last_year 
     dateToday = datetime.today()
     year = dateToday.year
     month = dateToday.month
     activity = []
     user = request.user
-    products = getAllProductsFromCache(user) # TODO: get products bought in the last year and not all products
+    products = get_products_in_the_last_year(user)
     df = pd.DataFrame(products)
     if not df.empty:
         df['date'] = pd.to_datetime(df['date'], format='ISO8601')

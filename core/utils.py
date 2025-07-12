@@ -10,7 +10,7 @@ from django.db.models import Min
 from authentication.models import User
 from collections.abc import Callable
 from django.http import HttpRequest
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from urllib.parse import quote 
 from core.encryption import EncryptionHelper
 from django.conf import settings
@@ -67,11 +67,11 @@ def getCategoriesSkeletonContext():
         'card_count': range(5)
     }
 
-def getAllProductsFromCache(user: User) -> list[dict]:
-    products = cache.get(f'all-products-{user.username}')
+def get_products_in_the_last_year(user: User) -> list[dict]:
+    products = cache.get(f'products-in-last-year-{user.username}')
     if products is None:
-        products = ProductSerializer(user.products.all(), many=True).data
-        cache.set(f'all-products-{user.username}', products)
+        products = ProductSerializer(user.products.filter(date__gte=datetime.today() - timedelta(days=365), date__lte=datetime.today()), many=True).data
+        cache.set(f'products-in-last-year-{user.username}', products)
     return products
         
 
