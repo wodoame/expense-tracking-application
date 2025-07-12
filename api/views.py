@@ -4,9 +4,6 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from core.models import *
 from django.db.models import Q
-from whoosh import index
-from whoosh.qparser import MultifieldParser, OrGroup, QueryParser
-import os
 from .utils import * 
 from core.templatetags.custom_filters import dateOnly, timesince
 from core.datechecker import datefromisoformat
@@ -49,59 +46,27 @@ class Search(APIView):
     
     @staticmethod
     def search_products(query:str, user: User, page_number: int) -> dict:        
-        schema = getCurrentProductSchema()
-        
-        # Always create a new index
-        index_dir = 'products_index'
-        os.makedirs(index_dir, exist_ok=True)
-        ix = index.create_in(index_dir, schema)
-
-        # Add documents to the index
-        writer = ix.writer()
-        # If documents for this particular query exist for the user, then don't add them again
         sqlQuery =  Q(name__icontains=query) | Q(description__icontains=query)
         products = ProductSerializer(user.products.filter(sqlQuery).order_by('-date'), many=True).data
-        print('len(products): ', len(products))
-        for product in products:
-            writer.add_document(
-                id=product.get('id'),
-                doc_id=str(product.get('id')),
-                user_id=str(product.get('user')),
-                name=product.get('name'),
-                description=product.get('description'),
-                date=product.get('date'),
-                category=product.get('category'),
-                price=product.get('price'),
-                page_number=str(page_number),
-                ) 
-        writer.commit()
+        data = {
+            'query': query, 
+            'type': 'Products',
+            'total': len(products),
+            'results': [
+                {
+                'id': product.get('id'),
+                'name': product.get('name'),
+                'description': product.get('description'),
+                'date': dateOnly(product.get('date')),
+                'raw_date': datetime.fromisoformat(product.get('date')).strftime('%Y-%m-%d'),
+                'price': product.get('price'),
+                'category': product.get('category'),
+                'date_timesince': timesince(datefromisoformat(product.get('date')).date())
+                }
+            for product in products]
+        }
+        return data
 
-        with ix.searcher() as searcher:
-            qp = MultifieldParser(['name', 'description'], ix.schema, group=OrGroup)
-            q = qp.parse(f'{query}')
-            q = q & QueryParser('user_id', ix.schema).parse(str(user.id)) 
-            
-            print(q)
-            results = searcher.search(q)
-            data = {
-                'query': query, 
-                'type': 'Products',
-                'total': len(results),
-                'results': [
-                 {
-                    'id': result.get('id'),
-                    'name': result.get('name'),
-                    'description': result.get('description'),
-                    'date': dateOnly(result.get('date')),
-                    'raw_date': datetime.fromisoformat(result.get('date')).strftime('%Y-%m-%d'),
-                    'price': result.get('price'),
-                    'category': result.get('category'),
-                    'date_timesince': timesince(datefromisoformat(result.get('date')).date())
-                 }
-                for result in results]
-            }
-            return data
-    
 class ClearCache(APIView):
     def get(self, request):
         cache.clear()
