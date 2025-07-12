@@ -30,7 +30,7 @@ def updateIndex(product:dict, method='update'):
         return
     
     ix = index.open_dir(index_dir)
-    if isIndexed(ix, product.get('user')):
+    if isIndexed(ix, product.get('user'), ''):
         writer = ix.writer()
         if method == 'update':
             writer.update_document(
