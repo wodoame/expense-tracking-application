@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from core.models import *
 from django.db.models import Q
 from whoosh import index
-from whoosh.qparser import MultifieldParser, OrGroup, FuzzyTermPlugin, QueryParser
+from whoosh.qparser import MultifieldParser, OrGroup, QueryParser
 import os
 from .utils import * 
 from core.templatetags.custom_filters import dateOnly, timesince
@@ -13,9 +13,6 @@ from core.datechecker import datefromisoformat
 from django.core.cache import cache
 from rest_framework import status
 from .models import ErrorLog
-from django.core.paginator import Paginator
-from django.conf import settings
-
 
 class Status(APIView):
     def get(self, request):
@@ -51,57 +48,38 @@ class Search(APIView):
         return data
     
     @staticmethod
-    def search_products(query:str, user: User, page_number: int) -> dict:
-        schema_id_file = 'product_schema_id.txt'
-        if not os.path.exists(schema_id_file):
-            setSchemaId(schema_id_file, -1)
-        
-        product_schema_id, created = KeyValuePair.objects.get_or_create(key='product_schema_id', defaults={'value':'0'})
-        # Recreate index if schema ids stored in the file and database don't match
-        if int(getSchemaId(schema_id_file)) != int(product_schema_id.value):
-            recreate_index('products_index', schema_id_file, getCurrentProductSchema(), product_schema_id.value)
-            
+    def search_products(query:str, user: User, page_number: int) -> dict:        
         schema = getCurrentProductSchema()
-        # Create or open the index
+        
+        # Always create a new index
         index_dir = 'products_index'
-        if not index.exists_in(index_dir):
-            os.makedirs(index_dir, exist_ok=True)
-            ix = index.create_in(index_dir, schema)
-        else:
-            ix = index.open_dir(index_dir)
+        os.makedirs(index_dir, exist_ok=True)
+        ix = index.create_in(index_dir, schema)
 
         # Add documents to the index
         writer = ix.writer()
         # If documents for this particular query exist for the user, then don't add them again
-        if not isIndexed(ix, user.id, query):
-            sqlQuery =  Q(name__icontains=query) | Q(description__icontains=query)
-            products = ProductSerializer(user.products.filter(sqlQuery).order_by('-date'), many=True).data
-            print('len(products): ', len(products))
-            for product in products:
-                writer.add_document(
-                    id=product.get('id'),
-                    doc_id=str(product.get('id')),
-                    user_id=str(product.get('user')),
-                    name=product.get('name'),
-                    description=product.get('description'),
-                    date=product.get('date'),
-                    category=product.get('category'),
-                    price=product.get('price'),
-                    page_number=str(page_number),
-                    query=query
-                    ) 
-            writer.commit()
+        sqlQuery =  Q(name__icontains=query) | Q(description__icontains=query)
+        products = ProductSerializer(user.products.filter(sqlQuery).order_by('-date'), many=True).data
+        print('len(products): ', len(products))
+        for product in products:
+            writer.add_document(
+                id=product.get('id'),
+                doc_id=str(product.get('id')),
+                user_id=str(product.get('user')),
+                name=product.get('name'),
+                description=product.get('description'),
+                date=product.get('date'),
+                category=product.get('category'),
+                price=product.get('price'),
+                page_number=str(page_number),
+                ) 
+        writer.commit()
 
         with ix.searcher() as searcher:
             qp = MultifieldParser(['name', 'description'], ix.schema, group=OrGroup)
-            
-            # Perform a fuzzy search if it's just one word in the query (No special reason)
-            if len(query.split(' ')) == 1:
-                qp.add_plugin(FuzzyTermPlugin())
-                q = qp.parse(f'{query}~') # edit distance is 1
-            else:
-                q = qp.parse(f'{query}')
-                q = q & QueryParser('user_id', ix.schema).parse(str(user.id)) 
+            q = qp.parse(f'{query}')
+            q = q & QueryParser('user_id', ix.schema).parse(str(user.id)) 
             
             print(q)
             results = searcher.search(q)
@@ -123,14 +101,6 @@ class Search(APIView):
                 for result in results]
             }
             return data
-        
-class RecreateIndexes(APIView):
-    def get(self, request):
-        product_schema_id, created = KeyValuePair.objects.get_or_create(key='product_schema_id', defaults={'value': '0'})
-        if not created:
-            product_schema_id.value = str(int(product_schema_id.value) + 1)
-            product_schema_id.save()
-        return Response({'message': 'success'})
     
 class ClearCache(APIView):
     def get(self, request):

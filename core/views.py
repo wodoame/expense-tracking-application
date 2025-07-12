@@ -17,7 +17,6 @@ from urllib.parse import urlparse, unquote, quote
 from django.core.cache import cache
 import re
 from .user_settings_schemas import * 
-from api.utils import indexEventEmitter
 from api.views import Search as APISearch
 
 class RedirectView(View):
@@ -115,8 +114,6 @@ class Dashboard(View):
                 if category is not None:
                     cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
                     cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}")
-
-                indexEventEmitter.emit('product_updated', serializedProduct)
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
@@ -142,7 +139,6 @@ class Dashboard(View):
             form.save()
             emitter.emit('products_updated', request, dates=[product.date.date()])
             serializedProduct =  ProductSerializer(product).data
-            indexEventEmitter.emit('product_updated', serializedProduct)
             category:dict | None = serializedProduct.get('category')
             if category is not None:
                 cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
@@ -173,7 +169,6 @@ class Dashboard(View):
             serializedProduct =  ProductSerializer(product).data
             category:dict | None = serializedProduct.get('category')
             product.delete()
-            indexEventEmitter.emit('product_updated', serializedProduct, method='delete')
             if category is not None:
                 cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
                 cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}")
