@@ -48,7 +48,6 @@ class GetActivityInLastYearTests(DateCheckerTestCase):
         
     @patch('core.utils.get_products_in_the_last_year')
     def test_get_activity_in_last_year_with_products(self, mock_get_products):
-        now = datetime.now()
         products = ProductSerializer(create_random_products(self.user, 5), many=True).data
         mock_get_products.return_value = products
         activities = get_activity_in_last_year(self.mock_request)
