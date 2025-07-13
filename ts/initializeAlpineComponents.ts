@@ -3,8 +3,7 @@ import { modalManager, handleCloseModal } from "./modals";
 import { datePickerManager, selectFieldManager } from "./selectField";
 import Alpine from "alpinejs";
 import { router } from "./router";
-import { weeksRecordsStore } from "../core/templates/core/components/weeksRecords";
-import { weeklyChartData } from "../core/templates/core/components/weeksChart";
+import { hh } from "./history";
 function createModalInstance(id: string){
     return {
         isOpen: false,
@@ -152,22 +151,7 @@ function initializeFlowbite(){
 
 function restoreHistory(e:PopStateEvent){
   const currentPath = window.location.pathname;
-  if(e.state && currentPath in router.routes){
-    if(currentPath == '/weeks/'){
-      weeksRecordsStore.useCachedData = true; // set the flag to true so that the component can use cached data
-      document.getElementById('main-content').innerHTML = router.routes['/weeks/'];
-      document.getElementById('pageHeading').textContent = 'Weeks';
-    }
-    else{
-      if(currentPath == '/dashboard/'){
-         weeklyChartData.useCachedData = true; // use cached data when navigating back to dashboard
-      }
-      document.getElementById('main-content').innerHTML = e.state.html;
-    }
-    // if(window.location.pathname == '/dashboard/'){
-    //   globalEventEmitter.emit('popstate');
-    // }
-  }
+  if(currentPath in router.routes)hh.handle(currentPath, e);
   initializeFlowbite();
 };
 document.addEventListener('htmx:afterSettle', initializeFlowbite);
