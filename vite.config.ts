@@ -7,7 +7,7 @@ export default defineConfig({
       output: {
         entryFileNames: 'bundle.js', 
         manualChunks: {
-          vendor: ['alpinejs', 'lit', 'apexcharts']
+          vendor: ['alpinejs', 'lit', 'apexcharts', 'flowbite']
         }
       }
     }

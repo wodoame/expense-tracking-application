@@ -72,9 +72,15 @@ function createSelectFieldInstance(id: string){
         this.isFocused = false;
       }, 
       filter(e:Event){
-          this.filtered = this.items.filter((obj)=> (<string>obj.name).toLowerCase().includes((<HTMLInputElement>e.currentTarget).value.toLowerCase())); 
+          const query = (<HTMLInputElement>e.currentTarget).value.toLowerCase();
+          this.filtered = this.items.filter((obj)=> (<string>obj.name).toLowerCase().includes(query)); 
           if(this.filtered.length == 0){
              this.newSearch = (<HTMLInputElement>e.currentTarget).value; 
+             this.newCategory={id:0, name:this.newSearch};
+             this.select(this.newCategory);
+          }
+          else{
+            this.open(); // open dropdown if there's a match
           }
       }, 
       select(selected:object){
