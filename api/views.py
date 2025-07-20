@@ -111,14 +111,19 @@ class GetWeeklySpendings(APIView):
     def get(self, request):
         user = request.user
         limit = request.query_params.get('limit')
+        page = int(request.query_params.get('page', 1))
         query = user.weekly_spendings.all().order_by('-week_start')
         if limit: 
             query = query[:int(limit)]
-        
+        paginator = Paginator(query, 10)
+        number_of_pages = paginator.num_pages
         try:
-            weekly_spendings = WeeklySpendingSerializer(query, many=True).data
-            return Response(weekly_spendings, status=status.HTTP_200_OK)
+            weekly_spendings = WeeklySpendingSerializer(paginator.page(page).object_list, many=True).data
+            return Response({
+                'weekly_spendings': weekly_spendings,
+                'current_page': page,
+                'number_of_pages': number_of_pages
+            }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
     
