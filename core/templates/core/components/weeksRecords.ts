@@ -5,11 +5,15 @@ import { routes } from "../../../../ts/router";
 import { fetchJSONData } from "../../../../ts/utils";
 export interface WeekRecordsStore{
   data: Array<any> | undefined;
+  currentPages: number;
+  numberOfPages: number;
   useCachedData: boolean;
 }
 
 export const weeksRecordsStore = {
   data: undefined, 
+  currentPages: 1,
+  numberOfPages: 1, 
   useCachedData: false
 } as WeekRecordsStore;
 
@@ -47,6 +51,8 @@ export class WeeksRecords extends BaseElement {
      async fetchData() {
         if(weeksRecordsStore.useCachedData && weeksRecordsStore.data){
           this.data = weeksRecordsStore.data;
+          this.numberOfPages = weeksRecordsStore.numberOfPages;
+          this.currentPage = weeksRecordsStore.currentPages;
           weeksRecordsStore.useCachedData = false; // reset the flag after using cached data (it's set to true only when the user navigates back to the page)
         }
         else{
@@ -55,6 +61,8 @@ export class WeeksRecords extends BaseElement {
           this.numberOfPages = data.number_of_pages;
           this.currentPage = data.current_page;
           weeksRecordsStore.data = this.data;
+          weeksRecordsStore.numberOfPages = this.numberOfPages;
+          weeksRecordsStore.currentPages = this.currentPage;
         }
         this.ready = true;
 
