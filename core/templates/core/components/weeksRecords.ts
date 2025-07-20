@@ -1,10 +1,8 @@
 import { BaseElement } from "./baseElement";
 import { html} from "lit";
 import { customElement, property } from "lit/decorators.js";
-import Alpine from "alpinejs";
-import { fetchTextData } from "./utils/core";
 import { routes } from "../../../../ts/router";
-
+import { fetchJSONData } from "../../../../ts/utils";
 export interface WeekRecordsStore{
   data: Array<any> | undefined;
   useCachedData: boolean;
@@ -19,6 +17,32 @@ export const weeksRecordsStore = {
 export class WeeksRecords extends BaseElement {
     @property({ type: Array }) accessor data: Array<any> = [];
     @property({ type: Boolean }) accessor ready: boolean = false;
+    @property({ type: Number }) accessor currentPage: number = 1;
+    @property({ type: Number }) accessor numberOfPages: number = 1;
+
+    nextPage(){
+      if (this.currentPage < this.numberOfPages) {
+          this.ready = false;
+          this.currentPage++;
+          this.fetchData();
+      }
+    }
+
+    prevPage(){
+      if (this.currentPage > 1) {
+          this.ready = false;
+          this.currentPage--;
+          this.fetchData();
+      }
+    }
+
+    getPage(page: number){
+      if(page >= 1 && page <= this.numberOfPages && page !== this.currentPage){
+        this.ready = false;
+        this.currentPage = page;
+        this.fetchData();
+      }
+    }
 
      async fetchData() {
         if(weeksRecordsStore.useCachedData && weeksRecordsStore.data){
@@ -26,14 +50,14 @@ export class WeeksRecords extends BaseElement {
           weeksRecordsStore.useCachedData = false; // reset the flag after using cached data (it's set to true only when the user navigates back to the page)
         }
         else{
-          const response = await fetch('/api/weekly-spendings/');
-          const data = await response.json();
-          this.data = data;
-          // Store the data in Alpine store for future use
+          const data = await fetchJSONData(`/api/weekly-spendings/?page=${this.currentPage}`);
+          this.data = data.weekly_spendings;
+          this.numberOfPages = data.number_of_pages;
+          this.currentPage = data.current_page;
           weeksRecordsStore.data = this.data;
+          this.ready = true;
         }
 
-        this.ready = true;
     }
 
     populateData(data: Array<any>){
@@ -107,7 +131,17 @@ export class WeeksRecords extends BaseElement {
           </div>
         </div>
       </div>
- </div>
-        `;
+    </div>
+    ${html`
+      <weeks-records-paginator
+      .nextFxn=${this.nextPage.bind(this)}
+      .prevFxn=${this.prevPage.bind(this)}
+      .getPageFxn=${this.getPage.bind(this)}
+      .currentPage=${this.currentPage}
+      .numberOfPages=${this.numberOfPages}
+      >
+      </weeks-records-paginator>`}
+    `;
     }
-}
+  }
+  

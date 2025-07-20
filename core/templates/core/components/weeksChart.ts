@@ -5,6 +5,7 @@ import ApexCharts from "apexcharts";
 import { fetchJSONData } from "../../../../ts/utils";
 import { createElement } from "lucide";
 import { Loader } from "lucide";
+import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
 export const weeklyChartData = {
     data: undefined, 
@@ -170,15 +171,9 @@ firstUpdated() {
     const spinnerSvg = createElement(Loader, { 
       color: "#888", 
       size: 40, 
-      class: "lucide lucide-loader animate-spin"
+      class: "lucide lucide-loader animate-spin stroke-blue-500"
     }).outerHTML;
-    /*
-    I tried using lit to render the svg but with 
-    lit you can only render a literal value and not the value contained in a variable
-    I had to just log it and copy the value
-    I must find a workaround
-    */ 
-    
+  
 
     return html`
     <div style="position:relative;">
@@ -192,9 +187,8 @@ firstUpdated() {
             z-index:10;
           ">
             ${
-                svg`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="#888" size="40" class="lucide lucide-loader animate-spin stroke-blue-500"><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path d="M12 18v4"></path><path d="m4.9 19.1 2.9-2.9"></path><path d="M2 12h4"></path><path d="m4.9 4.9 2.9 2.9"></path></svg>
-                `}
+              svg`${unsafeSVG(spinnerSvg)}`
+            }
           </div>
         ` : null}
         <div id="chart"></div>
