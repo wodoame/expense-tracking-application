@@ -133,8 +133,8 @@ async fetchData(){
         weeklyChartData.useCachedData = false // reset this so we can fetch again
     }
     else{
-        const data = await fetchJSONData('/api/weekly-spendings/?limit=10') as Array<any>;
-        this.data = data.sort((a: any, b: any) => new Date(a.week_start).getTime() - new Date(b.week_start).getTime());
+        const data = await fetchJSONData('/api/weekly-spendings/?limit=10');
+        this.data = data.weekly_spendings.sort((a: any, b: any) => new Date(a.week_start).getTime() - new Date(b.week_start).getTime());
         weeklyChartData.data = this.data;
     }
     // reverse the data based on entry.week_start to display the most recent week last

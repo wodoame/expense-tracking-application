@@ -55,8 +55,8 @@ export class WeeksRecords extends BaseElement {
           this.numberOfPages = data.number_of_pages;
           this.currentPage = data.current_page;
           weeksRecordsStore.data = this.data;
-          this.ready = true;
         }
+        this.ready = true;
 
     }
 
