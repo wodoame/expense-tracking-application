@@ -1,9 +1,14 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, redirect
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from .forms import UserCreationForm, UserAuthenticationForm
 from django.contrib import messages 
 from rest_framework import status
+import json
+from .schemas import UserModel
+from .models import User
+
 # Create your views here.
 class SignUp(View):
     '''the signup view'''
@@ -74,3 +79,51 @@ class Logout(View):
 def not_found_404(request, exception):
     '''404 page'''
     return render(request, 'auth/pages/404.html', {}, status=404)
+
+class AuthCallback(View):
+    '''Handles the OAuth callback from the authentication provider'''
+    
+    def get(self, request):
+        action = request.GET.get('action', 'signin')
+        print(action)
+        context = {
+            'action': action
+        }
+        '''Process the callback and redirect to the dashboard or signin page'''
+        return render(request, 'auth/pages/callback.html', context)
+
+    def post(self, request: HttpRequest):
+        data = json.loads(request.body)
+        action = request.GET.get('action') # signup or singin
+        if data:
+            user = UserModel(**data.get('user'))
+            if user.app_metadata.provider == 'google':
+                return self.authenticate_with_google(request, user, action)
+        return JsonResponse({'message': 'error', 'redirect': '/signin/'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    def authenticate_with_google(self, request: HttpRequest, user: UserModel, action:str):
+        '''Authenticate the user with Google and redirect to the dashboard'''
+        if action == 'signin':
+            django_user = User.objects.filter(email=user.email).first()
+            if django_user:
+                login(request, django_user)
+                return JsonResponse({'message': 'success', 'redirect': '/dashboard/'})
+        
+        if action == 'signup':
+            django_user = User.objects.filter(email=user.email).first() # already existing user may attempt to signup again
+            if not django_user:
+                django_user = self.create_user_from_google(user)
+            login(request, django_user)
+            return JsonResponse({'message': 'success', 'redirect': '/dashboard/'})
+        return JsonResponse({'message': 'error', 'redirect': '/signin/'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    def create_user_from_google(self, user: UserModel):
+        '''Create a new user from Google data'''
+        django_user = User.objects.create(
+            username=user.email.split('@')[0] + '_google',
+            email=user.email,
+            first_name=user.user_metadata.full_name or '',
+            last_name='',
+        )
+        django_user.set_unusable_password()
+        return django_user

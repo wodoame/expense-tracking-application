@@ -24,6 +24,7 @@ handler404 = 'authentication.views.not_found_404'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('auth/callback/', auth_views.AuthCallback.as_view(), name='auth-callback'),
     path('api/', include('api.urls')),
     path('implementations/', include('core.urls')),
     path('components/', include('core.component_urls')),
