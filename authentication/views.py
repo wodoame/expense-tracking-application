@@ -99,6 +99,7 @@ class AuthCallback(View):
             user = UserModel(**data.get('user'))
             if user.app_metadata.provider == 'google':
                 return self.authenticate_with_google(request, user, action)
+        messages.error(request, 'Authentication failed.')
         return JsonResponse({'message': 'error', 'redirect': '/signin/'}, status=status.HTTP_401_UNAUTHORIZED)
 
     def authenticate_with_google(self, request: HttpRequest, user: UserModel, action:str):
@@ -107,6 +108,7 @@ class AuthCallback(View):
             django_user = User.objects.filter(email=user.email).first()
             if django_user:
                 login(request, django_user)
+                messages.success(request, 'Welcome back!')
                 return JsonResponse({'message': 'success', 'redirect': '/dashboard/'})
         
         if action == 'signup':
@@ -114,7 +116,9 @@ class AuthCallback(View):
             if not django_user:
                 django_user = self.create_user_from_google(user)
             login(request, django_user)
+            messages.success(request, 'Welcome to Xpense!')
             return JsonResponse({'message': 'success', 'redirect': '/dashboard/'})
+        messages.error(request, 'Authentication failed.')
         return JsonResponse({'message': 'error', 'redirect': '/signin/'}, status=status.HTTP_401_UNAUTHORIZED)
     
     def create_user_from_google(self, user: UserModel):
