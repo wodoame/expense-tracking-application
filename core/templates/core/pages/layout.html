@@ -25,5 +25,13 @@
 
   <div id="toast-wrapper"></div>
   <div class="bg-gray-900/50  fixed inset-0 z-50 w-full hidden" id="animated-backdrop"></div>
-
+  <script>
+        function handleLogout() {
+            const spinner = document.getElementById('logout-spinner');
+            const btn = document.getElementById('logout-button');
+            spinner.classList.remove('hidden');
+            btn.disabled = true;
+            window.location.href = '/logout/';
+        }
+  </script>
 {% endblock %}
