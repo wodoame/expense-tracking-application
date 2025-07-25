@@ -6,6 +6,7 @@ const supabaseAnonKey = (import.meta as any).env.VITE_PUBLIC_SUPABASE_ANON_KEY; 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function signUpWithGoogle() {
+  localStorage.setItem('auth_action', 'signup');
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -14,9 +15,6 @@ async function signUpWithGoogle() {
       // Often, this is your Supabase callback URL, or a specific route in your app
       // that handles the OAuth callback (e.g., /auth/callback).
       redirectTo: `${window.location.origin}/auth/callback`, // Example: redirects to a specific callback route in your app
-      queryParams: {
-        action: 'signup'
-      }
     },
   });
 
@@ -28,6 +26,7 @@ async function signUpWithGoogle() {
   }
 }
 async function signInWithGoogle() {
+  localStorage.setItem('auth_action', 'signin');
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -36,9 +35,6 @@ async function signInWithGoogle() {
       // Often, this is your Supabase callback URL, or a specific route in your app
       // that handles the OAuth callback (e.g., /auth/callback).
       redirectTo: `${window.location.origin}/auth/callback`, // Example: redirects to a specific callback route in your app
-      queryParams: {
-        action: 'signin'
-      }
     },
   });
 

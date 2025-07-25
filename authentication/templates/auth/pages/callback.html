@@ -9,9 +9,10 @@
 </div>
 <script>
     async function handleAuthCallback() {
+        const authAction = localStorage.getItem('auth_action') || 'signin';
         const user = await getUser();
         if(user){
-            const response = await fetch('/auth/callback/?action={{ action }}', {
+            const response = await fetch(`/auth/callback/?action=${authAction}`, {
                 method: 'POST',
                 body: JSON.stringify(user), 
                 headers: {

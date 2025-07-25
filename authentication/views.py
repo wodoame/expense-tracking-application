@@ -84,13 +84,8 @@ class AuthCallback(View):
     '''Handles the OAuth callback from the authentication provider'''
     
     def get(self, request):
-        action = request.GET.get('action', 'signin')
-        print(action)
-        context = {
-            'action': action
-        }
         '''Process the callback and redirect to the dashboard or signin page'''
-        return render(request, 'auth/pages/callback.html', context)
+        return render(request, 'auth/pages/callback.html')
 
     def post(self, request: HttpRequest):
         data = json.loads(request.body)
