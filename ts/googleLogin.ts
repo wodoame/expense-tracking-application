@@ -13,7 +13,10 @@ async function signUpWithGoogle() {
       // It's where Google will send the user back after successful authentication.
       // Often, this is your Supabase callback URL, or a specific route in your app
       // that handles the OAuth callback (e.g., /auth/callback).
-      redirectTo: `${window.location.origin}/auth/callback?action=signup`, // Example: redirects to a specific callback route in your app
+      redirectTo: `${window.location.origin}/auth/callback`, // Example: redirects to a specific callback route in your app
+      queryParams: {
+        action: 'signup'
+      }
     },
   });
 
@@ -32,7 +35,10 @@ async function signInWithGoogle() {
       // It's where Google will send the user back after successful authentication.
       // Often, this is your Supabase callback URL, or a specific route in your app
       // that handles the OAuth callback (e.g., /auth/callback).
-      redirectTo: `${window.location.origin}/auth/callback?action=signin`, // Example: redirects to a specific callback route in your app
+      redirectTo: `${window.location.origin}/auth/callback`, // Example: redirects to a specific callback route in your app
+      queryParams: {
+        action: 'signin'
+      }
     },
   });
 
