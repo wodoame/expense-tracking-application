@@ -1,0 +1,35 @@
+{% include 'core/pages/base.html'   %}
+{% block content %}
+{% csrf_token %}
+<div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+  <svg id="signin-spinner" class="animate-spin h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+  </svg>
+</div>
+<script>
+    async function handleAuthCallback() {
+        const user = await getUser();
+        if(user){
+            const response = await fetch('/auth/callback/?action={{ action }}', {
+                method: 'POST',
+                body: JSON.stringify(user), 
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+            if (response.ok) {
+                    const data = await response.json();
+                    window.location.href = data.redirect;
+            } else {
+                const data = await response.json();
+                window.location.href = data.redirect;
+            }
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        handleAuthCallback();
+    });
+</script>
+{% endblock %}
