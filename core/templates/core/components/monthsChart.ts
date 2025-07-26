@@ -7,13 +7,13 @@ import { createElement } from "lucide";
 import { Loader } from "lucide";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
-export const weeklyChartData = {
+export const monthlyChartData = {
     data: undefined, 
     useCachedData: false
 }
 
-@customElement('weeks-chart')
-export class WeeksChart extends BaseElement{
+@customElement('months-chart')
+export class MonthsChart extends BaseElement{
    @property({ type: Array }) accessor data: Array<any> = [];
    @property({ type: Boolean }) accessor ready: boolean = false;
 
@@ -22,7 +22,7 @@ export class WeeksChart extends BaseElement{
 
    // Define the formatter as a class method
     private tooltipFormatter(value: any, { dataPointIndex }: { dataPointIndex: number }): string {
-    const categories = this.data.map((entry: any) => `${entry.week_start} - ${entry.week_end}`);
+    const categories = this.data.map((entry: any) => `${entry.month_start} - ${entry.month_end}`);
     return categories[dataPointIndex];
   }
 
@@ -92,6 +92,7 @@ renderChart(){
         enabled: false // Disables zooming
         }
     },
+    colors: ['#f97316'], // Orange color
     grid: this.getGridOptions(),
     stroke: {
     curve: 'smooth',
@@ -99,14 +100,15 @@ renderChart(){
     },
     markers: {
       size: 5,
-      // strokeColors: '#fff',
+      colors: ['#f97316'],
+    //   strokeColors: '#fff',
       strokeWidth: 0,
       hover: {
         size: 7,
       }
     },
     series: [{
-      name: 'Weekly Spendings',
+      name: 'Monthly Spendings',
       data: this.data.map((entry)=>entry.total_amount)
     }],
     xaxis: this.getXaxisOptions(),
@@ -136,18 +138,18 @@ updateColors(){
 }
 
 async fetchData(){
-    if(weeklyChartData.useCachedData && weeklyChartData.data){
-        this.data = weeklyChartData.data // this data is assumed to be already sorted
-        weeklyChartData.useCachedData = false // reset this so we can fetch again
+    if(monthlyChartData.useCachedData && monthlyChartData.data){
+        this.data = monthlyChartData.data // this data is assumed to be already sorted
+        monthlyChartData.useCachedData = false // reset this so we can fetch again
     }
     else{
-        const data = await fetchJSONData('/api/weekly-spendings/?limit=10');
-        this.data = data.weekly_spendings.sort((a: any, b: any) => new Date(a.week_start).getTime() - new Date(b.week_start).getTime());
-        weeklyChartData.data = this.data;
+        const data = await fetchJSONData('/api/monthly-spendings/?limit=10');
+        this.data = data.monthly_spendings.sort((a: any, b: any) => new Date(a.month_start).getTime() - new Date(b.month_start).getTime());
+        monthlyChartData.data = this.data;
     }
-    // reverse the data based on entry.week_start to display the most recent week last
+    // reverse the data based on entry.month_start to display the most recent month last
     this.chart.updateSeries([{
-        name: 'Weekly Spendings',
+        name: 'Monthly Spendings',
         data: this.data.map((entry) => entry.total_amount)
     }]); // Render the chart after fetching data
     this.ready = true;

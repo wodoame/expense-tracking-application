@@ -126,4 +126,24 @@ class GetWeeklySpendings(APIView):
             }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetMonthlySpendings(APIView):
+    def get(self, request):
+        user = request.user
+        limit = request.query_params.get('limit')
+        page = int(request.query_params.get('page', 1))
+        query = user.monthly_spendings.all().order_by('-month_start')
+        if limit: 
+            query = query[:int(limit)]
+        paginator = Paginator(query, 10)
+        number_of_pages = paginator.num_pages
+        try:
+            monthly_spendings = MonthlySpendingSerializer(paginator.page(page).object_list, many=True).data
+            return Response({
+                'monthly_spendings': monthly_spendings,
+                'current_page': page,
+                'number_of_pages': number_of_pages
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     

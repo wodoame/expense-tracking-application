@@ -57,3 +57,16 @@ class WeeklySpendingSerializer(serializers.ModelSerializer):
 
     def get_week_end(self, obj):
         return dateOnly(obj.week_end)
+
+class MonthlySpendingSerializer(serializers.ModelSerializer):
+    month_start = serializers.SerializerMethodField()
+    month_end = serializers.SerializerMethodField()
+    class Meta:
+        model = MonthlySpending
+        fields = ['id', 'total_amount', 'month_start', 'month_end']
+
+    def get_month_start(self, obj):
+        return dateOnly(obj.month_start)
+
+    def get_month_end(self, obj):
+        return dateOnly(obj.month_end)

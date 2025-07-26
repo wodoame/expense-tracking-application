@@ -1,4 +1,5 @@
 import { weeklyChartData } from "../core/templates/core/components/weeksChart";
+import { monthlyChartData } from "../core/templates/core/components/monthsChart";
 import { weeksRecordsStore } from "../core/templates/core/components/weeksRecords";
 import { router } from "./router";
 
@@ -33,6 +34,7 @@ class HistoryHandler{
 export const hh = new HistoryHandler(); 
 hh.addHandler('/dashboard/', ()=>{
     weeklyChartData.useCachedData = true; // use cached data when navigating back to dashboard
+    monthlyChartData.useCachedData = true; // use cached data when navigating back to dashboard
 });
 
 hh.addHandler('/weeks/', ()=>{
