@@ -125,4 +125,5 @@ class AuthCallback(View):
             last_name='',
         )
         django_user.set_unusable_password()
+        django_user.save()  # Save the user after setting unusable password
         return django_user
