@@ -238,9 +238,9 @@ if DEBUG:
 SEARCH_PAGE_SIZE = os.getenv('SEARCH_PAGE_SIZE', 50)
 
 CORS_ALLOWED_ORIGINS = [
+       "https://app-health-monitor.netlify.app",
        "https://exta.netlify.app",
        "http://localhost:5173",
-       "https://app-health-monitor.netlify.app"
    ]
 
 if DEBUG:
