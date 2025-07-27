@@ -239,6 +239,7 @@ SEARCH_PAGE_SIZE = os.getenv('SEARCH_PAGE_SIZE', 50)
 
 CORS_ALLOWED_ORIGINS = [
        "https://exta.netlify.app",
+       "http://localhost:5173"
    ]
 
 if DEBUG:
