@@ -68,8 +68,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_components.middleware.ComponentDependencyMiddleware',
-    'api.middleware.ErrorLoggingMiddleware', # Custom error logging middleware
 ]
+
+LOG_ERRORS_TO_DATABASE = os.getenv('SHOW_ERRORS', 'True') == 'True'
+
+if not LOG_ERRORS_TO_DATABASE:
+    MIDDLEWARE.append('api.middleware.ErrorLoggingMiddleware') # Custom error logging middleware
 
 
 ROOT_URLCONF = 'expense_tracking_app.urls'
