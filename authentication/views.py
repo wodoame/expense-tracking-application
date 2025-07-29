@@ -102,9 +102,8 @@ class AuthCallback(View):
         if action == 'signin':
             django_user = User.objects.filter(email=user.email).first()
             if django_user:
-                if not django_user.profile_picture:
-                    django_user.profile_picture = user.user_metadata.picture or None
-                    django_user.save()
+                django_user.profile_picture = user.user_metadata.picture or None
+                django_user.save()
                 login(request, django_user)
                 messages.success(request, 'Welcome back!')
                 return JsonResponse({'message': 'success', 'redirect': '/dashboard/'})
