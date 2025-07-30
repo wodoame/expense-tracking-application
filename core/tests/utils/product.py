@@ -2,7 +2,7 @@ import random
 from django.utils import timezone
 from core.models import Product, Category, User
 
-def create_random_product(user: User):
+def create_random_product(user: User, category=None):
     """
     Utility function to create and save a random Product for the given user.
     """
@@ -21,7 +21,7 @@ def create_random_product(user: User):
         "Sugar free."
     ]
     categories = Category.objects.filter(user=user)
-    category = random.choice(categories) if categories.exists() else None
+    category = category or random.choice(categories) if categories.exists() else None
 
     name = random.choice(product_names)
     price = round(random.uniform(1.0, 100.0), 2)
