@@ -1,12 +1,14 @@
 from django.test import TestCase, Client
 from core.serializers import ProductSerializer
-from core.models import Product, User
+from core.models import Product, User, Category
 from core.utils import groupByDate
 from django.test import Client
 from core.tests.utils.product import create_random_products
+from core.tests.utils.category import create_random_categories
 from core.utils import EnhancedExpensePaginator
 from unittest.mock import patch, MagicMock
 from django.utils import timezone
+from urllib.parse import quote
 
 class Tests(TestCase):
     def setUp(self):
@@ -58,7 +60,30 @@ class Tests(TestCase):
         
         self.assertEqual(number_of_expenses, expenses_created)  # check if the total number of products is equal to the number of products created
 
-        def test_expense_paginator_returns_all_expenses_in_specific_category(self):
-            pass
- 
-        
+    def test_expense_paginator_returns_all_expenses_in_specific_category(self):
+        category = Category.objects.create(user=self.user, name='Test Category')
+        expenses_created = 20
+        create_random_products(self.user, count=expenses_created, category=category)
+        create_random_products(self.user, count=15) # no category specified, so it will be None
+        paginator = EnhancedExpensePaginator(
+                self.mocked_request,
+                cache_key=f'{quote(category.name)}-records-{self.user.username}',
+                specific_category=True, 
+                category_name=category.name,
+                extra_filters={'category__name': category.name}
+                )
+        total_pages = paginator.get_total_pages()
+        number_of_expenses = 0
+
+        # get all pages and see if all products in the specified category are returned
+        # this is to ensure that the paginator works correctly
+        for page in range(1, total_pages + 1): # NOTE: a page may consist of many days; The paginator paginates by number of days
+            url = f'/components/records/?page={page}&oneCategory=1&categoryName={category.name}'
+            response = self.client.get(url)
+            days = response.context['items'] # also called records
+
+            # check the number of products bought on each day
+            for day in days:
+                number_of_expenses += len(day.get('products'))
+
+        self.assertEqual(number_of_expenses, expenses_created)  # check if the total number of products is equal to the number of products created
