@@ -1,7 +1,7 @@
 from datetime import date
 from authentication.models import User
 from django.test import TestCase, Client
-from core.tests.utils.product import create_random_product
+from core.tests.utils.product import create_random_product, create_random_products
 ADD_PRODUCT_URL = '/implementations/dashboard/'
 EDIT_PRODUCT_URL = '/implementations/dashboard/?edit=1'
 DELETE_PRODUCT_URL = '/implementations/dashboard/?delete=1'
@@ -30,7 +30,11 @@ class TestProduct(TestCase):
             'pesewas': 0,
             'description': 'Updated Description',
             'date': product.date.isoformat(),
+            'new-date': date.today().isoformat()
         })
+        
+        print(date.today().isoformat())
+        
         product.refresh_from_db()
         self.assertEqual(product.name, 'Updated Product')
         self.assertEqual(product.description, 'Updated Description')
