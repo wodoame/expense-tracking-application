@@ -4,6 +4,9 @@ from core.models import Product, User
 from core.utils import groupByDate
 from django.test import Client
 from core.tests.utils.product import create_random_products
+from core.utils import EnhancedExpensePaginator
+from unittest.mock import patch, MagicMock
+from django.utils import timezone
 
 class Tests(TestCase):
     def setUp(self):
@@ -11,8 +14,12 @@ class Tests(TestCase):
             username='testuser',
             password='testpass123'
         )
+        self.user.date_joined = timezone.make_aware(timezone.datetime(2025, 1, 1)) # assume the user has been created a long time ago
+        self.user.save()
         self.client = Client()
-        # self.client.login(username='testuser', password='testpass123')
+        self.mocked_request = MagicMock()
+        self.mocked_request.user = self.user
+        self.client.login(username='testuser', password='testpass123')
         
     def test_group_products_by_date(self):
         create_random_products(self.user, count=10)
@@ -30,3 +37,28 @@ class Tests(TestCase):
             
         # check if the number of products in the grouped records is equal to the total number of products passed to the function
         self.assertEqual(len(products), number_of_products_grouped)
+    
+    def test_expense_paginator_returns_all_expenses(self):
+        expenses_created = 20
+        create_random_products(self.user, count=expenses_created)
+        paginator = EnhancedExpensePaginator(self.mocked_request, cache_key=f'records-{self.user.username}')
+        total_pages = paginator.get_total_pages()
+        number_of_expenses = 0
+        
+        # get all pages and see if all products are returned
+        # this is to ensure that the paginator works correctly
+        for page in range(1, total_pages + 1): # NOTE: a page may consist of many days; The paginator paginates by number of days
+            url = f'/components/records/?page={page}'
+            response = self.client.get(url)
+            days = response.context['items'] # also called records
+            
+            # check the number of products bought on each day
+            for day in days:
+                number_of_expenses += len(day.get('products'))
+        
+        self.assertEqual(number_of_expenses, expenses_created)  # check if the total number of products is equal to the number of products created
+
+        def test_expense_paginator_returns_all_expenses_in_specific_category(self):
+            pass
+ 
+        
