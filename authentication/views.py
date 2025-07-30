@@ -112,11 +112,13 @@ class AuthCallback(View):
 
         if action == 'signup':
             django_user = User.objects.filter(email=user.email).first() # already existing user may attempt to signup again
+            created = False
             if not django_user:
                 django_user = self.create_user_from_google(user)
+                created = True
             login(request, django_user)
             messages.success(request, 'Welcome to Xpense!')
-            return JsonResponse({'message': 'success', 'redirect': '/dashboard/'})
+            return JsonResponse({'message': 'success', 'redirect': '/dashboard/'}, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
         messages.error(request, 'Authentication failed.')
         return JsonResponse({'message': 'error', 'redirect': '/signin/'}, status=status.HTTP_401_UNAUTHORIZED)
     
