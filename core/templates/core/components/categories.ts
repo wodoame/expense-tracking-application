@@ -18,20 +18,21 @@ export class CategoriesCards extends BaseElement {
 
     getDataFxn() {
         return async (filter:number=filters.ALL_TIME) => {
-            await queryClient.fetchQuery({
+            this.ready = false;
+            const data = await queryClient.fetchQuery({
                 queryKey: ['categories', filter],
                 queryFn: () => this.fetchData(filter),
             });
+            this.data = data;
+            this.ready = true;
         };
     }
 
 
     async fetchData (filter: number = filters.ALL_TIME): Promise<Category[]> {
-    this.ready = false;
     console.log('--- Axios: Fetching all categories ---');
     const response = await axios.get<Category[]>(`/api/categories/?metrics=1&filter=${filter}`);
-    this.data = response.data;
-    this.ready = true;
+    console.log(response.data);
     return response.data; // essential to return for caching
     }
 
