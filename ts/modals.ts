@@ -77,12 +77,14 @@ class AddProductModal extends BaseModal{
         }).then(() => {
             categoryPublisher.fetchLatest();
             emitter.emit('expense_added_or_edited_or_deleted'); // notify that an expense has been added or edited or deleted
+            toggleLoader();
         });
     }
 
    submitForm(){
        const form = <HTMLFormElement>document.getElementById('add-product-form');
        if(form.checkValidity()){
+        toggleLoader();
         const currentPagePath = window.location.pathname;
         const target = this._getHTMXTarget(currentPagePath);
         this._showPageSkeleton(currentPagePath); 
@@ -252,6 +254,7 @@ class DeleteProductModal extends BaseModal{
     }
     submitForm(){
         const form = <HTMLFormElement>document.getElementById('delete-product-form');
+        toggleLoader();
         const formData = htmx.values(form);
         const tr = htmx.find(`#product-${formData.id}`);
         const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
@@ -262,7 +265,8 @@ class DeleteProductModal extends BaseModal{
          target: elementToReplace,
          swap: 'outerHTML'
         }).then(()=>{
-            emitter.emit('expense_added_or_edited_or_deleted'); // notify that an expense has been added or edited or deleted
+            emitter.emit('expense_added_or_edited_or_deleted');
+            toggleLoader();
         });
     }
 }
@@ -311,6 +315,7 @@ class EditProductModal extends BaseModal{
   submitForm(){
     const form = <HTMLFormElement>document.getElementById('edit-product-form');
     if(form.checkValidity()){
+      toggleLoader();
       const formData = htmx.values(form);
       const tr = htmx.find(`#product-${formData.id}`);
       const elementToReplace = <HTMLElement>htmx.closest(tr, '.record');
@@ -322,7 +327,8 @@ class EditProductModal extends BaseModal{
        swap: 'outerHTML'
       }).then(()=>{
         categoryPublisher.fetchLatest();
-        emitter.emit('expense_added_or_edited_or_deleted'); // notify that an expense has been added or edited or deleted
+        emitter.emit('expense_added_or_edited_or_deleted');
+        toggleLoader();
       });
     }
     else{
