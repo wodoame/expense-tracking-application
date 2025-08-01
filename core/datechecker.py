@@ -5,17 +5,6 @@ from .serializers import ProductSerializer
 import pandas as pd
 
 
-def get_week(date: datetime):
-    weekDay = date.weekday()
-    if weekDay == 6: 
-        weekDay = -1
-    distanceFromSunday = weekDay + 1
-    distanceFromSaturday = 5 - weekDay
-    weekStart = date - timedelta(days=distanceFromSunday)
-    weekEnd = date + timedelta(days=distanceFromSaturday)
-    return (weekStart, weekEnd) 
-from datetime import datetime, timedelta
-
 def get_week_monday_based(dt: datetime):
     """
     Returns a tuple of (week_start, week_end) for the Monday-based week containing the input datetime.

@@ -154,7 +154,7 @@ class Dashboard(View):
         if path == '/dashboard/':
             return redirect('implemented-dashboard')
         if path == '/categories/':
-            return redirect('implemented-categories')
+            return render(request, 'core/components/toastWrapper/toastWrapper.html')
         if referer is not None and re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
            categoryName = quote(unquote(list(filter(lambda x: x != '', segments)).pop()))

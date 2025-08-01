@@ -1,6 +1,7 @@
 import { router } from "./router";
 import { categoryPublisher } from "./utils";
 import { datePickerManager, selectFieldManager } from "./selectField";
+import { queryClient } from "../core/templates/core/components/utils/setup";
 class ModalManager{
     modals:any; 
     currentlyOpenModal: ModalInstance | null;  // track the currently opened modal
@@ -51,6 +52,7 @@ class AddProductModal extends BaseModal{
         const pattern = /^\/categories\/[^\/]+\/$/;
         if(pattern.test(path)) return '#see-products';
         if(path == '/all-expenditures/')return '#all-expenditures';
+        if(path == '/categories/')return '#toast-wrapper';
         return '#main-content';
     }
 
@@ -75,7 +77,12 @@ class AddProductModal extends BaseModal{
             categoryPublisher.fetchLatest();
         });
     }
-   
+
+    private _beforeSubmit(path: string) {
+        queryClient.invalidateQueries({ queryKey: ['categories'] });
+        // ! use another way to invalidate caches (event driven probably)
+    }
+
    submitForm(){
        const form = <HTMLFormElement>document.getElementById('add-product-form');
        if(form.checkValidity()){
@@ -83,6 +90,7 @@ class AddProductModal extends BaseModal{
         const target = this._getHTMXTarget(currentPagePath);
         this._showPageSkeleton(currentPagePath); 
         this.close();
+        this._beforeSubmit(currentPagePath);
         this._submitProductForm(form, target) 
         this._resetFormUI(form);
        }

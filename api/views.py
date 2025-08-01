@@ -4,13 +4,14 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from core.models import *
 from django.db.models import Q
-from .utils import * 
 from core.templatetags.custom_filters import dateOnly, timesince
-from core.datechecker import datefromisoformat
+from core.datechecker import datefromisoformat, get_month, get_week_monday_based
 from django.core.cache import cache
 from rest_framework import status
 from .models import ErrorLog
 from django.core.paginator import Paginator
+from api.utils import filters
+from django.utils import timezone
 
 class Status(APIView):
     def get(self, request):
@@ -18,10 +19,31 @@ class Status(APIView):
 
 class Categories(APIView):
     def get(self, request):
+        print('query params', request.query_params)
         user = request.user 
         categories = None
         if request.query_params.get('metrics'): 
-            categories = CategorySerializerWithMetrics(user.categories.all(), many=True).data
+            filter = request.query_params.get('filter')
+            if filter and int(filter) != filters.ALL_TIME:
+                filter = int(filter)
+                date_filter = None
+                if filter == filters.THIS_WEEK:
+                    date_filter = get_week_monday_based(timezone.now().date())
+                
+                if filter == filters.THIS_MONTH:
+                    date_filter = get_month(timezone.now().date())
+                
+                categories = CategorySerializerWithFilter(
+                    user.categories.all(),
+                    many=True, 
+                    context={'date_filter': date_filter}
+                    ).data
+            else:
+                categories = CategorySerializerWithMetrics(
+                    user.categories.all(), 
+                    many=True
+                ).data
+
         else: 
             categories = CategorySerializer(user.categories.all(), many=True).data
         return Response(categories)

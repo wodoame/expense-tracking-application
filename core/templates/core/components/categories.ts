@@ -3,39 +3,36 @@ import { html, css, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { routes } from "../../../../ts/router";
 import axios from "axios";
-import { QueryClient } from "@tanstack/query-core";
 import { getEditCategoryModal, getDeleteCategoryModal } from "../../../../ts/modals";
 import { getDropdown } from "../../../../ts/utils";
 import { initFlowbite } from "flowbite";
-// 1. Create a QueryClient instance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // Data is considered fresh for 5 minutes
-      gcTime: 1000 * 60 * 60 * 24 * 0, // Cache data for 24 hours
-      refetchOnWindowFocus: false, // Disable refetch on window focus for vanilla JS
-    },
-  },
-});
+import { queryClient } from "./utils/setup";
+import { filters } from "./catMetricFilter";
+
+export let getCategories = undefined;
 
 @customElement('categories-cards')
 export class CategoriesCards extends BaseElement {
     @property({ type: Array }) accessor data: Category[] = [];
     @property({ type: Boolean}) accessor ready: boolean = false;
 
-    async getCategories(){
-      const data = await queryClient.fetchQuery({
-      queryKey: ['posts'],
-      queryFn: this.fetchData,
-    });
-
-    this.data = data;
-    this.ready = true;
+    getDataFxn() {
+        return async (filter:number=filters.ALL_TIME) => {
+            await queryClient.fetchQuery({
+                queryKey: ['categories', filter],
+                queryFn: () => this.fetchData(filter),
+            });
+        };
     }
-    async fetchData (): Promise<Category[]>{
+
+
+    async fetchData (filter: number = filters.ALL_TIME): Promise<Category[]> {
+    this.ready = false;
     console.log('--- Axios: Fetching all categories ---');
-    const response = await axios.get<Category[]>('/api/categories/?metrics=1');
-    return response.data;
+    const response = await axios.get<Category[]>(`/api/categories/?metrics=1&filter=${filter}`);
+    this.data = response.data;
+    this.ready = true;
+    return response.data; // essential to return for caching
     }
 
     generateCards(data: Category[]){
@@ -71,7 +68,8 @@ export class CategoriesCards extends BaseElement {
     }
 
     protected firstUpdated(){
-        this.getCategories();
+        getCategories = this.getDataFxn();
+        getCategories(); // Fetch initial data
     }
 
     updated(){

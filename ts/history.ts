@@ -11,6 +11,7 @@ type Handler = ()=>void;
 
 class HistoryHandler{
     handlers:HistoryHandlers = {};
+    exceptions: string[] = ['/weeks/', '/categories/'];
     addHandler(path:string, handler:()=>any){
         if(!this.handlers[path]){
             this.handlers[path] = [handler]
@@ -21,11 +22,12 @@ class HistoryHandler{
     }
 
     handle(path: string,e: PopStateEvent){
+        
         if(this.handlers[path]){
             this.handlers[path].forEach(handler => handler());
         }
 
-        if(e.state && path != '/weeks/'){
+        if(e.state && !this.exceptions.includes(path)){
             document.getElementById('main-content').innerHTML = e.state.html;
         }
     }
@@ -41,4 +43,9 @@ hh.addHandler('/weeks/', ()=>{
       weeksRecordsStore.useCachedData = true; // set the flag to true so that the component can use cached data
       document.getElementById('main-content').innerHTML = router.routes['/weeks/'];
       document.getElementById('pageHeading').textContent = 'Weeks';
+});
+
+hh.addHandler('/categories/', ()=>{
+    document.getElementById('main-content').innerHTML = router.routes['/categories/'];
+    document.getElementById('pageHeading').textContent = 'Categories';
 });
