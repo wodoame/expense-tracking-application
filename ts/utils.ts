@@ -142,17 +142,15 @@ const getSidebar = (()=>{
     }
 }
 
-const globalEventEmitter = new EventEmitter();
-
 export {
     categoryPublisher,
     fetchJSONData,
     getSidebar,
-    globalEventEmitter, 
     queryParams, 
     setQueryParameter, 
     statSummary, 
-    getDropdown
+    getDropdown,
+    EventEmitter
 };
 
 // make globally accessible

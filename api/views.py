@@ -12,6 +12,7 @@ from .models import ErrorLog
 from django.core.paginator import Paginator
 from api.utils import filters
 from django.utils import timezone
+from datetime import timedelta
 
 class Status(APIView):
     def get(self, request):
@@ -30,23 +31,47 @@ class Categories(APIView):
                 if filter == filters.THIS_WEEK:
                     date_filter = get_week_monday_based(timezone.now().date())
                 
-                if filter == filters.THIS_MONTH:
+                elif filter == filters.LAST_WEEK:
+                    # Get last week by going back 7 days from today
+                    last_week_date = timezone.now().date() - timedelta(days=7)
+                    date_filter = get_week_monday_based(last_week_date)
+                
+                elif filter == filters.THIS_MONTH:
                     date_filter = get_month(timezone.now().date())
+                
+                elif filter == filters.LAST_MONTH:
+                    # Get last month by going to first day of current month and subtracting 1 day
+                    current_month_start = timezone.now().date().replace(day=1)
+                    last_month_date = current_month_start - timedelta(days=1)
+                    date_filter = get_month(last_month_date)
                 
                 categories = CategorySerializerWithFilter(
                     user.categories.all(),
                     many=True, 
                     context={'date_filter': date_filter}
                     ).data
+                categories.append(self.get_none_category(user, extra_filters={'date__date__range': date_filter}))
+
             else:
                 categories = CategorySerializerWithMetrics(
                     user.categories.all(), 
                     many=True
                 ).data
+                categories.append(self.get_none_category(user))
+                
 
+            categories.sort(key=lambda x: x['metrics']['total_amount_spent'], reverse=True)
         else: 
             categories = CategorySerializer(user.categories.all(), many=True).data
+            categories.append(self.get_none_category(user))
         return Response(categories)
+    
+    def get_none_category(self, user: User, extra_filters=dict()):
+        uncategorized_expenses = ProductSerializer(user.products.filter(category=None, **extra_filters), many=True).data
+        return {'name':'None', 'metrics': {
+                    'product_count': len(uncategorized_expenses),
+                    'total_amount_spent': sum(item['price'] for item in uncategorized_expenses)
+        }}
 
 
 class Search(APIView):

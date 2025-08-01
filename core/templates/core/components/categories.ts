@@ -8,8 +8,24 @@ import { getDropdown } from "../../../../ts/utils";
 import { initFlowbite } from "flowbite";
 import { queryClient } from "./utils/setup";
 import { filters } from "./catMetricFilter";
+import { EventEmitter } from "../../../../ts/utils";
 
 export let getCategories = undefined;
+export const emitter = new EventEmitter();
+emitter.addEventListener('expense_added_or_edited_or_deleted', () => {
+    // Invalidate all queries whose key starts with 'categories'
+    queryClient.invalidateQueries({
+        predicate: (query) => {
+            const queryKey = query.queryKey;
+            return Array.isArray(queryKey) && queryKey[0] === 'categories';
+        }
+    });
+});
+
+export const toggleLoader = () => {
+    const loader = document.getElementById('cat-page-loader');
+    if(loader) loader.classList.toggle('hidden');
+};
 
 @customElement('categories-cards')
 export class CategoriesCards extends BaseElement {

@@ -1,7 +1,8 @@
 import { router } from "./router";
 import { categoryPublisher } from "./utils";
 import { datePickerManager, selectFieldManager } from "./selectField";
-import { queryClient } from "../core/templates/core/components/utils/setup";
+import { emitter, toggleLoader } from "../core/templates/core/components/categories";
+import { getCategories } from "../core/templates/core/components/categories";
 class ModalManager{
     modals:any; 
     currentlyOpenModal: ModalInstance | null;  // track the currently opened modal
@@ -75,12 +76,8 @@ class AddProductModal extends BaseModal{
             target: target,
         }).then(() => {
             categoryPublisher.fetchLatest();
+            emitter.emit('expense_added_or_edited_or_deleted'); // notify that an expense has been added or edited or deleted
         });
-    }
-
-    private _beforeSubmit(path: string) {
-        queryClient.invalidateQueries({ queryKey: ['categories'] });
-        // ! use another way to invalidate caches (event driven probably)
     }
 
    submitForm(){
@@ -90,7 +87,6 @@ class AddProductModal extends BaseModal{
         const target = this._getHTMXTarget(currentPagePath);
         this._showPageSkeleton(currentPagePath); 
         this.close();
-        this._beforeSubmit(currentPagePath);
         this._submitProductForm(form, target) 
         this._resetFormUI(form);
        }
@@ -104,15 +100,18 @@ class AddCategoryModal extends BaseModal{
     submitForm(){
         const form = <HTMLFormElement>document.getElementById('add-category-form');
         if(form.checkValidity()){
-         document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
-         this.close();
-         const formData = htmx.values(form);
-         htmx.ajax('POST', '/implementations/categories/', {
-          values: formData,
-          target: '#main-content',
-         }).then(()=>{
-             categoryPublisher.fetchLatest();
-         });
+            toggleLoader();
+            this.close();
+            const formData = htmx.values(form);
+            htmx.ajax('POST', '/implementations/categories/', {
+                values: formData,
+                target: '#toast-wrapper',
+            }).then(()=>{
+                categoryPublisher.fetchLatest();
+                emitter.emit('expense_added_or_edited_or_deleted');
+                getCategories(); // fetch the latest categories
+                toggleLoader(); // hide the loader
+            });
          form.reset();
         }
         else{
@@ -138,14 +137,17 @@ class EditCategoryModal extends BaseModal{
     submitForm(){
         const form = <HTMLFormElement>document.getElementById('edit-category-form');
         if(form.checkValidity()){
-         document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // insert the placeholder without triggering htmx
+         toggleLoader();
          this.close();
          const formData = htmx.values(form);
          htmx.ajax('POST', '/implementations/categories/?edit=1', {
           values: formData,
-          target: '#main-content',
+          target: '#toast-wrapper',
          }).then(()=>{
-             categoryPublisher.fetchLatest();
+            categoryPublisher.fetchLatest();
+            emitter.emit('expense_added_or_edited_or_deleted');
+            getCategories(); // fetch the latest categories
+            toggleLoader(); // hide the loader
          });
          form.reset();
         }
@@ -176,14 +178,17 @@ class DeleteCategoryModal extends BaseModal{
     }
     submitForm(){
         const form = <HTMLFormElement>document.getElementById('delete-category-form');
-        document.getElementById('main-content').innerHTML = router.routes[router.currentRoute]; // show loading skeletons
         const formData = htmx.values(form);
+        toggleLoader(); 
         this.close();
         htmx.ajax('POST', '/implementations/categories/?delete=1', {
          values: formData,
-         target: '#main-content',
+         target: '#toast-wrapper',
         }).then(()=>{
             categoryPublisher.fetchLatest();
+            emitter.emit('expense_added_or_edited_or_deleted');
+            getCategories(); // fetch the latest categories
+            toggleLoader(); // hide the loader
         });
     }
 }
@@ -256,6 +261,8 @@ class DeleteProductModal extends BaseModal{
          values: formData,
          target: elementToReplace,
          swap: 'outerHTML'
+        }).then(()=>{
+            emitter.emit('expense_added_or_edited_or_deleted'); // notify that an expense has been added or edited or deleted
         });
     }
 }
@@ -315,6 +322,7 @@ class EditProductModal extends BaseModal{
        swap: 'outerHTML'
       }).then(()=>{
         categoryPublisher.fetchLatest();
+        emitter.emit('expense_added_or_edited_or_deleted'); // notify that an expense has been added or edited or deleted
       });
     }
     else{

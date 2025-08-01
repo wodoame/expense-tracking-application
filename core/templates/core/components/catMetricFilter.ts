@@ -29,9 +29,9 @@ export class CatMetricFilter extends BaseElement {
         const items: [string, number][] = [
             ['All-time', filters.ALL_TIME],
             ['This week', filters.THIS_WEEK],
-            // ['Last week', filters.LAST_WEEK],
+            ['Last week', filters.LAST_WEEK],
             ['This month', filters.THIS_MONTH],
-            // ['Last month', filters.LAST_MONTH],
+            ['Last month', filters.LAST_MONTH],
             // ['This year', filters.THIS_YEAR],
             // ['Last year', filters.LAST_YEAR],
             // ['Custom', filters.CUSTOM]

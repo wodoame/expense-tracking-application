@@ -350,30 +350,6 @@ class Routes(View):
 
 
 class Categories(View):
-    def get(self, request):
-        user = request.user
-        categories = CategorySerializerWithMetrics(user.categories.all(), many=True).data
-        productsWithNoCategory = ProductPriceSerializer(user.products.filter(category=None), many=True).data
-        df = pd.DataFrame(productsWithNoCategory)
-        metrics = {
-            "product_count": 0, 
-            "total_amount_spent": 0
-        }
-        if not df.empty:
-            # NOTE: explicitly convert to the respective data types since the original result from pandas is an object
-            metrics['product_count'] = int(df.get('name').count())
-            metrics['total_amount_spent'] = float(df.get('price').sum())
-        categories.append(
-            {
-                "name": "None",
-                "metrics": metrics
-            }
-        )
-        categories.sort(key=lambda x:x['metrics']['total_amount_spent'], reverse=True)
-        context = {
-            'categories': categories
-        }
-        return render(request, 'core/implementations/categories.html', context)
     
     def post(self, request):
         if request.GET.get('edit'):
@@ -394,7 +370,7 @@ class Categories(View):
         else: 
             print(form.errors.get_json_data())
             messages.error(request, 'Could not add category')
-        return redirect('implemented-categories')
+        return render(request, 'core/components/toastWrapper/toastWrapper.html')
     
     def handle_edit_category(self, request): 
         categoryId = request.POST.get('id')
@@ -408,7 +384,7 @@ class Categories(View):
         else: 
             print(form.errors.get_json_data())
             messages.error(request, 'Could not add category')
-        return redirect('implemented-categories')
+        return render(request, 'core/components/toastWrapper/toastWrapper.html')
     
     def handle_delete_category(self, request): 
         categoryId = request.POST.get('id')
@@ -418,7 +394,7 @@ class Categories(View):
             emitter.emit('products_updated', request) # some products may still be associated with the deleted category so the cache must be cleared
         except Product.DoesNotExist:
             messages.error(request, 'Category already deleted')
-        return redirect('implemented-categories')
+        return render(request, 'core/components/toastWrapper/toastWrapper.html')
     
 class StatSummary(View):
     def get(self, request):
