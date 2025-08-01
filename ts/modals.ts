@@ -327,7 +327,7 @@ class CategoryDetailsModal extends BaseModal{
         const dataFields = this.df.dataFields;
         // set data field text contents
         dataFields.name.textContent = category.name;
-        dataFields.product_count.textContent = category.product_count.toString();
+        dataFields.product_count.textContent = category.metrics.product_count.toString();
         dataFields.description.textContent = category.description || 'No description';
         this.open();
     }
@@ -508,5 +508,7 @@ window['modalManager'] = modalManager;
 
 export {
     modalManager, 
-    handleCloseModal
+    handleCloseModal,
+    getEditCategoryModal,
+    getDeleteCategoryModal
 }; 

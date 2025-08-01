@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.52.1",
+    "@tanstack/query-core": "^5.83.1",
     "alpinejs": "^3.14.9",
     "apexcharts": "^5.2.0",
+    "axios": "^1.11.0",
     "vanilla-calendar-pro": "^3.0.3"
   }
 }

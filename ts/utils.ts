@@ -151,7 +151,8 @@ export {
     globalEventEmitter, 
     queryParams, 
     setQueryParameter, 
-    statSummary
+    statSummary, 
+    getDropdown
 };
 
 // make globally accessible

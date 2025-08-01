@@ -33,34 +33,6 @@
     </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-    {% for category in categories %}
-     <div x-data="{id:$id('category'), data:$el.dataset.info}" @click="routes.category('{{category.name}}')" data-info='{{category|json_string}}' class="cursor-pointer bg-gray-50 p-4 rounded-md border space-y-2 dark:bg-dark2 dark:border-darkborder">
-
-    <!-- header   -->
-         <div class="flex justify-between relative">
-              <div class="text-gray-800 font-bold dark:text-gray-300">
-              {{category.name}}
-             </div>
-
-             {% if category.name != 'None' %}
-             <button @click.stop="" :data-dropdown-toggle="id" data-dropdown-placement="bottom-end">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-              </button>
-                {% component 'categoryOptionsDropdown' / %}
-              {% endif %}
-         </div>
-        <!--  / header -->
-         <div class="flex items-center justify-between">
-         <div class="text-gray-500">
-             {{category.metrics.product_count}} items
-         </div>
-
-             <div class="text-gray-800 font-medium dark:text-neutral-200">
-              GHS {{category.metrics.total_amount_spent|floatformat:2}}
-             </div>
-         </div>
-     </div>
-    {% endfor %}
+<categories-cards></categories-cards>
 </div>
 {% component 'toastWrapper' / %}

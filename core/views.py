@@ -322,7 +322,7 @@ class Settings(View):
 class Test(View):
     def get(self, request):
         context = {}
-        decryptAllProducts()
+        # decryptAllProducts()
         return render(request, 'core/pages/test.html', context)
     
     def post(self, request): 

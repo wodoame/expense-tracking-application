@@ -1,8 +1,12 @@
 interface Category{
     id: number; 
     name:string;
-    product_count:number;
+    metrics: CategoryMetrics;
     description?:string; 
+}
+interface CategoryMetrics{
+    total_amount_spent: number;
+    product_count: number;
 }
 interface Product{
     id:number; 
