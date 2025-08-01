@@ -1,7 +1,7 @@
 import { router } from "./router";
 import { categoryPublisher } from "./utils";
 import { datePickerManager, selectFieldManager } from "./selectField";
-import { emitter, toggleLoader } from "../core/templates/core/components/categories";
+import { emitter, showSkeleton, toggleLoader } from "../core/templates/core/components/categories";
 import { getCategories } from "../core/templates/core/components/categories";
 class ModalManager{
     modals:any; 
@@ -103,6 +103,7 @@ class AddCategoryModal extends BaseModal{
         const form = <HTMLFormElement>document.getElementById('add-category-form');
         if(form.checkValidity()){
             toggleLoader();
+            showSkeleton();
             this.close();
             const formData = htmx.values(form);
             htmx.ajax('POST', '/implementations/categories/', {
@@ -140,6 +141,7 @@ class EditCategoryModal extends BaseModal{
         const form = <HTMLFormElement>document.getElementById('edit-category-form');
         if(form.checkValidity()){
          toggleLoader();
+         showSkeleton();
          this.close();
          const formData = htmx.values(form);
          htmx.ajax('POST', '/implementations/categories/?edit=1', {
@@ -182,6 +184,7 @@ class DeleteCategoryModal extends BaseModal{
         const form = <HTMLFormElement>document.getElementById('delete-category-form');
         const formData = htmx.values(form);
         toggleLoader(); 
+        showSkeleton();
         this.close();
         htmx.ajax('POST', '/implementations/categories/?delete=1', {
          values: formData,

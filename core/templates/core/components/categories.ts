@@ -11,6 +11,7 @@ import { filters } from "./catMetricFilter";
 import { EventEmitter } from "../../../../ts/utils";
 
 export let getCategories = undefined;
+export let showSkeleton = undefined;
 export const emitter = new EventEmitter();
 emitter.addEventListener('expense_added_or_edited_or_deleted', () => {
     // Invalidate all queries whose key starts with 'categories'
@@ -42,6 +43,12 @@ export class CategoriesCards extends BaseElement {
             this.data = data;
             this.ready = true;
         };
+    }
+
+    getSkeletonFxn(){
+        return()=>{
+            this.ready = false;
+        }
     }
 
 
@@ -87,6 +94,7 @@ export class CategoriesCards extends BaseElement {
 
     protected firstUpdated(){
         getCategories = this.getDataFxn();
+        showSkeleton = this.getSkeletonFxn();
         getCategories(); // Fetch initial data
     }
 
