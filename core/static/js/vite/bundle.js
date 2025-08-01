@@ -45,11 +45,12 @@ import{m as ve,i as Ia,f as Da,u as Fa,x as T,a as Ti,E as cn,T as La,b as $i,c 
               <div class="text-gray-800 font-bold dark:text-gray-300">
               ${s.name}
              </div>
-
+             ${s.name!="None"?T`
              <button @click=${i=>i.stopPropagation()} data-dropdown-toggle=${n} data-dropdown-placement="bottom-end">
                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-gray-500 dark:stroke-gray-400 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
               </button>
               <categories-dropdown-menu id=${n} class="z-10 hidden" .data=${JSON.stringify(s)}></categories-dropdown-menu>
+              `:T``}
          </div>
         <!--  / header -->
          <div class="flex items-center justify-between">
