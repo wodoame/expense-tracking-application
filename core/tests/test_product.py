@@ -33,8 +33,6 @@ class TestProduct(TestCase):
             'new-date': date.today().isoformat()
         })
         
-        print(date.today().isoformat())
-        
         product.refresh_from_db()
         self.assertEqual(product.name, 'Updated Product')
         self.assertEqual(product.description, 'Updated Description')
