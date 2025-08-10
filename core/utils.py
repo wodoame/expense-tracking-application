@@ -171,7 +171,27 @@ class EnhancedExpensePaginator:
         self.number_of_days = number_of_days
         self.cache_key = cache_key
         self.enhanced_pages = self.get_enhanced_pages()
-    
+
+    def page_enhancer_algorithm(self, paginator: DateRangePaginator, enhanced_pages: dict):
+        if self.relevant_dates:
+            page = 1 
+            new_page_number = 0
+            i = 0  # to index the dates
+            date = self.relevant_dates[i]
+            while i < len(self.relevant_dates) and page <= paginator.get_total_pages(): # last condition may be redundant I'm not sure.
+                current_date_range = sorted(paginator.get_date_range(page))
+                if current_date_range[0] <= date <= current_date_range[1]:
+                    new_page_number += 1
+                while current_date_range[0] <= date <= current_date_range[1]:
+                    if enhanced_pages.get(new_page_number) is None:
+                        enhanced_pages[new_page_number] = current_date_range
+                    i += 1
+                    if i < len(self.relevant_dates):
+                        date = self.relevant_dates[i]
+                    else:
+                        break
+                page += 1
+
     def get_enhanced_pages(self):
         """
         The DateRangePaginator produces pages that may be blank which slows down loading of content
@@ -203,25 +223,8 @@ class EnhancedExpensePaginator:
             self.number_of_days,
             reverse=True)
         
-        if self.relevant_dates:
-            page = 1 
-            new_page_number = 0
-            i = 0 # to index the dates
-            date = self.relevant_dates[i]
-            while i < len(self.relevant_dates) and page <= paginator.get_total_pages(): # last condition may be redundant I'm not sure.
-                current_date_range = sorted(paginator.get_date_range(page))
-                if current_date_range[0] <= date <= current_date_range[1]:
-                    new_page_number += 1
-                while current_date_range[0] <= date <= current_date_range[1]:
-                    if enhanced_pages.get(new_page_number) is None:
-                        enhanced_pages[new_page_number] = current_date_range
-                    i += 1
-                    if i < len(self.relevant_dates):
-                        date = self.relevant_dates[i]
-                    else:
-                        break
-                    
-                page += 1
+        self.page_enhancer_algorithm(paginator, enhanced_pages)
+       
         if self.specific_category:
             cache.set(f'{quote(self.category_name)}-enhanced-pages-{self.user.username}', enhanced_pages)
         else:
