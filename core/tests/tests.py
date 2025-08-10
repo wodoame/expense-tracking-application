@@ -4,12 +4,10 @@ from core.models import Product, User, Category
 from core.utils import groupByDate
 from django.test import Client
 from core.tests.utils.product import create_random_products
-from core.tests.utils.category import create_random_categories
 from core.utils import EnhancedExpensePaginator
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 from django.utils import timezone
 from urllib.parse import quote
-
 class Tests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
