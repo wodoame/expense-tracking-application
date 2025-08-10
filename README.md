@@ -136,7 +136,7 @@ Once your PR is reviewed, necessary steps will be taken to integrate your contri
 ## 🛠 Tech Stack
 
 Backend: Django
-Frontend: HTML, CSS, JavaScript, Alpine.js, HTMX
+Frontend: HTML, CSS, JavaScript, Alpine.js, HTMX, Lit
 Database: SQLite3 (default for development)
 Environment Configuration: python-decouple (via .env files)
 
