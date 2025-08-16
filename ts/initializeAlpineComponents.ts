@@ -1,4 +1,4 @@
-import { categoryPublisher, fetchJSONData, globalEventEmitter, getSidebar} from "./utils";
+import { categoryPublisher, fetchJSONData, getSidebar} from "./utils";
 import { modalManager, handleCloseModal } from "./modals";
 import { datePickerManager, selectFieldManager } from "./selectField";
 import Alpine from "alpinejs";
@@ -147,7 +147,7 @@ function createDatePicker(id:string){
 function handleAlpineInitialization(){
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);
-    Alpine.data('datePicker', createDatePicker);
+    // Alpine.data('datePicker', createDatePicker);
 }
 
 function initializeFlowbite(){

@@ -2,7 +2,8 @@
   "scripts": {
     "build:css": "npx tailwindcss -i ./core/static/css/input.css -o ./core/static/css/output.css --watch",
     "build:js": "tsc --watch",
-    "build": "vite build"
+    "build": "vite build", 
+    "build:watch": "vite build --watch"
   },
   "devDependencies": {
     "@types/alpinejs": "^3.13.11",
@@ -18,6 +19,6 @@
     "alpinejs": "^3.14.9",
     "apexcharts": "^5.2.0",
     "axios": "^1.11.0",
-    "vanilla-calendar-pro": "^3.0.3"
+    "vanilla-calendar-pro": "^3.0.5"
   }
 }

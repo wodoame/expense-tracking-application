@@ -841,10 +841,6 @@ video {
   top: 2rem;
 }
 
-.bottom-4 {
-  bottom: 1rem;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -879,6 +875,10 @@ video {
 
 .-m-1\.5 {
   margin: -0.375rem;
+}
+
+.m-1 {
+  margin: 0.25rem;
 }
 
 .-mx-1\.5 {
@@ -1154,6 +1154,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-1 {
+  width: 0.25rem;
 }
 
 .min-w-full {
@@ -2342,98 +2346,6 @@ body:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity, 1));
 }
-
-/*  calendar */
-
-.calendar {
-  z-index: 60;
-  border-radius: 0.125rem !important;
-  border-width: 1px;
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
-.calendar:is(.dark *) {
-  border-color: rgb(243 244 246 / 0.05);
-  --tw-bg-opacity: 1;
-  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1));
-}
-
-.date-btn {
-  border-radius: 9999px;
-}
-
-.date-btn:hover {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-}
-
-.date-btn:is(.dark *) {
-  background-color: transparent !important;
-}
-
-.vc-date[data-vc-date-selected] {
-  border-radius: 0.375rem;
-}
-
-.vc-date[data-vc-date-selected]:is(.dark *) {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(14 165 233 / var(--tw-bg-opacity, 1)) !important;
-}
-
-.vc-date[data-vc-date-selected]:hover:is(.dark *) {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(14 165 233 / var(--tw-bg-opacity, 1)) !important;
-}
-
-[data-vc-years-year]:hover {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-}
-
-[data-vc-years-year]:is(.dark *) {
-  background-color: transparent !important;
-}
-
-[data-vc-years-year]:is(.dark *):hover {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1)) !important;
-}
-
-[data-vc-years-year-selected] {
-  border-radius: 0.125rem !important;
-  outline-width: 1px;
-}
-
-[data-vc-years-year-selected]:is(.dark *) {
-  outline-style: solid;
-  outline-color: #3b82f6;
-}
-
-[data-vc-months-month]:hover {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-}
-
-[data-vc-months-month]:is(.dark *) {
-  background-color: transparent !important;
-}
-
-[data-vc-months-month-selected] {
-  border-radius: 0.125rem !important;
-}
-
-[data-vc-months-month-selected]:is(.dark *) {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(14 165 233 / var(--tw-bg-opacity, 1)) !important;
-}
-
-/* 
-  [data-vc-date-today] date-btn to style the background of the today date 
-*/
 
 .placeholder\:pl-3::-moz-placeholder {
   padding-left: 0.75rem;
