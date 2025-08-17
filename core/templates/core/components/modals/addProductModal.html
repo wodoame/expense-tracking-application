@@ -8,16 +8,15 @@
                  <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
                  <input type="text" name="name" maxlength="25" id="name" class="input" placeholder="Type expense name" x-init="$watch('isOpen', value => value?$el.focus():null)" required>
              </div>
-             {# 
-             {% component 'dateSelectField' id='add-product-date' name='date' / %}
-             #}
+         
              <div class="col-span-2">
                  <label for="add-product-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Date</label>
-                 <date-input></date-input>
+                <input type="text" id="add-product-date" class="input" spellcheck="false">
+                <input type="hidden" name="date" id="add-product-date-hidden">
             </div>
 
             <div class="col-span-2">
-                <date-picker></date-picker>
+                <expense-date-picker id="add-product-date-picker" for="add-product-date"></expense-date-picker>
             </div>
              <div class="col-span-2">
                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category</label>

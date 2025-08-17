@@ -9,15 +9,16 @@
              <input type="text" name="name" x-init="ff.setFormField('name', $el);$watch('isOpen', value => value?$el.focus():null)" maxlength="25" id="name" class="input" placeholder="Type expense name" required>
          </div>
 
-         {# 
          <div class="col-span-2">
-            <label for="add-product-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Date</label>
-            
-            {% component 'dateSelectField' id='edit-product-date' name='new-date' / %}
+            <label for="edit-product-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Date</label>
+            <input type="text" id="edit-product-date" class="input" spellcheck="false">
+            <input type="hidden" name="new-date" id="edit-product-date-hidden">
         </div>
-        #}
-
          <div class="col-span-2">
+             <expense-date-picker id="edit-product-date-picker" for="edit-product-date"></expense-date-picker>
+        </div>
+        
+        <div class="col-span-2">
            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category</label>
            {% component 'selectField' id='categories-edit-product' name='category' / %}
         </div>

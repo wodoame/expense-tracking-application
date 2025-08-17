@@ -1,6 +1,6 @@
 import { categoryPublisher, fetchJSONData, getSidebar} from "./utils";
 import { modalManager, handleCloseModal } from "./modals";
-import { datePickerManager, selectFieldManager } from "./selectField";
+import { selectFieldManager } from "./selectField";
 import Alpine from "alpinejs";
 import { router } from "./router";
 import { hh } from "./history";
@@ -91,63 +91,10 @@ function createSelectFieldInstance(id: string){
     }
   }
 
-function createDatePicker(id:string){
-  return{
-    calendar:undefined,
-    field:undefined, 
-    options:{
-       inputMode:true, 
-       positionToInput: 'center',
-       styles: {
-        // Some styles are left blank to remove default styles
-        calendar: 'calendar',
-        dateBtn: 'vc-date__btn date-btn', 
-        date: 'vc-date',
-        month: '',
-        year: '',
-        yearsYear: 'vc-years__year',
-        monthsMonth: 'vc-months__month',
-        }, 
-        onClickDate(self:any, event:Event){
-          const selectedDate = self.context.selectedDates[0];
-            if (selectedDate) {
-              (<HTMLInputElement>document.getElementById(id + '-value')).value = selectedDate; 
-              // Update the input field with the selected date
-              const formattedDate = new Date(selectedDate); 
-              (<HTMLInputElement>document.getElementById(id)).value = formattedDate.toDateString();
-          }
-        }
-    }, 
-    init(){
-      datePickerManager.setInstance(id, this); 
-      const { Calendar } = window['VanillaCalendarPro'];
-      this.field = document.getElementById(id);
-      this.calendar = new Calendar(this.field, this.options);
-      this.calendar.init();
-      this.setToday();
-    }, 
-    setDate(date:string){
-      const selectedDate = new Date(date);
-      this.field.value = selectedDate.toDateString();
-      const isoDateString = selectedDate.toISOString().split('T')[0]; 
-      (<HTMLInputElement>document.getElementById(id + '-value')).value = isoDateString;
-      this.calendar.update();
-    },
-    setToday(){
-       // Get today's date
-       const today = new Date();
-       // Convert to dateString format
-       const dateString = today.toDateString();
-       this.field.value = dateString;
-       (<HTMLInputElement>document.getElementById(id + '-value')).value = today.toISOString().split('T')[0];
-    }
-  }
-}
 
 function handleAlpineInitialization(){
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);
-    // Alpine.data('datePicker', createDatePicker);
 }
 
 function initializeFlowbite(){

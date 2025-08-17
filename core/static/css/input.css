@@ -192,3 +192,26 @@ body{
 .link{
   @apply hover:underline underline-offset-4 hover:text-blue-500 dark:hover:text-blue-500 cursor-pointer;
 }
+
+/* calendar */
+
+.date__btn:not([data-date-selected]) {
+  @apply hover:bg-gray-100 dark:hover:bg-gray-700;
+}
+
+.date__btn[data-date-selected='true'] {
+    @apply bg-sky-500 text-white;
+}
+
+[data-vc-date-month='prev'] .date__btn{
+  @apply text-gray-600;
+}
+
+[data-vc-date][data-vc-date-today] [data-vc-date-btn] {
+    font-weight: 700;
+    @apply bg-pink-500 text-white;
+}
+
+.calendar__custom {
+  @apply border shadow-sm dark:border-darkborder !rounded-sm;
+}

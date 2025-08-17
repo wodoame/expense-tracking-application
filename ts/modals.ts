@@ -66,7 +66,7 @@ class AddProductModal extends BaseModal{
     private _resetFormUI(form: HTMLFormElement) {
         form.reset();
         selectFieldManager.getInstance('categories-add-product').select(selectFieldManager.getInstance('categories-add-product').none);
-        datePickerManager.getInstance('add-product-date').setToday();
+        datePickerManager.getInstance('add-product-date-picker').setToday();
     }
 
     private _submitProductForm(form: HTMLFormElement, target: string) {
@@ -302,7 +302,7 @@ class EditProductModal extends BaseModal{
     formFields.description.value = product.description;
     formFields.date.value = product.date;
     this.setCategory(product.category)
-    datePickerManager.getInstance('edit-product-date').setDate(product.date); 
+    datePickerManager.getInstance('edit-product-date-picker').setDate(product.date); 
     this.open();
   }
 
