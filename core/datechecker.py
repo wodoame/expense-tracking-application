@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
-from .models import Product
 from typing import Tuple, Union
-from .serializers import ProductSerializer
 import pandas as pd
 
 
@@ -61,23 +59,6 @@ def collectDates(products: list[dict]):
     uniqueDates = list(set(datefromisoformat(product.get('date')).date() for product in products))
     return uniqueDates
         
-
-def get_total_spent_in_week(week, products):
-    total = 0
-    for product in products: 
-        if week[0] <= datefromisoformat(product.get('date')).date() <= week[1]: 
-            total += product.get('price')
-    return total
-
-def get_total_spent_in_month(year, month, products):
-    total = 0
-    for product in products:
-        productDate = datefromisoformat(product.get('date')).date()
-        if (productDate.year, productDate.month) == (year, month):
-            total += product.get('price')
-    return total
-        
-
 def get_calendar_data(year, month):
     firstDateOfMonth = datetime(year, month, 1)
     firstDayOfMonth = firstDateOfMonth.weekday()
