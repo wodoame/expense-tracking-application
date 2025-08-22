@@ -14,6 +14,8 @@ from datetime import datetime, date, timedelta
 from urllib.parse import quote 
 from core.encryption import EncryptionHelper
 from django.conf import settings
+from django.core.cache import cache
+from typing import Optional, Any
 
 def record(date:date, request:HttpRequest) -> dict:
     user = request.user
@@ -89,28 +91,31 @@ def decryptAllProducts():
     print('All products decrypted successfully.')
 
 
+class EventManager:
+    PRODUCT_UPDATED = 0
+
 class EventEmitter:
     def __init__(self):
         self._events = {}
 
-    def on(self, event_name:str, callback: Callable):
+    def on(self, event_name:str | int, callback: Callable):
         """Register an event listener for a specific event."""
         if event_name not in self._events:
             self._events[event_name] = []
         self._events[event_name].append(callback)
 
-    def off(self, event_name:str, callback:Callable):
+    def off(self, event_name:str | int, callback:Callable):
         """Remove an event listener for a specific event."""
         if event_name in self._events:
             self._events[event_name] = [cb for cb in self._events[event_name] if cb != callback]
 
-    def emit(self, event_name:str, *args, **kwargs):
+    def emit(self, event_name:str | int, *args, **kwargs):
         """Trigger an event and call all registered listeners."""
         if event_name in self._events:
             for callback in self._events[event_name]:
                 callback(*args, **kwargs)
 
-    def once(self, event_name: str, callback: Callable):
+    def once(self, event_name: str | int, callback: Callable):
         """Register a one-time event listener for a specific event."""
         def wrapper(*args, **kwargs):
             callback(*args, **kwargs)
@@ -130,8 +135,13 @@ def deleteQuickStatsFromCache(request: HttpRequest, **kwargs):
     cache.delete(f'monthly-stats-{request.user.username}')
     
 def deleteExpenditureRecordsFromCache(request: HttpRequest, **kwargs):
-    cache.delete(f'records-{request.user.username}')
-    cache.delete(f'enhanced-pages-{request.user.username}')
+    cm = CacheManager(request.user.username)
+    cm.delete_records()
+    cm.delete_enhanced_pages()
+    category = kwargs.get('category')
+    if category:
+        cm.delete_records(category.get('name'))
+        cm.delete_enhanced_pages(category.get('name'))
 
 def updateWeeklySpendingData(request: HttpRequest, **kwargs):
     user = request.user
@@ -153,14 +163,22 @@ def updateMonthlySpendingData(request: HttpRequest, **kwargs):
 
 
 emitter = EventEmitter() # global event emitter
-emitter.on('products_updated', deleteQuickStatsFromCache)
-emitter.on('products_updated', deleteExpenditureRecordsFromCache)
-emitter.on('products_updated', deleteAllProductsFromCache)
-emitter.on('products_updated', updateWeeklySpendingData)
-emitter.on('products_updated', updateMonthlySpendingData)
-    
+em = EventManager()
+emitter.on(em.PRODUCT_UPDATED, deleteQuickStatsFromCache)
+emitter.on(em.PRODUCT_UPDATED, deleteExpenditureRecordsFromCache)
+emitter.on(em.PRODUCT_UPDATED, deleteAllProductsFromCache)
+emitter.on(em.PRODUCT_UPDATED, updateWeeklySpendingData)
+emitter.on(em.PRODUCT_UPDATED, updateMonthlySpendingData)
+
 class EnhancedExpensePaginator:
-    def __init__(self, request:HttpRequest, cache_key: str | None = None, number_of_days=7, specific_category: bool = False, category_name='',  extra_filters: dict = None):
+    def __init__(
+        self, request:HttpRequest,
+        cache_key: str | None = None,
+        number_of_days=7,
+        specific_category: bool = False,
+        category_name='',
+        extra_filters: dict = None
+    ):
         """ get the relevant dates (dates where things were actually purchased) """
         if specific_category and category_name == '': 
             raise ValueError('Category name must be specified')
@@ -227,11 +245,11 @@ class EnhancedExpensePaginator:
             relevant_dates = list(sorted(relevant_dates, reverse=True))
 
         enhanced_pages = self.page_enhancer_algorithm(relevant_dates)
-       
+        cm = CacheManager(self.user.username)
         if self.specific_category:
-            cache.set(f'{quote(self.category_name)}-enhanced-pages-{self.user.username}', enhanced_pages)
+            cm.set_enhanced_pages(enhanced_pages, self.category_name)
         else:
-            cache.set(f'enhanced-pages-{self.user.username}', enhanced_pages)            
+            cm.set_enhanced_pages(enhanced_pages)
         return enhanced_pages
                 
                 
@@ -242,7 +260,7 @@ class EnhancedExpensePaginator:
         
     def get_page(self, page: int):
         # cached data for all is just a list of pages. [{}, {}, {}, ]
-        cached_data: list[dict] = cache.get(self.cache_key)
+        cached_data: list[dict] | None = cache.get(self.cache_key) if self.cache_key else None
         if cached_data is not None and page <= len(cached_data):   
             return {
                 'from_cache': True,
@@ -253,7 +271,8 @@ class EnhancedExpensePaginator:
         # fetch the first page if there's no cached data
         if cached_data is None and page == 1:
             data = self.get_data(1)
-            cache.set(self.cache_key, [data])
+            if self.cache_key:
+                cache.set(self.cache_key, [data])
             return data
         
         # fetch the page if there's no cached data and it's not the first page
@@ -264,7 +283,8 @@ class EnhancedExpensePaginator:
         # Add the new fetched page to the cached data        
         if cached_data is not None and page > len(cached_data):
             data = self.get_data(page) # get page data
-            cache.set(self.cache_key, cached_data + [data]) # add it to existing pages
+            if self.cache_key:
+                cache.set(self.cache_key, cached_data + [data]) # add it to existing pages
             return data
         
                 
@@ -283,6 +303,156 @@ class EnhancedExpensePaginator:
         if current_page_number < self.get_total_pages():
             return current_page_number + 1
         return None
-        
-        
+
+
+class CacheKeyManager:
+    """Centralized cache key management to prevent typos and ensure consistency"""
     
+    # Key patterns as class constants
+    ENHANCED_PAGES = "enhanced-pages-{username}"
+    CATEGORY_ENHANCED_PAGES = "{category_name}-enhanced-pages-{username}"
+    RECORDS = "records-{username}"
+    CATEGORY_RECORDS = "{category_name}-records-{username}"
+    ACTIVITY_CALENDAR = "activity-calendar-{username}"
+    WEEKLY_STATS = "weekly-stats-{username}"
+    MONTHLY_STATS = "monthly-stats-{username}"
+    
+    @classmethod
+    def enhanced_pages(cls, username: str) -> str:
+        """Generate key for enhanced pages cache"""
+        return cls.ENHANCED_PAGES.format(username=username)
+    
+    @classmethod
+    def category_enhanced_pages(cls, category_name: str, username: str) -> str:
+        """Generate key for category-specific enhanced pages cache"""
+        return cls.CATEGORY_ENHANCED_PAGES.format(
+            category_name=quote(category_name), 
+            username=username
+        )
+    
+    @classmethod
+    def records(cls, username: str) -> str:
+        """Generate key for records cache"""
+        return cls.RECORDS.format(username=username)
+    
+    @classmethod
+    def category_records(cls, category_name: str, username: str) -> str:
+        """Generate key for category-specific records cache"""
+        return cls.CATEGORY_RECORDS.format(
+            category_name=quote(category_name), 
+            username=username
+        )
+    
+    @classmethod
+    def activity_calendar(cls, username: str) -> str:
+        """Generate key for activity calendar cache"""
+        return cls.ACTIVITY_CALENDAR.format(username=username)
+    
+    @classmethod
+    def weekly_stats(cls, username: str) -> str:
+        """Generate key for weekly stats cache"""
+        return cls.WEEKLY_STATS.format(username=username)
+    
+    @classmethod
+    def monthly_stats(cls, username: str) -> str:
+        """Generate key for monthly stats cache"""
+        return cls.MONTHLY_STATS.format(username=username)
+        
+
+class CacheManager:
+    """High-level cache operations with key management"""
+    
+    def __init__(self, username: str):
+        self.username = username
+        self.keys = CacheKeyManager()
+    
+    def get_activity_calendar(self):
+        key = self.keys.activity_calendar(self.username)
+        return cache.get(key)
+    
+    def set_activity_calendar(self, data:Any):
+        key = self.keys.activity_calendar(self.username)
+        cache.set(key, data)
+    
+    def get_enhanced_pages(self, category_name: Optional[str] = None) -> Any:
+        """Get enhanced pages from cache"""
+        if category_name:
+            key = self.keys.category_enhanced_pages(category_name, self.username)
+        else:
+            key = self.keys.enhanced_pages(self.username)
+        return cache.get(key)
+    
+    def set_enhanced_pages(self, data: Any, category_name: Optional[str] = None, timeout: Optional[int] = None) -> None:
+        """Set enhanced pages in cache"""
+        if category_name:
+            key = self.keys.category_enhanced_pages(category_name, self.username)
+        else:
+            key = self.keys.enhanced_pages(self.username)
+        cache.set(key, data, timeout)
+    
+    def delete_enhanced_pages(self, category_name: Optional[str] = None) -> None:
+        """Delete enhanced pages from cache"""
+        if category_name:
+            key = self.keys.category_enhanced_pages(category_name, self.username)
+        else:
+            key = self.keys.enhanced_pages(self.username)
+        cache.delete(key)
+    
+    def get_records(self, category_name: Optional[str] = None) -> Any:
+        """Get records from cache"""
+        if category_name:
+            key = self.keys.category_records(category_name, self.username)
+        else:
+            key = self.keys.records(self.username)
+        return cache.get(key)
+    
+    def set_records(self, data: Any, category_name: Optional[str] = None, timeout: Optional[int] = None) -> None:
+        """Set records in cache"""
+        if category_name:
+            key = self.keys.category_records(category_name, self.username)
+        else:
+            key = self.keys.records(self.username)
+        cache.set(key, data, timeout)
+    
+    def delete_records(self, category_name: Optional[str] = None) -> None:
+        """Delete records from cache"""
+        if category_name:
+            key = self.keys.category_records(category_name, self.username)
+        else:
+            key = self.keys.records(self.username)
+        cache.delete(key)
+    
+    def clear_category_cache(self, category_name: str) -> None:
+        """Clear all cache entries for a specific category"""
+        self.delete_enhanced_pages(category_name)
+        self.delete_records(category_name)
+    
+    def get_weekly_stats(self) -> Any:
+        """Get weekly stats from cache"""
+        key = self.keys.weekly_stats(self.username)
+        return cache.get(key)
+    
+    def set_weekly_stats(self, data: Any, timeout: Optional[int] = None) -> None:
+        """Set weekly stats in cache"""
+        key = self.keys.weekly_stats(self.username)
+        cache.set(key, data, timeout)
+    
+    def delete_weekly_stats(self) -> None:
+        """Delete weekly stats from cache"""
+        key = self.keys.weekly_stats(self.username)
+        cache.delete(key)
+    
+    def get_monthly_stats(self) -> Any:
+        """Get monthly stats from cache"""
+        key = self.keys.monthly_stats(self.username)
+        return cache.get(key)
+    
+    def set_monthly_stats(self, data: Any, timeout: Optional[int] = None) -> None:
+        """Set monthly stats in cache"""
+        key = self.keys.monthly_stats(self.username)
+        cache.set(key, data, timeout)
+    
+    def delete_monthly_stats(self) -> None:
+        """Delete monthly stats from cache"""
+        key = self.keys.monthly_stats(self.username)
+        cache.delete(key)

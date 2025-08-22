@@ -6,7 +6,6 @@ import core.datechecker as dc
 from .forms import *
 from .serializers import * 
 from django.contrib import messages 
-import pandas as pd
 from .stats import * 
 from .utils import *
 from django.utils import timezone
@@ -14,7 +13,6 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from urllib.parse import urlparse, unquote, quote
-from django.core.cache import cache
 import re
 from .user_settings_schemas import * 
 from api.views import Search as APISearch
@@ -108,12 +106,9 @@ class Dashboard(View):
                     'showToast':True,
                     'edited':True
                 }    
-                emitter.emit('products_updated', request, dates=dates) # for editing a product, two different weeks may be affected
                 serializedProduct =  ProductSerializer(product).data
                 category:dict | None = serializedProduct.get('category')
-                if category is not None:
-                    cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
-                    cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}")
+                emitter.emit(em.PRODUCT_UPDATED, request, dates=dates, category=category) # for editing a product, two different weeks may be affected
                 return render(request, 'core/components/paginateExpenditures.html', context) 
             else: 
                 errors = form.errors.get_json_data()
@@ -137,12 +132,9 @@ class Dashboard(View):
             if parsedDate.date() != dateToday:
                 product.date = timezone.make_aware(parsedDate, timezone.get_current_timezone())
             form.save()
-            emitter.emit('products_updated', request, dates=[product.date.date()])
             serializedProduct =  ProductSerializer(product).data
             category:dict | None = serializedProduct.get('category')
-            if category is not None:
-                cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
-                cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}") 
+            emitter.emit(em.PRODUCT_UPDATED, request, dates=[product.date.date()], category=category)
             messages.success(request, 'Product added successfully')
         else: 
             errors = form.errors.get_json_data()
@@ -169,10 +161,7 @@ class Dashboard(View):
             serializedProduct =  ProductSerializer(product).data
             category:dict | None = serializedProduct.get('category')
             product.delete()
-            if category is not None:
-                cache.delete(f"{quote(category.get('name'))}-records-{request.user.username}")
-                cache.delete(f"{quote(category.get('name'))}-enhanced-pages-{request.user.username}")
-                
+            
             messages.success(request, 'Product deleted successfully')
             date = dc.datefromisoformat(request.POST.get('date')).date() 
             referer = request.META.get('HTTP_REFERER')
@@ -188,7 +177,7 @@ class Dashboard(View):
                 'items':items,
                 'showToast':True,
             }
-            emitter.emit('products_updated', request, dates=[date])
+            emitter.emit(em.PRODUCT_UPDATED, request, dates=[date], category=category)
             if not items[0].get('products'):
                 return render(request, 'core/components/toastWrapper/toastWrapper.html', context) # return toastWrapper.html so that the success message will be displayed
             return render(request, 'core/components/paginateExpenditures.html', context) 
@@ -198,7 +187,8 @@ class Dashboard(View):
 
 class ActivityCalendar(View):
     def get(self, request): 
-        response = cache.get(f'activity-calendar-{request.user.username}')
+        cm = CacheManager(request.user.username)
+        response = cm.get_activity_calendar()
         if response:
             return response
         monthsData = dc.get_activity_in_last_year(request)
@@ -206,7 +196,7 @@ class ActivityCalendar(View):
             'monthsData': monthsData, 
         }
         response = render(request, 'core/components/activityCalendar.html', context)
-        cache.set(f'activity-calendar-{request.user.username}', response)
+        cm.set_activity_calendar(response)
         return response
 
 # @login_required    
@@ -366,7 +356,7 @@ class Categories(View):
             category.user = user
             category.save()
             messages.success(request, 'Category added successfully')
-            emitter.emit('products_updated', request)
+            emitter.emit(em.PRODUCT_UPDATED, request)
         else: 
             print(form.errors.get_json_data())
             messages.error(request, 'Could not add category')
@@ -380,7 +370,7 @@ class Categories(View):
             category = form.save(commit=False)
             category.save()
             messages.success(request, 'Category edited successfully')
-            emitter.emit('products_updated', request)
+            emitter.emit(em.PRODUCT_UPDATED, request)
         else: 
             print(form.errors.get_json_data())
             messages.error(request, 'Could not add category')
@@ -391,7 +381,7 @@ class Categories(View):
         try:
             Category.objects.get(id=categoryId).delete()
             messages.success(request, 'Category deleted successfully')
-            emitter.emit('products_updated', request) # some products may still be associated with the deleted category so the cache must be cleared
+            emitter.emit(em.PRODUCT_UPDATED, request) # some products may still be associated with the deleted category so the cache must be cleared
         except Product.DoesNotExist:
             messages.error(request, 'Category already deleted')
         return render(request, 'core/components/toastWrapper/toastWrapper.html')
@@ -400,17 +390,17 @@ class StatSummary(View):
     def get(self, request):
         stats = None
         user = request.user
+        cm = CacheManager(user.username)
         if request.GET.get('type') == 'weekly':
-            stats = cache.get(f'weekly-stats-{user.username}')
+            stats = cm.get_weekly_stats()
             if not stats:
                 stats = Context(WeeklyStats(user)).apply()
-                cache.set(f'weekly-stats-{user.username}', stats)
+                cm.set_weekly_stats(stats)
         if request.GET.get('type') == 'monthly':
-            stats = cache.get(f'monthly-stats-{user.username}')
+            stats = cm.get_monthly_stats()
             if not stats:
                 stats = Context(MonthlyStats(user)).apply()
-                cache.set(f'monthly-stats-{user.username}', stats)  
-        print(stats)
+                cm.set_monthly_stats(stats) 
         context = {
             'stats':stats, 
             'type': request.GET.get('type')
