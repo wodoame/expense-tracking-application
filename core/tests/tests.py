@@ -5,9 +5,13 @@ from core.utils import groupByDate
 from django.test import Client
 from core.tests.utils.product import create_random_products
 from core.utils import EnhancedExpensePaginator
-from unittest.mock import MagicMock
+from unittest.mock import patch, MagicMock
 from django.utils import timezone
 from urllib.parse import quote
+from datetime import datetime, date, timedelta
+
+# python manage.py test core.tests.tests
+# python manage.py test core.tests.tests.Tests.<test_name>
 class Tests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -85,3 +89,27 @@ class Tests(TestCase):
                 number_of_expenses += len(day.get('products'))
 
         self.assertEqual(number_of_expenses, expenses_created)  # check if the total number of products is equal to the number of products created
+        
+    
+    def test_page_enhancer_algorithm(self):
+        # Mock the expensive get_enhanced_pages method to return empty dict
+        with patch.object(EnhancedExpensePaginator, 'get_enhanced_pages', return_value={}):
+            paginator = EnhancedExpensePaginator(request=self.mocked_request)
+            today = date.today()
+            
+            # Test the page_enhancer_algorithm method directly
+            relevant_dates = [
+                today, 
+                today - timedelta(days=1), 
+                today - timedelta(days=2), 
+                today - timedelta(days=3), 
+                today - timedelta(days=5), 
+                today - timedelta(days=7)
+            ]
+            
+            n_expected_pages = 2 
+            result = paginator.page_enhancer_algorithm(relevant_dates)
+            
+            # Assert your expectations
+            self.assertIsInstance(result, dict)
+            self.assertEqual(len(result), n_expected_pages)

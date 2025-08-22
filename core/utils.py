@@ -160,10 +160,12 @@ emitter.on('products_updated', updateWeeklySpendingData)
 emitter.on('products_updated', updateMonthlySpendingData)
     
 class EnhancedExpensePaginator:
-    def __init__(self, request:HttpRequest, cache_key: str, number_of_days=7, specific_category: bool = False, category_name='',  extra_filters: dict = {}):
+    def __init__(self, request:HttpRequest, cache_key: str | None = None, number_of_days=7, specific_category: bool = False, category_name='',  extra_filters: dict = None):
         """ get the relevant dates (dates where things were actually purchased) """
         if specific_category and category_name == '': 
             raise ValueError('Category name must be specified')
+        if extra_filters is None:
+            extra_filters = {}
         self.user = request.user
         self.extra_filters = extra_filters
         self.category_name = category_name
@@ -172,13 +174,19 @@ class EnhancedExpensePaginator:
         self.cache_key = cache_key
         self.enhanced_pages = self.get_enhanced_pages()
 
-    def page_enhancer_algorithm(self, paginator: DateRangePaginator, enhanced_pages: dict):
-        if self.relevant_dates:
+    def page_enhancer_algorithm(self, relevant_dates:list):
+        enhanced_pages = {} 
+        if relevant_dates:
+            paginator = DateRangePaginator(
+            relevant_dates[-1],
+            relevant_dates[0],
+            self.number_of_days,
+            reverse=True)
             page = 1 
             new_page_number = 0
             i = 0  # to index the dates
-            date = self.relevant_dates[i]
-            while i < len(self.relevant_dates) and page <= paginator.get_total_pages(): # last condition may be redundant I'm not sure.
+            date = relevant_dates[i]
+            while i < len(relevant_dates):
                 current_date_range = sorted(paginator.get_date_range(page))
                 if current_date_range[0] <= date <= current_date_range[1]:
                     new_page_number += 1
@@ -186,11 +194,12 @@ class EnhancedExpensePaginator:
                     if enhanced_pages.get(new_page_number) is None:
                         enhanced_pages[new_page_number] = current_date_range
                     i += 1
-                    if i < len(self.relevant_dates):
-                        date = self.relevant_dates[i]
+                    if i < len(relevant_dates):
+                        date = relevant_dates[i]
                     else:
                         break
                 page += 1
+        return enhanced_pages
 
     def get_enhanced_pages(self):
         """
@@ -203,27 +212,21 @@ class EnhancedExpensePaginator:
             if pages:
                 return pages
             # get the relevant dates (dates where things were actually purchased)
-            self.relevant_dates = self.user.products.filter(
+            relevant_dates = self.user.products.filter(
                 category__name=self.category_name,
                 date__date__range=(self.user.date_joined.date(), datetime.today().date()) 
             ).values('date').annotate(min_date=Min('date__date')).values_list('min_date', flat=True)
-            self.relevant_dates = list(sorted(self.relevant_dates, reverse=True))
+            relevant_dates = list(sorted(relevant_dates, reverse=True))
         else: # if no category is specified, we need to filter by all products
             pages = cache.get(f'enhanced-pages-{self.user.username}') # check the cache if it already exist
             if pages:
                 return pages
-            self.relevant_dates = self.user.products.filter(
+            relevant_dates = self.user.products.filter(
                 date__date__range=(self.user.date_joined.date(), datetime.today().date())
             ).values('date').annotate(min_date=Min('date__date')).values_list('min_date', flat=True)
-            self.relevant_dates = list(sorted(self.relevant_dates, reverse=True))
-        enhanced_pages = {}    
-        paginator = DateRangePaginator(
-            self.user.date_joined.date(),
-            datetime.today().date(),
-            self.number_of_days,
-            reverse=True)
-        
-        self.page_enhancer_algorithm(paginator, enhanced_pages)
+            relevant_dates = list(sorted(relevant_dates, reverse=True))
+
+        enhanced_pages = self.page_enhancer_algorithm(relevant_dates)
        
         if self.specific_category:
             cache.set(f'{quote(self.category_name)}-enhanced-pages-{self.user.username}', enhanced_pages)
