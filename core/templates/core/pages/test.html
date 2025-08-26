@@ -2,5 +2,6 @@
 {% load static %}
 {% load custom_tags %}
 {% block main %}
-<date-picker></date-picker>
+<toast-container id="toast-container" class="flex flex-col items-center w-full px-2 fixed top-8 left-1/2 z-50 -translate-x-1/2"></toast-container>
+<button x-data @click="showToast('Hello World!', 'success')">Click Me</button>
 {% endblock %}

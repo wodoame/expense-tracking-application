@@ -1,6 +1,5 @@
 from .serializers import ProductSerializer
 from .datechecker import get_total, datefromisoformat, DateRangePaginator
-import asyncio 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required as lr 
 from django.core.cache import cache
