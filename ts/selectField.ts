@@ -3,6 +3,7 @@ type SelectFieldInstance = {
   filter: (e: Event)=>void;
   isOpen: boolean;
   none: object;
+  items: Category[];
 };
 
 class SelectFieldManager{

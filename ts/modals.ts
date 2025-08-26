@@ -3,6 +3,7 @@ import { categoryPublisher } from "./utils";
 import { datePickerManager, selectFieldManager } from "./selectField";
 import { emitter, showSkeleton, toggleLoader } from "../core/templates/core/components/categories";
 import { getCategories } from "../core/templates/core/components/categories";
+import { ToastManager } from "../core/templates/core/components/toast";
 class ModalManager{
     modals:any; 
     currentlyOpenModal: ModalInstance | null;  // track the currently opened modal
@@ -99,23 +100,33 @@ class AddProductModal extends BaseModal{
 }
 
 class AddCategoryModal extends BaseModal{
+    categoryExists(formData: any){
+        const categoryName = formData.name;
+        const currentCategories = selectFieldManager.getInstance('categories-add-product').items; // grab the categories from any of the available select fields
+        return currentCategories.some(item => item.name === categoryName);
+    }
     submitForm(){
         const form = <HTMLFormElement>document.getElementById('add-category-form');
         if(form.checkValidity()){
-            toggleLoader();
-            showSkeleton();
             this.close();
             const formData = htmx.values(form);
-            htmx.ajax('POST', '/implementations/categories/', {
-                values: formData,
-                target: '#toast-wrapper',
-            }).then(()=>{
-                categoryPublisher.fetchLatest();
-                emitter.emit('expense_added_or_edited_or_deleted');
-                getCategories(); // fetch the latest categories
-                toggleLoader(); // hide the loader
-            });
-         form.reset();
+            if(!this.categoryExists(formData)){
+                toggleLoader();
+                showSkeleton();
+                htmx.ajax('POST', '/implementations/categories/', {
+                    values: formData,
+                    target: '#toast-wrapper',
+                }).then(()=>{
+                    categoryPublisher.fetchLatest();
+                    emitter.emit('expense_added_or_edited_or_deleted');
+                    getCategories(); // fetch the latest categories
+                    toggleLoader(); // hide the loader
+                });
+            }
+            else{
+                ToastManager.error("Category already exists");
+            }
+            form.reset();
         }
         else{
             form.reportValidity();
