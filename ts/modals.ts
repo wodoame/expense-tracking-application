@@ -66,8 +66,10 @@ class AddProductModal extends BaseModal{
 
     private _resetFormUI(form: HTMLFormElement) {
         form.reset();
-        selectFieldManager.getInstance('categories-add-product').select(selectFieldManager.getInstance('categories-add-product').none);
-        datePickerManager.getInstance('add-product-date-picker').setToday();
+        const selectField = selectFieldManager.getInstance('categories-add-product');
+        const datePicker = datePickerManager.getInstance('add-product-date-picker');
+        selectField.select(selectField.none);
+        datePicker.setToday();
     }
 
     private _submitProductForm(form: HTMLFormElement, target: string) {
