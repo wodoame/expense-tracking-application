@@ -89,6 +89,26 @@ class Day(View):
         )
         return render(request, 'core/pages/day.html', context)
 
+@login_required
+class Month(View):
+    """
+        This view is used to load the skeleton for the weeks page.
+        The actual content is loaded by the Records view in core/views.py.
+    """
+    def get(self, request, pk):
+        context = getRecordSkeletonContext()
+        try:
+            month_spending = MonthlySpending.objects.get(user=request.user, id=pk)
+            context.update(
+                {
+                    'pageHeading':f'{dateOnly(month_spending.month_start)} - {dateOnly(month_spending.month_end)}',
+                    'extra_query_params': f'&month_id={pk}',
+                }
+            )
+            return render(request, 'core/pages/month.html', context)
+        except MonthlySpending.DoesNotExist:
+            return render(request, 'auth/pages/404.html')
+
 class Weeks(View):
     """
         This view is used to load the skeleton for the weeks page.
