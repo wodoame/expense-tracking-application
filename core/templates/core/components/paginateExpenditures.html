@@ -6,10 +6,7 @@
    {% include 'core/components/paginator.html' %}
 {% endif %}
 
-{% if seeProductsPage or showToast %}
-    <!-- I'm not happy about this improvisation and the kind of code I'm writing -->
-    {% component 'toastWrapper' / %}
-{% endif %}
+{% component 'toastWrapper' / %}
 
 {# 
  item:

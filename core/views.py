@@ -150,7 +150,7 @@ class Dashboard(View):
         if referer is not None and re.match(r'^/categories/[^/]+/$', path):
            segments = path.split('/')
            categoryName = quote(unquote(list(filter(lambda x: x != '', segments)).pop()))
-           return redirect(f'/components/records/?page=1&addProduct=1&oneCategory=1&categoryName={categoryName}')
+           return redirect(f'/components/records/?oneCategory=1&categoryName={categoryName}')
         return redirect('implemented-dashboard')
         
     
@@ -201,37 +201,9 @@ class ActivityCalendar(View):
 
 # @login_required    
 class Records(View):
-    def get(self, request): 
-        """
-         query parameters:
-            - page: the page number to be displayed
-            - oneCategory: if True, only records for the specified category will be displayed
-            - categoryName: the name of the category to be displayed
-            - addProduct: if True, a toast will be displayed to indicate that a product has been added
-        """
-        records = []
-        nextPageNumber = None
-        user = request.user 
+    def get(self, request):
         if request.GET.get('oneCategory'):
-            categoryName = unquote(request.GET.get('categoryName'))
-            if categoryName != 'None':
-                paginator = EnhancedExpensePaginator(
-                    request,
-                    cache_key=f'{quote(categoryName)}-records-{user.username}', 
-                    specific_category=True, 
-                    category_name=categoryName, 
-                    extra_filters={'category__name': categoryName}
-                    ) 
-                page = int(request.GET.get('page'))
-                pageData = paginator.get_page(page) # e.g pageData -> {'nextPageNumber': 2, 'records': [], 'from_cache': False}
-                nextPageNumber = pageData.get('nextPageNumber')      
-                print(nextPageNumber)
-                if pageData.get('from_cache'):
-                    return self.cache_response(pageData)
-                records = pageData.get('records')
-            else: 
-                products = ProductSerializer(user.products.filter(category=None), many=True).data
-                records = groupByDate(products)
+            return self.get_category(request)
         elif request.GET.get('seeDay'):
             date = request.GET.get('date')
             return self.get_day(request, date)
@@ -239,26 +211,54 @@ class Records(View):
             week_id = request.GET.get('week_id')
             return self.get_week(request, week_id)
         else:
-            paginator = EnhancedExpensePaginator(
+            return self.get_all(request)
+        
+    def get_all(self, request:HttpRequest):
+        paginator = EnhancedExpensePaginator(
                     request,
                     cache_key=f'records-{request.user.username}', 
                     ) 
-            page = int(request.GET.get('page'))
-            pageData = paginator.get_page(page)
-            nextPageNumber = pageData.get('nextPageNumber')
-            print(nextPageNumber)
-            if pageData.get('from_cache'):
-                return self.cache_response(pageData)                
-    
-            records = pageData.get('records')
+        page = int(request.GET.get('page'))
+        pageData = paginator.get_page(page)
+        nextPageNumber = pageData.get('nextPageNumber')
+        if pageData.get('from_cache'):
+            return self.cache_response(pageData)                
+
+        records = pageData.get('records')
         context = {
             'items':records, 
             'nextPageNumber':nextPageNumber,
-            'seeProductsPage': request.GET.get('addProduct')
-            }
+        }
         context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
-    
+        
+    def get_category(self, request:HttpRequest):
+        user = request.user
+        nextPageNumber = None
+        categoryName = unquote(request.GET.get('categoryName'))
+        if categoryName != 'None':
+            paginator = EnhancedExpensePaginator(
+                request,
+                cache_key=f'{quote(categoryName)}-records-{user.username}', 
+                specific_category=True, 
+                category_name=categoryName, 
+                extra_filters={'category__name': categoryName}
+                ) 
+            page = int(request.GET.get('page') or 1) 
+            pageData = paginator.get_page(page) # e.g pageData -> {'nextPageNumber': 2, 'records': [], 'from_cache': False}
+            nextPageNumber = pageData.get('nextPageNumber')      
+            if pageData.get('from_cache'):
+                return self.cache_response(pageData)
+            records = pageData.get('records')
+        else: 
+            products = ProductSerializer(user.products.filter(category=None), many=True).data
+            records = groupByDate(products)
+        context = {
+            'items': records,
+            'nextPageNumber': nextPageNumber
+        }
+        return render(request, 'core/components/paginateExpenditures.html', context)
+
     def get_week(self, request: HttpRequest, week_id: int):
         user = request.user
         spending_data = WeeklySpending.objects.get(id=week_id)
@@ -272,11 +272,6 @@ class Records(View):
         return render(request, 'core/components/paginateExpenditures.html', context)
     
     def get_day(self, request: HttpRequest, date: str):
-        """
-        This method is used to get the records for a specific day.
-        It is used to load the skeleton for the day page.
-        The actual content is loaded by the Records view in core/views.py.
-        """
         user = request.user
         date = dc.datefromisoformat(date).date()
         products = ProductSerializer(user.products.filter(date__date=date), many=True).data
