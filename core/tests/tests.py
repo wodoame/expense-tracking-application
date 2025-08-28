@@ -1,10 +1,9 @@
 from django.test import TestCase, Client
 from core.serializers import ProductSerializer
 from core.models import Product, User, Category
-from core.utils import groupByDate
+from core.utils import groupByDate, CacheKeyManager, EnhancedExpensePaginator
 from django.test import Client
 from core.tests.utils.product import create_random_products
-from core.utils import EnhancedExpensePaginator
 from unittest.mock import patch, MagicMock
 from django.utils import timezone
 from urllib.parse import quote
@@ -45,7 +44,10 @@ class Tests(TestCase):
     def test_expense_paginator_returns_all_expenses(self):
         expenses_created = 20
         create_random_products(self.user, count=expenses_created)
-        paginator = EnhancedExpensePaginator(self.mocked_request, cache_key=f'records-{self.user.username}')
+        paginator = EnhancedExpensePaginator(
+            self.mocked_request,
+            cache_key=CacheKeyManager.records(self.user.username)
+            )
         total_pages = paginator.get_total_pages()
         number_of_expenses = 0
         
@@ -69,8 +71,7 @@ class Tests(TestCase):
         create_random_products(self.user, count=15) # no category specified, so it will be None
         paginator = EnhancedExpensePaginator(
                 self.mocked_request,
-                cache_key=f'{quote(category.name)}-records-{self.user.username}',
-                specific_category=True, 
+                cache_key=CacheKeyManager.category_records(category.name, self.user.username),
                 category_name=category.name,
                 extra_filters={'category__name': category.name}
                 )

@@ -1,38 +1,23 @@
 <!-- begin summary -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-2 gap-y-4" id="statSummary">
+    {% for stat in stats %}
     <!-- begin card -->
     <a 
     {% if type == 'weekly' %}
-      @click="routes.viewWeek({{stats.0.id}}, '{{stats.0.date_range}}')"
+      @click="routes.viewWeek({{stat.id}}, '{{stat.date_range}}')"
+    {% elif type == 'monthly' %}
+      @click="routes.viewMonth({{stat.id}}, '{{stat.date_range}}')"
+    {% elif type == 'daily' %}
+      @click="routes.viewDay('{{stat.date}}')"
     {% endif %}
-
     class="cursor-pointer block p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
-      <p class="font-normal text-gray-700 dark:text-gray-400 py-1">{{stats.0.text}}</p>
-        <p class="text-2xl font-bold dark:text-gray-300">GHS {{stats.0.data|floatformat:2}}</p>
-     </a>
-           <!-- end card  -->
-     <!-- begin card -->
-     <a
-     {% if type == 'weekly' %}
-     @click="routes.viewWeek({{stats.1.id}}, '{{stats.1.date_range}}')"
-     {% endif %}
-     class="cursor-pointer block p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
-        <p class="font-normal text-gray-700 dark:text-gray-400 py-1">{{stats.1.text}}</p>
-        <p class="text-2xl font-bold dark:text-gray-300">GHS {{stats.1.data|floatformat:2}}</p>
-     </a>
-     <!-- end card  -->
-     <!-- begin card -->
-     <a
-      {% if type == 'weekly' %}
-        @click="routes.viewWeek({{stats.2.id}}, '{{stats.2.date_range}}')"  
-      {% endif %}
-      class="cursor-pointer block p-6 border bg-gray-50 border-gray-200 rounded-md dark:bg-dark2 dark:border-darkborder">
-        <p class="font-normal text-gray-700 dark:text-gray-400 py-1">{{stats.2.text}}</p>
-        <p class="text-2xl font-bold dark:text-gray-300">GHS {{stats.2.data|floatformat:2}}</p>
-     </a>
-     <!-- end card  -->
-     </div>
-     <!-- end summary  -->
+      <p class="font-normal text-gray-700 dark:text-gray-400 py-1">{{stat.text}}</p>
+      <p class="text-2xl font-bold dark:text-gray-300">GHS {{stat.data|floatformat:2}}</p>
+    </a>
+    <!-- end card -->
+    {% endfor %}
+</div>
+<!-- end summary -->
 
    {# 
    stats: A list of properties containing information about each card

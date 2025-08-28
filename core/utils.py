@@ -174,19 +174,16 @@ class EnhancedExpensePaginator:
         self, request:HttpRequest,
         cache_key: str | None = None,
         number_of_days=7,
-        specific_category: bool = False,
-        category_name='',
-        extra_filters: dict = None
+        category_name:str | None = None,
+        extra_filters: dict | None = None
     ):
         """ get the relevant dates (dates where things were actually purchased) """
-        if specific_category and category_name == '': 
-            raise ValueError('Category name must be specified')
         if extra_filters is None:
             extra_filters = {}
         self.user = request.user
         self.extra_filters = extra_filters
         self.category_name = category_name
-        self.specific_category = specific_category
+        self.specific_category = category_name is not None
         self.number_of_days = number_of_days
         self.cache_key = cache_key
         self.enhanced_pages = self.get_enhanced_pages()

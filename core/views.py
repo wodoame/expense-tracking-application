@@ -210,15 +210,18 @@ class Records(View):
         elif request.GET.get('week_id'):
             week_id = request.GET.get('week_id')
             return self.get_week(request, week_id)
+        elif request.GET.get('month_id'):
+            month_id = request.GET.get('month_id')
+            return self.get_month(request, month_id)
         else:
             return self.get_all(request)
         
     def get_all(self, request:HttpRequest):
         paginator = EnhancedExpensePaginator(
                     request,
-                    cache_key=f'records-{request.user.username}', 
+                    cache_key=CacheKeyManager.records(request.user.username), 
                     ) 
-        page = int(request.GET.get('page'))
+        page = int(request.GET.get('page') or 1)
         pageData = paginator.get_page(page)
         nextPageNumber = pageData.get('nextPageNumber')
         if pageData.get('from_cache'):
@@ -239,8 +242,7 @@ class Records(View):
         if categoryName != 'None':
             paginator = EnhancedExpensePaginator(
                 request,
-                cache_key=f'{quote(categoryName)}-records-{user.username}', 
-                specific_category=True, 
+                cache_key=CacheKeyManager.category_records(categoryName, user.username), 
                 category_name=categoryName, 
                 extra_filters={'category__name': categoryName}
                 ) 
@@ -264,6 +266,18 @@ class Records(View):
         spending_data = WeeklySpending.objects.get(id=week_id)
         products = ProductSerializer(
             Product.objects.filter(date__date__range=(spending_data.week_start, spending_data.week_end), user=user),
+            many=True).data
+        records = groupByDate(products)
+        context = {
+            'items': records, 
+        }
+        return render(request, 'core/components/paginateExpenditures.html', context)
+    
+    def get_month(self, request: HttpRequest, month_id: int):
+        user = request.user
+        spending_data = MonthlySpending.objects.get(id=month_id)
+        products = ProductSerializer(
+            Product.objects.filter(date__date__range=(spending_data.month_start, spending_data.month_end), user=user),
             many=True).data
         records = groupByDate(products)
         context = {

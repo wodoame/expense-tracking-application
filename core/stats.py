@@ -61,10 +61,11 @@ class MonthlyStats:
         
     def get_stat(self, data: MonthlySpending, label:str):
         UNSET_ID = -1
-        result = {'text': label, 'data': 0, 'id': UNSET_ID}
+        result = {'text': label, 'data': 0, 'id': UNSET_ID, 'date_range': None}
         if data:
              result['id'] = data.id
              result['data'] = data.total_amount
+             result['date_range'] = dateOnly(data.month_start) + ' - ' + dateOnly(data.month_end)
         return result
         
         

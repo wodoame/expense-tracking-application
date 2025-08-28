@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from .models import Category
+from .models import Category, WeeklySpending, MonthlySpending
 from .utils import *
 from core.templatetags.custom_filters import dateOnly
 """
@@ -92,7 +92,7 @@ class Day(View):
 @login_required
 class Month(View):
     """
-        This view is used to load the skeleton for the weeks page.
+        This view is used to load the skeleton for the month page.
         The actual content is loaded by the Records view in core/views.py.
     """
     def get(self, request, pk):
