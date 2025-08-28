@@ -3,7 +3,7 @@ from typing import Tuple, Union
 import pandas as pd
 
 
-def get_week_monday_based(dt: datetime):
+def get_week(dt: datetime):
     """
     Returns a tuple of (week_start, week_end) for the Monday-based week containing the input datetime.
     - week_start: Monday

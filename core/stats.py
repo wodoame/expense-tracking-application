@@ -7,8 +7,8 @@ from core.templatetags.custom_filters import dateOnly
 class WeeklyStats:
     def __init__(self, user: User):
         self.user = user
-        self.thisWeek = dc.get_week_monday_based(datetime.today().date())
-        self.lastWeek = dc.get_week_monday_based(datetime.today().date() - timedelta(days=7))
+        self.thisWeek = dc.get_week(datetime.today().date())
+        self.lastWeek = dc.get_week(datetime.today().date() - timedelta(days=7))
 
         
     def calculate(self):

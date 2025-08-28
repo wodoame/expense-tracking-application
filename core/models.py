@@ -80,8 +80,8 @@ class WeeklySpending(models.Model):
         
     @staticmethod
     def update_weekly_spending(user: User, date: datetime):
-        from .datechecker import get_week_monday_based
-        week = get_week_monday_based(date)
+        from .datechecker import get_week
+        week = get_week(date)
         weekly_stats = (user.products
             .filter(date__date__range=(week[0], week[1]))
             .annotate(week_start=TruncWeek('date'))

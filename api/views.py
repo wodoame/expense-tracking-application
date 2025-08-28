@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from core.models import *
 from django.db.models import Q
 from core.templatetags.custom_filters import dateOnly, timesince
-from core.datechecker import datefromisoformat, get_month, get_week_monday_based
+from core.datechecker import datefromisoformat, get_month, get_week
 from django.core.cache import cache
 from rest_framework import status
 from .models import ErrorLog
@@ -29,12 +29,12 @@ class Categories(APIView):
                 filter = int(filter)
                 date_filter = None
                 if filter == filters.THIS_WEEK:
-                    date_filter = get_week_monday_based(timezone.now().date())
+                    date_filter = get_week(timezone.now().date())
                 
                 elif filter == filters.LAST_WEEK:
                     # Get last week by going back 7 days from today
                     last_week_date = timezone.now().date() - timedelta(days=7)
-                    date_filter = get_week_monday_based(last_week_date)
+                    date_filter = get_week(last_week_date)
                 
                 elif filter == filters.THIS_MONTH:
                     date_filter = get_month(timezone.now().date())
