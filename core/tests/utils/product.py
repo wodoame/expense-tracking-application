@@ -2,7 +2,12 @@ import random
 from django.utils import timezone
 from core.models import Product, Category, User
 
-def create_random_product(user: User, category: None | Category = None, set_random_category=False) -> Product:
+def create_random_product(
+    user: User,
+    category: None | Category = None,
+    set_random_category=False,
+    date: timezone.datetime | None = None,
+    ) -> Product:
     """
     Utility function to create and save a random Product for the given user.
     """
@@ -29,7 +34,7 @@ def create_random_product(user: User, category: None | Category = None, set_rand
     name = random.choice(product_names)
     price = round(random.uniform(1.0, 100.0), 2)
     description = random.choice(descriptions)
-    date = timezone.now() - timezone.timedelta(days=random.randint(0, 30))
+    date = date or timezone.now() - timezone.timedelta(days=random.randint(0, 30))
 
     product = Product.objects.create(
         user=user,
@@ -41,12 +46,23 @@ def create_random_product(user: User, category: None | Category = None, set_rand
     )
     return product
 
-def create_random_products(user: User, count: int, category: None | Category = None, set_random_category=False) -> list[Product]:
+def create_random_products(
+    user: User, 
+    count: int, 
+    category: None | Category = None,
+    set_random_category=False, 
+    date: timezone.datetime | None = None
+    ) -> list[Product]:
     """
     Utility function to create and save multiple random Products for the given user.
     """
     products = []
     for _ in range(count):
-        product = create_random_product(user, category, set_random_category)
+        product = create_random_product(
+            user,
+            category,
+            set_random_category,
+            date
+        )
         products.append(product)
     return products

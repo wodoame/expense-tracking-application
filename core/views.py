@@ -217,7 +217,7 @@ class Records(View):
             return self.get_all(request)
         
     def get_all(self, request:HttpRequest):
-        paginator = EnhancedExpensePaginator(
+        paginator = ExpensePaginator(
                     request,
                     cache_key=CacheKeyManager.records(request.user.username), 
                     ) 
@@ -238,13 +238,13 @@ class Records(View):
     def get_category(self, request:HttpRequest):
         user = request.user
         nextPageNumber = None
-        categoryName = unquote(request.GET.get('categoryName'))
-        if categoryName != 'None':
-            paginator = EnhancedExpensePaginator(
+        category_name = unquote(request.GET.get('categoryName'))
+        if category_name != 'None':
+            paginator = ExpensePaginator(
                 request,
-                cache_key=CacheKeyManager.category_records(categoryName, user.username), 
-                category_name=categoryName, 
-                extra_filters={'category__name': categoryName}
+                cache_key=CacheKeyManager.category_records(category_name, user.username), 
+                category_name=category_name, 
+                extra_filters={'category__name': category_name}
                 ) 
             page = int(request.GET.get('page') or 1) 
             pageData = paginator.get_page(page) # e.g pageData -> {'nextPageNumber': 2, 'records': [], 'from_cache': False}
@@ -274,15 +274,23 @@ class Records(View):
         return render(request, 'core/components/paginateExpenditures.html', context)
     
     def get_month(self, request: HttpRequest, month_id: int):
-        user = request.user
         spending_data = MonthlySpending.objects.get(id=month_id)
-        products = ProductSerializer(
-            Product.objects.filter(date__date__range=(spending_data.month_start, spending_data.month_end), user=user),
-            many=True).data
-        records = groupByDate(products)
+        paginator = ExpensePaginator(
+            request,
+            date_range=(spending_data.month_start, spending_data.month_end)
+        )
+        page = int(request.GET.get('page') or 1)
+        pageData = paginator.get_page(page)
+        nextPageNumber = pageData.get('nextPageNumber')
+        if pageData.get('from_cache'):
+            return self.cache_response(pageData)     
+        records = pageData.get('records')
         context = {
             'items': records, 
+            'nextPageNumber': nextPageNumber,
+            'extra_query_params': f'&month_id={month_id}'
         }
+        context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
     
     def get_day(self, request: HttpRequest, date: str):

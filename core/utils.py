@@ -169,17 +169,22 @@ emitter.on(em.PRODUCT_UPDATED, deleteAllProductsFromCache)
 emitter.on(em.PRODUCT_UPDATED, updateWeeklySpendingData)
 emitter.on(em.PRODUCT_UPDATED, updateMonthlySpendingData)
 
-class EnhancedExpensePaginator:
+class ExpensePaginator:
     def __init__(
         self, request:HttpRequest,
         cache_key: str | None = None,
         number_of_days=7,
         category_name:str | None = None,
-        extra_filters: dict | None = None
+        extra_filters: dict | None = None,
+        date_range: tuple | None = None
     ):
         """ get the relevant dates (dates where things were actually purchased) """
-        if extra_filters is None:
+        if not extra_filters:
             extra_filters = {}
+        if not date_range:
+            date_range = (request.user.date_joined.date(), datetime.today().date())
+        
+        self.date_range = date_range
         self.user = request.user
         self.extra_filters = extra_filters
         self.category_name = category_name
@@ -228,15 +233,18 @@ class EnhancedExpensePaginator:
             # get the relevant dates (dates where things were actually purchased)
             relevant_dates = self.user.products.filter(
                 category__name=self.category_name,
-                date__date__range=(self.user.date_joined.date(), datetime.today().date()) 
+                date__date__range=self.date_range
             ).values('date').annotate(min_date=Min('date__date')).values_list('min_date', flat=True)
             relevant_dates = list(sorted(relevant_dates, reverse=True))
         else: # if no category is specified, we need to filter by all products
-            pages = cache.get(f'enhanced-pages-{self.user.username}') # check the cache if it already exist
+            if self.cache_key: # ! FIX: monthly pagination also uses this part of the code and the cache will mess with that
+                pages = cache.get(f'enhanced-pages-{self.user.username}') # check the cache if it already exist
+            else:
+                pages = None
             if pages:
                 return pages
             relevant_dates = self.user.products.filter(
-                date__date__range=(self.user.date_joined.date(), datetime.today().date())
+                date__date__range=self.date_range
             ).values('date').annotate(min_date=Min('date__date')).values_list('min_date', flat=True)
             relevant_dates = list(sorted(relevant_dates, reverse=True))
 
@@ -245,7 +253,8 @@ class EnhancedExpensePaginator:
         if self.specific_category:
             cm.set_enhanced_pages(enhanced_pages, self.category_name)
         else:
-            cm.set_enhanced_pages(enhanced_pages)
+            if self.cache_key:
+                cm.set_enhanced_pages(enhanced_pages)
         return enhanced_pages
                 
                 
@@ -286,7 +295,11 @@ class EnhancedExpensePaginator:
                 
     def get_data(self, page:int):
         date_range = self.enhanced_pages.get(page)
-        products = ProductSerializer(self.user.products.filter(date__date__range=(date_range[0], date_range[1]), **self.extra_filters), many=True).data if date_range else []
+        products = ProductSerializer(
+            self.user.products.filter(
+                date__date__range=(date_range[0], date_range[1]),
+                **self.extra_filters),
+            many=True).data if date_range else []
         records = groupByDate(products)
         return {
         'page': page,

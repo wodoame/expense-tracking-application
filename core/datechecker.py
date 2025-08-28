@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 from typing import Tuple, Union
 import pandas as pd
 
@@ -26,7 +26,7 @@ def get_week_monday_based(dt: datetime):
     return (week_start, week_end)
     
 
-def get_month(date:datetime):
+def get_month(date:date):
     """
     Returns a tuple of (month_start, month_end) for the month containing the input date.
     - month_start: First day of the month

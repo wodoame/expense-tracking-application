@@ -1,13 +1,13 @@
 from django.test import TestCase, Client
 from core.serializers import ProductSerializer
-from core.models import Product, User, Category
-from core.utils import groupByDate, CacheKeyManager, EnhancedExpensePaginator
+from core.models import Product, User, Category, MonthlySpending
+from core.utils import groupByDate, CacheKeyManager, ExpensePaginator
 from django.test import Client
 from core.tests.utils.product import create_random_products
 from unittest.mock import patch, MagicMock
 from django.utils import timezone
-from urllib.parse import quote
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
+from core.datechecker import get_month
 
 # python manage.py test core.tests.tests
 # python manage.py test core.tests.tests.Tests.<test_name>
@@ -44,7 +44,7 @@ class Tests(TestCase):
     def test_expense_paginator_returns_all_expenses(self):
         expenses_created = 20
         create_random_products(self.user, count=expenses_created)
-        paginator = EnhancedExpensePaginator(
+        paginator = ExpensePaginator(
             self.mocked_request,
             cache_key=CacheKeyManager.records(self.user.username)
             )
@@ -69,7 +69,7 @@ class Tests(TestCase):
         expenses_created = 20
         create_random_products(self.user, count=expenses_created, category=category)
         create_random_products(self.user, count=15) # no category specified, so it will be None
-        paginator = EnhancedExpensePaginator(
+        paginator = ExpensePaginator(
                 self.mocked_request,
                 cache_key=CacheKeyManager.category_records(category.name, self.user.username),
                 category_name=category.name,
@@ -90,12 +90,48 @@ class Tests(TestCase):
                 number_of_expenses += len(day.get('products'))
 
         self.assertEqual(number_of_expenses, expenses_created)  # check if the total number of products is equal to the number of products created
-        
     
+    def test_expense_paginator_returns_all_expenses_in_specific_month(self):
+        expenses_created = 7
+        today = timezone.datetime.today()
+        create_random_products(
+            self.user,
+            count=expenses_created,
+            date=today
+        )
+        month = get_month(today.date())
+        monthly_spending = MonthlySpending.objects.create(
+            user=self.user,
+            month_start=month[0],
+            month_end=month[1]
+        )
+        paginator = ExpensePaginator(
+            self.mocked_request,
+            date_range=(month[0], month[1]),
+        )
+        print("month:", month)
+        print("paginator.enhanced_pages:", paginator.enhanced_pages)
+        total_pages = paginator.get_total_pages()
+        print('total_pages:', total_pages)
+        number_of_expenses = 0
+
+        # get all pages and see if all products in the specified month are returned
+        # this is to ensure that the paginator works correctly
+        for page in range(1, total_pages + 1): # NOTE: a page may consist of many days; The paginator paginates by number of days
+            url = f'/components/records/?page={page}&month_id={monthly_spending.id}'
+            response = self.client.get(url)
+            days = response.context['items'] # also called records
+
+            # check the number of products bought on each day
+            for day in days:
+                number_of_expenses += len(day.get('products'))
+
+        self.assertEqual(number_of_expenses, expenses_created)  # check if the total number of products is equal to the number of products created
+
     def test_page_enhancer_algorithm(self):
         # Mock the expensive get_enhanced_pages method to return empty dict
-        with patch.object(EnhancedExpensePaginator, 'get_enhanced_pages', return_value={}):
-            paginator = EnhancedExpensePaginator(request=self.mocked_request)
+        with patch.object(ExpensePaginator, 'get_enhanced_pages', return_value={}):
+            paginator = ExpensePaginator(request=self.mocked_request)
             today = date.today()
             
             # Test the page_enhancer_algorithm method directly
