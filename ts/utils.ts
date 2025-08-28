@@ -8,7 +8,7 @@
     //     } 
     //  }
 import { router } from "./router";
-let queryParams = {}; // additional query parameters that should be sent with the request
+let queryParams = {}; // additional query parameters that should be sent with the request (getAdditionalParams function)
 const setQueryParameter = (key:string, value:any)=>{
     queryParams[key] = value; 
 }
@@ -146,7 +146,6 @@ export {
     categoryPublisher,
     fetchJSONData,
     getSidebar,
-    queryParams, 
     setQueryParameter, 
     statSummary, 
     getDropdown,
