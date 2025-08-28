@@ -52,6 +52,14 @@ class Routes{
             document.getElementById('pageHeading').textContent = `${dateRange}`;
         }
     } 
+    viewMonth(id: number, dateRange: string){
+        // -1 represents a month that does not exist
+        if(id != -1){
+            setQueryParameter('month_id', id); // add month_id to the query parameters
+            this.router.navigate('viewWeekSkeleton', `/months/${id}/`);
+            document.getElementById('pageHeading').textContent = `${dateRange}`;
+        }
+    } 
     viewDay(date: string, pageHeading: string){
         setQueryParameter('date', date);
         setQueryParameter('seeDay', '1'); // a flag that indicates we are viewing a day
