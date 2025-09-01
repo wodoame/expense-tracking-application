@@ -18,7 +18,7 @@ export const filters = {
 @customElement('cat-metric-filter')
 export class CatMetricFilter extends BaseElement {
     @property({ type: String })
-    accessor selectedFilter: string = 'All-time';
+    accessor selectedFilter: string = 'This week';
 
     async selectFilter(key:string, filter:number){
         this.selectedFilter = key;

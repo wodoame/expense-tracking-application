@@ -34,7 +34,7 @@ export class CategoriesCards extends BaseElement {
     @property({ type: Boolean}) accessor ready: boolean = false;
 
     getDataFxn() {
-        return async (filter:number=filters.ALL_TIME) => {
+        return async (filter:number=filters.THIS_WEEK) => {
             this.ready = false;
             const data = await queryClient.fetchQuery({
                 queryKey: ['categories', filter],
@@ -52,7 +52,7 @@ export class CategoriesCards extends BaseElement {
     }
 
 
-    async fetchData (filter: number = filters.ALL_TIME): Promise<Category[]> {
+    async fetchData (filter: number): Promise<Category[]> {
     console.log('--- Axios: Fetching all categories ---');
     const response = await axios.get<Category[]>(`/api/categories/?metrics=1&filter=${filter}`);
     console.log(response.data);
