@@ -259,6 +259,7 @@ class Records(View):
             'items': records,
             'nextPageNumber': nextPageNumber
         }
+        context.update(getRecordSkeletonContext())
         return render(request, 'core/components/paginateExpenditures.html', context)
 
     def get_week(self, request: HttpRequest, week_id: int):
