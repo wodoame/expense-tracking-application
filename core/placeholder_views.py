@@ -63,10 +63,12 @@ class Week(View):
         context = getRecordSkeletonContext()
         try:
             week_spending = WeeklySpending.objects.get(user=request.user, id=pk)
+            custom_name = week_spending.custom_name
             context.update(
                 {
-                    'pageHeading':f'{dateOnly(week_spending.week_start)} - {dateOnly(week_spending.week_end)}',
+                    'pageHeading':custom_name if custom_name else f'{dateOnly(week_spending.week_start)} - {dateOnly(week_spending.week_end)}',
                     'extra_query_params': f'&week_id={pk}',
+                    'week_id': pk
                 }
             )
             return render(request, 'core/pages/week.html', context)

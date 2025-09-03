@@ -193,4 +193,62 @@ class GetMonthlySpendings(APIView):
             }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UpdateWeeklySpendingName(APIView):
+    def patch(self, request):
+        """
+        Update the custom_name of a WeeklySpending record.
+        
+        Expected payload:
+        {
+            "weekly_spending_id": <int>,
+            "custom_name": <string> (max 50 characters)
+        }
+        """
+        try:
+            user = request.user
+            weekly_spending_id = request.data.get('weekly_spending_id')
+            custom_name = request.data.get('custom_name', '').strip()
+            
+            # Validation
+            if not weekly_spending_id:
+                return Response({
+                    'error': 'weekly_spending_id is required'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Validate custom_name length (matching the 50 char limit from frontend)
+            if len(custom_name) > 50:
+                return Response({
+                    'error': 'custom_name cannot exceed 50 characters'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Get the WeeklySpending record for this user
+            try:
+                weekly_spending = WeeklySpending.objects.get(
+                    id=weekly_spending_id,
+                    user=user
+                )
+            except WeeklySpending.DoesNotExist:
+                return Response({
+                    'error': 'WeeklySpending record not found'
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            # Update the custom_name
+            weekly_spending.custom_name = custom_name if custom_name else None
+            weekly_spending.save()
+            
+            # Return updated record
+            updated_data = WeeklySpendingSerializer(weekly_spending).data
+            
+            return Response({
+                'success': True,
+                'message': 'Weekly spending name updated successfully',
+                'weekly_spending': updated_data
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response({
+                'error': f'An error occurred: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     

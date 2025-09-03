@@ -53,6 +53,7 @@ class KeyValuePair(models.Model):
 class WeeklySpending(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='weekly_spendings', null=True)
     week_start = models.DateField()
+    custom_name = models.CharField(max_length=50, blank=True, null=True)
     week_end = models.DateField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     

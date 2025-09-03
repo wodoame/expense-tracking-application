@@ -4,6 +4,8 @@ import { selectFieldManager } from "./selectField";
 import Alpine from "alpinejs";
 import { router } from "./router";
 import { hh } from "./history";
+import { ToastManager } from "../core/templates/core/components/toast";
+import { toggleLoader } from "../core/templates/core/components/categories";
 function createModalInstance(id: string){
     return {
         isOpen: false,
@@ -91,7 +93,7 @@ function createSelectFieldInstance(id: string){
     }
   }
 
-function createEditableHeading (initialText: string): EditableHeadingData {
+function createEditableHeading (initialText: string, id: number): EditableHeadingData {
   return {
     isEditing: false,
     headingText: initialText,
@@ -121,7 +123,24 @@ function createEditableHeading (initialText: string): EditableHeadingData {
         }
       });
     },
-    
+
+    async updateHeading() {
+    toggleLoader();
+    const result = await fetchJSONData('/api/weekly-spendings/update/', {
+      method: 'PATCH',
+      data: {
+        weekly_spending_id: id,
+        custom_name: this.headingText
+      }
+      }
+    );
+
+    if (result) {
+      toggleLoader();
+      ToastManager.success('Heading updated successfully');
+    }
+  },
+
     finishEditing() {
       this.isEditing = false;
       const heading = (this as any).$refs?.editableHeading;
@@ -142,6 +161,7 @@ function createEditableHeading (initialText: string): EditableHeadingData {
       if (event.key === 'Enter') {
         event.preventDefault();
         this.finishEditing();
+        this.updateHeading();
       }
     },
     
@@ -201,6 +221,7 @@ interface EditableHeadingData {
   originalText: string;
   maxLength: number;
   startEditing(): void;
+  updateHeading(): Promise<void>;
   finishEditing(): void;
   handleKeydown(event: KeyboardEvent): void;
   handleInput(event: Event): void;
