@@ -1,13 +1,19 @@
-<div class="flex gap-2 mb-4 items-center" x-data="editableHeading('{{pageHeading}}', {{week_id}})">
+<div class="flex gap-2 mb-4 items-center"
+ {% if pageHeading %}
+  x-data="editableHeading('{{pageHeading}}', {{week_id}})"
+ {% else %}
+  x-ignore
+ {% endif %}
+ id="editable-heading">
   <h5 
     class="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-300 text-center outline-none"
     id="pageHeading"
     x-ref="editableHeading"
     :contenteditable="isEditing"
     x-text="headingText"
-    @keydown="handleKeydown"
+    @keydown="$event.key == 'Enter'?finishEditing():null"
     @input="handleInput"
-    @blur="finishEditing()">
+    @blur="submit">
   </h5>
   <svg 
     xmlns="http://www.w3.org/2000/svg" 

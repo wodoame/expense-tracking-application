@@ -92,6 +92,7 @@ def decryptAllProducts():
 
 class EventManager:
     PRODUCT_UPDATED = 0
+    CUSTOM_NAME_UPDATED = 1
 
 class EventEmitter:
     def __init__(self):
@@ -168,7 +169,7 @@ emitter.on(em.PRODUCT_UPDATED, deleteExpenditureRecordsFromCache)
 emitter.on(em.PRODUCT_UPDATED, deleteAllProductsFromCache)
 emitter.on(em.PRODUCT_UPDATED, updateWeeklySpendingData)
 emitter.on(em.PRODUCT_UPDATED, updateMonthlySpendingData)
-
+emitter.on(em.CUSTOM_NAME_UPDATED, deleteQuickStatsFromCache)
 class ExpensePaginator:
     def __init__(
         self, request:HttpRequest,

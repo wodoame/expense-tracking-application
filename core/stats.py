@@ -31,8 +31,8 @@ class WeeklyStats:
         result = {'text': label, 'data': 0, 'id': UNSET_ID, 'date_range': None}
         if data:
              result['id'] = data.id
-             result['data'] = data.total_amount
-             result['date_range'] = dateOnly(data.week_start) + ' - ' + dateOnly(data.week_end)
+             result['data'] = data.total_amount 
+             result['date_range'] = data.custom_name if data.custom_name else dateOnly(data.week_start) + ' - ' + dateOnly(data.week_end)
         return result
 
 class MonthlyStats:

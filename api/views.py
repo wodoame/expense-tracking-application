@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 from api.utils import filters
 from django.utils import timezone
 from datetime import timedelta
-
+from core.utils import emitter, em
 class Status(APIView):
     def get(self, request):
         return Response({'status': 'ok', 'message': 'API is reachable.'})
@@ -237,6 +237,7 @@ class UpdateWeeklySpendingName(APIView):
             # Update the custom_name
             weekly_spending.custom_name = custom_name if custom_name else None
             weekly_spending.save()
+            emitter.emit(em.CUSTOM_NAME_UPDATED, request)
             
             # Return updated record
             updated_data = WeeklySpendingSerializer(weekly_spending).data
@@ -248,6 +249,7 @@ class UpdateWeeklySpendingName(APIView):
             }, status=status.HTTP_200_OK)
             
         except Exception as e:
+            print(str(e))
             return Response({
                 'error': f'An error occurred: {str(e)}'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

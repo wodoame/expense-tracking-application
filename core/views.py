@@ -349,7 +349,7 @@ class Routes(View):
                   '/categories/category-name/': render_to_string('core/placeholders/seeProductsSkeleton.html',getRecordSkeletonContext()),
                   'seeProductsSkeleton': render_to_string('core/placeholders/seeProductsSkeleton2.html',getRecordSkeletonContext()),
                   '/search/': render_to_string('core/components/staticRecordSkeleton2.html', getRecordSkeletonContext()),
-                  'viewWeekSkeleton': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext()),
+                  'viewWeekSkeleton': render_to_string('core/placeholders/seeWeekSkeleton.html', getRecordSkeletonContext()),
                   'seeDaySkeleton': render_to_string('core/placeholders/allExpendituresSkeleton.html', getRecordSkeletonContext(card_count=1)),
                   '/weeks/': render_to_string('core/placeholders/weeks.html')
                 }

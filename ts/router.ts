@@ -1,3 +1,4 @@
+import Alpine from "alpinejs";
 import { getSidebar, setQueryParameter, statSummary } from "./utils";
 class Router{
     routes: {
@@ -50,6 +51,10 @@ class Routes{
             setQueryParameter('week_id', id); // add week_id to the query parameters
             this.router.navigate('viewWeekSkeleton', `/weeks/${id}/`);
             document.getElementById('pageHeading').textContent = `${dateRange}`;
+            const editableHeadingContainer = document.getElementById('editable-heading');
+            editableHeadingContainer.removeAttribute('x-ignore');
+            editableHeadingContainer.setAttribute('x-data', `editableHeading('${dateRange}', ${id})`);
+            Alpine.initTree(editableHeadingContainer);
         }
     } 
     viewMonth(id: number, dateRange: string){

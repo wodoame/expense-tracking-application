@@ -94,6 +94,8 @@ function createSelectFieldInstance(id: string){
   }
 
 function createEditableHeading (initialText: string, id: number): EditableHeadingData {
+  console.log('created component with id:', id);
+
   return {
     isEditing: false,
     headingText: initialText,
@@ -136,9 +138,13 @@ function createEditableHeading (initialText: string, id: number): EditableHeadin
     );
 
     if (result) {
-      toggleLoader();
+      console.log(result);
       ToastManager.success('Heading updated successfully');
     }
+    else{
+      ToastManager.error('Failed to update heading');
+    }
+    toggleLoader();
   },
 
     finishEditing() {
@@ -157,12 +163,10 @@ function createEditableHeading (initialText: string, id: number): EditableHeadin
       }
     },
     
-    handleKeydown(event: KeyboardEvent) {
-      if (event.key === 'Enter') {
+    submit(event: Event) {
         event.preventDefault();
         this.finishEditing();
         this.updateHeading();
-      }
     },
     
     handleInput(event: Event) {
@@ -223,7 +227,7 @@ interface EditableHeadingData {
   startEditing(): void;
   updateHeading(): Promise<void>;
   finishEditing(): void;
-  handleKeydown(event: KeyboardEvent): void;
+  submit(event: Event): void;
   handleInput(event: Event): void;
 }
 
