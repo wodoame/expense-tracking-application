@@ -378,17 +378,23 @@ class SearchModal extends BaseModal{
         this.ff = ff;
     }
 
-    async submitForm(){
-        const form = <HTMLFormElement>document.getElementById('search-form');
+    submitSearch(form: HTMLFormElement){
+        const formData = htmx.values(form);
+        const target = '#main-content';
+        htmx.ajax('GET', '/components/search/', {
+            values: formData,
+            target: target,
+        });
+    }
+
+    submitForm(id:string='search-form'){ // Another form calls this method so there's a need to have a variable id
+        const form = <HTMLFormElement>document.getElementById(id);
         if(form.checkValidity()){
-            this.close(); 
+            if(id === 'search-form'){
+                this.close(); 
+            }
             router.navigate('/search/')
-            const formData = htmx.values(form)
-            const target = '#main-content';
-            htmx.ajax('GET', '/components/search/', {
-             values: formData,
-             target: target,
-            });
+            this.submitSearch(form);
             form.reset();
         }
         else{
