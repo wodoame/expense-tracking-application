@@ -37,7 +37,7 @@
                 </thead>
                 <tbody class="divide-y dark:divide-gray-100/5">
                   {% for result in results %}
-                  <tr x-data="{data: $el.dataset.info}" @click="getShowDetailsModal().setDetails(data)" id="product-{{product.id}}" data-info='{{product|json_string}}'>
+                  <tr x-data="{data: $el.dataset.info}" @click="getShowDetailsModal().setDetails(data)" id="product-{{result.id}}" data-info='{{result|json_string}}'>
                     <!-- checkbox  -->
                     <!-- <td class="w-4 p-4">
                       <div class="flex items-center">
