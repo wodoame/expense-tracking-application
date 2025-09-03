@@ -69,18 +69,21 @@ export class WeeksRecords extends BaseElement {
     }
 
     populateData(data: Array<any>){
-        const res = data.map((entry)=>html`
+        const res = data.map((entry)=>{
+          const customName = entry.custom_name ? entry.custom_name : `${entry.week_start} - ${entry.week_end}`;
+          return html`
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200 link" 
-                @click=${() => routes.viewWeek(entry.id, `${entry.week_start} - ${entry.week_end}`)}                
+                @click=${() => routes.viewWeek(entry.id, customName)}                
                 >    
-                ${entry.week_start} - ${entry.week_end}
+                ${customName}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
                     GHS ${entry.total_amount}
                 </td>
             </tr>
-        `)
+            `
+        });
         return res;
     }
 

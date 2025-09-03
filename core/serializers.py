@@ -71,7 +71,7 @@ class WeeklySpendingSerializer(serializers.ModelSerializer):
     week_end = serializers.SerializerMethodField()
     class Meta:
         model = WeeklySpending
-        fields = ['id', 'total_amount', 'week_start', 'week_end']
+        fields = ['id', 'total_amount', 'week_start', 'week_end', 'custom_name']
 
     def get_week_start(self, obj):
         return dateOnly(obj.week_start)
