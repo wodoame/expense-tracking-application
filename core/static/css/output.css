@@ -1309,6 +1309,10 @@ video {
   align-items: center;
 }
 
+.items-baseline {
+  align-items: baseline;
+}
+
 .justify-start {
   justify-content: flex-start;
 }
@@ -2437,6 +2441,10 @@ body:is(.dark *) {
 
 .hover\:bg-gradient-to-l:hover {
   background-image: linear-gradient(to left, var(--tw-gradient-stops));
+}
+
+.hover\:fill-teal-700:hover {
+  fill: #0f766e;
 }
 
 .hover\:text-blue-600:hover {

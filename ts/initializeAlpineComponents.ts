@@ -91,10 +91,86 @@ function createSelectFieldInstance(id: string){
     }
   }
 
+function createEditableHeading (initialText: string): EditableHeadingData {
+  return {
+    isEditing: false,
+    headingText: initialText,
+    originalText: initialText,
+    maxLength: 50,
+    
+    startEditing() {
+      this.isEditing = true;
+      this.originalText = this.headingText; // Store original text before editing
+      
+      // Use Alpine's $nextTick if available, otherwise use setTimeout
+      const nextTick = (this as any).$nextTick || ((fn: () => void) => setTimeout(fn, 0));
+      // could also use Alpine.nextTick if imported, but this way it works okay
+      
+      nextTick(() => {
+        const heading = (this as any).$refs?.editableHeading;
+        if (heading) {
+          heading.focus();
+          // Select all text
+          const range = document.createRange();
+          range.selectNodeContents(heading);
+          const selection = window.getSelection();
+          if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        }
+      });
+    },
+    
+    finishEditing() {
+      this.isEditing = false;
+      const heading = (this as any).$refs?.editableHeading;
+      if (heading) {
+        const newText = heading.textContent?.trim() || '';
+        
+        // If empty, restore original text
+        if (newText === '') {
+          this.headingText = this.originalText;
+        } else {
+          // Limit to maxLength characters
+          this.headingText = newText.substring(0, this.maxLength);
+        }
+      }
+    },
+    
+    handleKeydown(event: KeyboardEvent) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this.finishEditing();
+      }
+    },
+    
+    handleInput(event: Event) {
+      const target = event.target as HTMLElement;
+      const text = target.textContent || '';
+      
+      // Prevent typing beyond maxLength
+      if (text.length > this.maxLength) {
+        target.textContent = text.substring(0, this.maxLength);
+        
+        // Move cursor to end
+        const range = document.createRange();
+        const selection = window.getSelection();
+        if (selection) {
+          range.selectNodeContents(target);
+          range.collapse(false);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
+    }
+  };
+}
 
 function handleAlpineInitialization(){
     Alpine.data('baseModal', createModalInstance);
     Alpine.data('selectField', createSelectFieldInstance);
+    Alpine.data('editableHeading', createEditableHeading);
 }
 
 function initializeFlowbite(){
@@ -118,3 +194,17 @@ window.addEventListener('beforeunload', ()=>{
     window.removeEventListener('popstate', restoreHistory);
     document.addEventListener('htmx:afterSettle', initializeFlowbite);
 })
+
+interface EditableHeadingData {
+  isEditing: boolean;
+  headingText: string;
+  originalText: string;
+  maxLength: number;
+  startEditing(): void;
+  finishEditing(): void;
+  handleKeydown(event: KeyboardEvent): void;
+  handleInput(event: Event): void;
+}
+
+
+;
