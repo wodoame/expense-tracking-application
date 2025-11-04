@@ -28,7 +28,7 @@ class WeeklyStats:
             ]
     def get_stat(self, data: WeeklySpending, label:str):
         UNSET_ID = -1
-        result = {'text': label, 'data': 0, 'id': UNSET_ID, 'date_range': None}
+        result = {'text': label, 'data': 0, 'id': UNSET_ID, 'date_range': None, 'last_accessed': datetime.now()}
         if data:
              result['id'] = data.id
              result['data'] = data.total_amount 

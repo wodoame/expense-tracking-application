@@ -417,9 +417,14 @@ class StatSummary(View):
         stats = None
         user = request.user
         cm = CacheManager(user.username)
+        now = datetime.now()
         if request.GET.get('type') == 'weekly':
             stats = cm.get_weekly_stats()
-            if not stats:
+            week = dc.get_week(now)
+            if stats:
+                # Checking is last cached data for the week is outdated
+                is_weekly_data_refresh_needed = stats[0].get('last_accessed') < week[0]
+            if not stats or is_weekly_data_refresh_needed:
                 stats = Context(WeeklyStats(user)).apply()
                 cm.set_weekly_stats(stats)
         if request.GET.get('type') == 'monthly':
