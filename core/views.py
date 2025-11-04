@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.views import View
+from django.conf import settings
+from django.http import FileResponse
+from pathlib import Path
+from django.views.generic import TemplateView
 from datetime import datetime, timedelta
 from .models import Product, Category
 import core.datechecker as dc 
@@ -16,6 +20,10 @@ from urllib.parse import urlparse, unquote, quote
 import re
 from .user_settings_schemas import * 
 from api.views import Search as APISearch
+
+
+class FrontendAppView(TemplateView):
+    template_name = 'index.html'
 
 class RedirectView(View):
     def get(self, request):

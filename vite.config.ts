@@ -1,17 +1,22 @@
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  root: "frontend",
+  base: command === "build" ? "/static/frontend/" : "/",
+  plugins: [react()],
   build: {
-    outDir: 'core/static/js/vite', 
+    outDir: "dist",
+    emptyOutDir: true,
     rollupOptions: {
       output: {
-        entryFileNames: 'bundle.js', 
+        entryFileNames: "bundle.js",
         manualChunks: {
-          'vendor-large': ['apexcharts', 'vanilla-calendar-pro'], // Large libraries
-          'vendor-ui': ['alpinejs', 'flowbite', 'lit'], // UI libraries
+          "vendor-large": ["apexcharts", "vanilla-calendar-pro"],
+          "vendor-ui": ["alpinejs", "flowbite", "lit"],
         }
       }
     }
-  }, 
-  cacheDir: '.vite'
-});
+  },
+  cacheDir: ".vite"
+}));

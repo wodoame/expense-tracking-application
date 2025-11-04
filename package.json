@@ -2,11 +2,14 @@
   "scripts": {
     "build:css": "npx tailwindcss -i ./core/static/css/input.css -o ./core/static/css/output.css --watch",
     "build:js": "tsc --watch",
-    "build": "vite build", 
+    "build": "vite build",
     "build:watch": "vite build --watch"
   },
   "devDependencies": {
     "@types/alpinejs": "^3.13.11",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react-swc": "^4.2.0",
     "flowbite": "^3.1.2",
     "lit": "^3.3.1",
     "lucide": "^0.525.0",
@@ -19,6 +22,8 @@
     "alpinejs": "^3.14.9",
     "apexcharts": "^5.2.0",
     "axios": "^1.11.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "vanilla-calendar-pro": "^3.0.5"
   }
 }

@@ -100,7 +100,9 @@ STATICFILES_FINDERS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'frontend' / 'dist',  # React build output (index.html)
+        ],
         # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -197,17 +199,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'staticfiles/'
+
+# Static files configuration
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'authentication/static'),
+    BASE_DIR / 'frontend' / 'dist' / 'static'  # React build output (bundles, assets)
 ]
 
-# Was checking an error (NOTE: linking to non-existent static files can cause errors in production)
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # This production code might break development mode, so we check whether we're in DEBUG mode
-if not DEBUG:
+if DEBUG:
+    STATIC_ROOT = 'staticfiles/'
+else:
     # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
@@ -239,7 +241,6 @@ if DEBUG:
         },
     }
     
-SEARCH_PAGE_SIZE = os.getenv('SEARCH_PAGE_SIZE', 50)
 
 CORS_ALLOWED_ORIGINS = [
        "https://app-health-monitor.netlify.app",
