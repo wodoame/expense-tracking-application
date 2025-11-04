@@ -47,5 +47,7 @@ urlpatterns = [
     path('logout/', auth_views.Logout.as_view(), name='logout'),
     path('test/', core_views.Test.as_view()),
     path('routes/', core_views.Routes.as_view()),
-    re_path(r'^.*$', core_views.FrontendAppView.as_view(), name='frontend-app'),
+    path('app/', core_views.FrontendAppView.as_view()),
 ]
+
+
