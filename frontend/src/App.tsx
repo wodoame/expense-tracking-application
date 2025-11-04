@@ -13,22 +13,22 @@ import {
 export function App() {
   return (
     <div className="p-4">
-    <Empty className="border border-dashed">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <IconCloud />
-        </EmptyMedia>
-        <EmptyTitle>Cloud Storage Empty</EmptyTitle>
-        <EmptyDescription>
-          Upload files to your cloud storage to access them anywhere.
-        </EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" size="sm">
-          Upload Files
-        </Button>
-      </EmptyContent>
-    </Empty>
+      <Empty className="border border-dashed">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <IconCloud />
+          </EmptyMedia>
+          <EmptyTitle>Cloud Storage Empty</EmptyTitle>
+          <EmptyDescription>
+            Upload files to your cloud storage to access them anywhere.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button variant="outline" size="sm">
+            Upload Files
+          </Button>
+        </EmptyContent>
+      </Empty>
     </div>
   )
 }
